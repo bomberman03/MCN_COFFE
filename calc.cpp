@@ -2,7 +2,7 @@
 
 int main()
 {
-    int n;
+    int n, m;
     scanf("%d",&n);
     printf("hello world!\n");
     return 0;
