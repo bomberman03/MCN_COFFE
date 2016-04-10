@@ -1,8 +1,29 @@
-body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+.row {
+  margin-top:15px;
+  margin-left:15px;
+  margin-right:15px;
 }
 
-a {
-  color: #00B7FF;
+.thumbnail img {
+  width:250px;
+  height:250px;
+}
+
+.thumbnail .caption h3{
+  text-align: center;
+}
+
+.navbar {
+  margin-bottom: 1px;
+}
+
+.bs-example {
+  margin-bottom: 20px;
+}
+
+.carousel-caption {
+  top: calc(50% - 20px);
+  bottom:auto;
+  padding: 0;
+  font-size:40px;
 }
