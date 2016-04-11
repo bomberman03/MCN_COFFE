@@ -8,12 +8,28 @@
   margin:0;
 }
 
+.left-full-margin{
+  margin-left:15px;
+}
+
+.right-full-margin{
+  margin-right:15px;
+}
+
 .left{
   float:left;
 }
 
+.right{
+  float:right;
+}
+
 .block {
   display:block;
+}
+
+.full-padding{
+  padding:15px;
 }
 
 .menu-name{
@@ -39,6 +55,10 @@
 
 .pull-right{
   text-align: right;
+}
+
+.pull-center{
+  text-align: center;
 }
 
 .thumbnail img {

@@ -24,6 +24,10 @@ app.config([
     }]);
 
 app.factory('cafes', [ function(){
+    var option_dummy = [
+        { name: 'shot', cost:500 },
+        { name: 'cream', cost:300 },
+    ]
     var menu_dummy = [
         { name: 'Affogato', cost:3000, thumbnail: '/images/coffee1.png', wait:5 },
         { name: 'Americano', cost:2000, thumbnail: '/images/coffee2.png', wait:14 },

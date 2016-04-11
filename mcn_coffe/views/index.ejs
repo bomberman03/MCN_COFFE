@@ -82,7 +82,7 @@
     </script>
     <script type="text/ng-template" id="/cafes.html">
         <div class="row">
-            <div class="page-header">
+            <div class="page-header left-full-margin right-full-margin">
                 <h1>{{cafe.name}} <small> we serve best coffee in the world!</small></h1>
             </div>
             <div class="col-sm-8">
@@ -97,7 +97,8 @@
                 </ul>
             </div>
             <div class="col-sm-4">
-                <ul class="list-group">
+                <p class="bg-primary full-padding no-margin">Order List</p>
+                <ul class="list-group no-margin">
                     <div ng-repeat="menu in cafe.menus">
                         <li class="list-group-item">
                             <div class="row no-margin">
@@ -107,10 +108,13 @@
                                     <span class="label label-default">크림추가</span>
                                 </div>
                                 <div class="menu-info">
-                                    <div class="col-xs-6 pull-left">10,500 원</div>
+                                    <div class="col-xs-6 pull-left">
+                                        <span class="glyphicon glyphicon-remove"></span>
+                                        {{menu.cost}} 원
+                                    </div>
                                     <div class="col-xs-6 pull-right">
                                         <span class="glyphicon glyphicon-minus"></span>
-                                        <span class="menu-count">12</span>
+                                        <span class="menu-count">0</span>
                                         <span class="glyphicon glyphicon-plus"></span>
                                     </div>
                                 </div>
@@ -118,7 +122,9 @@
                         </li>
                     </div>
                 </ul>
-                <button type="button" class="btn btn-primary btn-block">Order Now!</button>
+                <p class="bg-primary full-padding pull-right">52,500 원</p>
+                <p class="bg-primary full-padding">합계</p>
+                <button type="button" class="btn btn-primary btn-block pull-center">주문하기</button>
             </div>
         </div>
     </script>
