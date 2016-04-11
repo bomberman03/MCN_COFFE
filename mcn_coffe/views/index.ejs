@@ -85,15 +85,41 @@
             <div class="page-header">
                 <h1>{{cafe.name}} <small> we serve best coffee in the world!</small></h1>
             </div>
-            <ul class="list-group">
-                <div ng-repeat="menu in cafe.menus">
-                    <li class="list-group-item">
-                        <span class="badge">{{menu.wait}}</span>
-                        <h4 class="list-group-item-heading">{{menu.name}}</h4>
-                        <p class="list-group-item-text">{{menu.cost}}원</p>
-                    </li>
-                </div>
-            </ul>
+            <div class="col-sm-8">
+                <ul class="list-group">
+                    <div ng-repeat="menu in cafe.menus">
+                        <li class="list-group-item">
+                            <span class="badge">{{menu.wait}}</span>
+                            <h4 class="list-group-item-heading">{{menu.name}}</h4>
+                            <p class="list-group-item-text">{{menu.cost}}원</p>
+                        </li>
+                    </div>
+                </ul>
+            </div>
+            <div class="col-sm-4">
+                <ul class="list-group">
+                    <div ng-repeat="menu in cafe.menus">
+                        <li class="list-group-item">
+                            <div class="row no-margin">
+                                <div class="menu-name">
+                                    <span class="name">{{menu.name}}</span>
+                                    <span class="label label-default">샷추가</span>
+                                    <span class="label label-default">크림추가</span>
+                                </div>
+                                <div class="menu-info">
+                                    <div class="col-xs-6 pull-left">10,500 원</div>
+                                    <div class="col-xs-6 pull-right">
+                                        <span class="glyphicon glyphicon-minus"></span>
+                                        <span class="menu-count">12</span>
+                                        <span class="glyphicon glyphicon-plus"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </div>
+                </ul>
+                <button type="button" class="btn btn-primary btn-block">Order Now!</button>
+            </div>
         </div>
     </script>
 </body>
