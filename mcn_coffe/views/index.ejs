@@ -88,7 +88,7 @@
             <div class="col-sm-8">
                 <ul class="list-group">
                     <div ng-repeat="menu in cafe.menus">
-                        <li class="list-group-item">
+                        <li ng-click="selectMenu(menu)" class="list-group-item" data-toggle="modal" data-target="#myModal">
                             <span class="badge">{{menu.wait}}</span>
                             <h4 class="list-group-item-heading">{{menu.name}}</h4>
                             <p class="list-group-item-text">{{menu.cost}}원</p>
@@ -99,23 +99,22 @@
             <div class="col-sm-4">
                 <p class="bg-primary full-padding no-margin">Order List</p>
                 <ul class="list-group no-margin">
-                    <div ng-repeat="menu in cafe.menus">
+                    <div ng-repeat="order in orders">
                         <li class="list-group-item">
                             <div class="row no-margin">
                                 <div class="menu-name">
-                                    <span class="name">{{menu.name}}</span>
-                                    <span class="label label-default">샷추가</span>
-                                    <span class="label label-default">크림추가</span>
+                                    <span class="name">{{order.menu.name}}</span>
+                                    <span ng-repeat="option in order.options" class="label label-default right-half-margin">{{option.name}}</span>
                                 </div>
                                 <div class="menu-info">
                                     <div class="col-xs-6 pull-left">
                                         <span class="glyphicon glyphicon-remove"></span>
-                                        {{menu.cost}} 원
+                                        {{order.cost * order.count}} 원
                                     </div>
                                     <div class="col-xs-6 pull-right">
-                                        <span class="glyphicon glyphicon-minus"></span>
-                                        <span class="menu-count">0</span>
-                                        <span class="glyphicon glyphicon-plus"></span>
+                                        <span ng-click="decreaseOrder(order)" class="glyphicon glyphicon-minus"></span>
+                                        <span class="menu-count">{{order.count}}</span>
+                                        <span ng-click="increaseOrder(order)" class="glyphicon glyphicon-plus"></span>
                                     </div>
                                 </div>
                             </div>
@@ -125,6 +124,57 @@
                 <p class="bg-primary full-padding pull-right">52,500 원</p>
                 <p class="bg-primary full-padding">합계</p>
                 <button type="button" class="btn btn-primary btn-block pull-center">주문하기</button>
+            </div>
+        </div>
+        <!-- Modal -->
+        <div id="myModal" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">{{selectedMenu.name}}</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="option-block">
+                            <h4>기본</h4>
+                            <div class="checkbox disabled">
+                                <label>
+                                    <input type="checkbox" value="" checked disabled>
+                                    <span class="label label-default">{{selectedMenu.name}}</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div ng-repeat="option in selectedMenu.options">
+                            <div class="option-block">
+                                <h4>{{option.name}}</h4>
+                                <div ng-show="option.group">
+                                    <div ng-repeat="option in option.options" class="radio">
+                                        <label>
+                                            <input type="radio" name="optionsRadios" id="optionsRadios1" value="{{option.name}}">
+                                            <span class="label label-default">{{option.name}}</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div ng-hide="option.group">
+                                    <div class="checkbox">
+                                        <label>
+                                            <input type="checkbox" value="{{option.name}}">
+                                            <span class="label label-default">{{option.name}}</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <p>10,000원</p>
+                        <div class="pull-center">
+                            <button type="button" class="btn btn-primary" data-dismiss="modal">메뉴 추가하기</button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </script>
