@@ -152,7 +152,7 @@
                                 <div ng-show="option.group">
                                     <div ng-repeat="option in option.options" class="radio">
                                         <label>
-                                            <input type="radio" name="optionsRadios" id="optionsRadios1" value="{{option.name}}">
+                                            <input type="radio" name="{{option}}" value="{{option.name}}">
                                             <span class="label label-default">{{option.name}}</span>
                                         </label>
                                     </div>

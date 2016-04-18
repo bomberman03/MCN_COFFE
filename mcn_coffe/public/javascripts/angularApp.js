@@ -79,6 +79,10 @@ app.controller('CafesCtrl', [
             $scope.selectedMenu = menu;
         };
 
+        $scope.selectOption = function(option){
+            console.log(option);
+        }
+
         $scope.addOrder = function(order){
             for(var o in $scope.orders){
                 if(order.name != o.name) continue;
