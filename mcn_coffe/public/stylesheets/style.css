@@ -96,3 +96,12 @@
 .option-block{
   margin-bottom: 30px;
 }
+
+.fix{
+    position:fixed;
+}
+
+.right-conner{
+    bottom:5%;
+    right:5%;
+}

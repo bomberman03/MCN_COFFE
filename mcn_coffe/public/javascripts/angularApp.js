@@ -17,7 +17,7 @@ app.config([
             .state('cafes', {
                 url: '/cafes/{id}',
                 templateUrl: '/cafes.html',
-                controller: 'CafesCtrl',
+                controller: 'CafesCtrl'
             });
 
         $urlRouterProvider.otherwise('home');
@@ -25,17 +25,17 @@ app.config([
 
 app.factory('cafes', [ function(){
     var option_options_dummy = [
-        { name: '없음', group: false, cost: 0 },
-        { name: '1샷추가', group: false, cost: 500 },
-        { name: '2샷추가', group: false, cost: 1000 },
-    ]
+        { name: '없음', cost: 0 },
+        { name: '1샷추가', cost: 500 },
+        { name: '2샷추가', cost: 1000 }
+    ];
     var options_dummy = [
-        { name: '샷추가', group: true, options: option_options_dummy },
-        { name: '크림추가', group: false, cost: 300 },
-    ]
+        { name: '샷추가', options: option_options_dummy },
+        { name: '크림추가', cost: 300 }
+    ];
     var options_dummy2 = [
-        { name: '크림추가', group: false, cost: 300 },
-    ]
+        { name: '크림추가', cost: 300 }
+    ];
     var menu_dummy = [
         { name: 'Affogato', cost: 3000, thumbnail: '/images/coffee1.png', wait: 5, options: options_dummy },
         { name: 'Americano', cost: 2000, thumbnail: '/images/coffee2.png', wait: 14, options: options_dummy2 },
@@ -52,7 +52,6 @@ app.factory('cafes', [ function(){
             { name: 'CoolCafe', thumbnail: '/images/cafe5.jpg', menus: menu_dummy }
         ],
         orders: [
-            { menu: menu_dummy[0], options: [ option_options_dummy[1], options_dummy[1] ], cost: 3800, count: 12 }
         ]
     };
     return o;
@@ -73,28 +72,69 @@ app.controller('CafesCtrl', [
     function($scope, $stateParams, cafes){
         $scope.cafe = cafes.cafes[$stateParams.id];
         $scope.orders = cafes.orders;
-        $scope.selectedMenu = $scope.cafe.menus[0];
+        $scope.newOrder = {};
+        $scope.totalCost = 0;
 
         $scope.selectMenu = function(menu){
-            $scope.selectedMenu = menu;
+            $scope.newOrder = {
+                menu: menu,
+                options: {},
+                cost: menu.cost,
+                count: 1
+            };
+        };
+
+        $scope.selectRadioOption = function(option, radio){
+            if($scope.newOrder.options[option.name]) {
+                $scope.newOrder.cost -= $scope.newOrder.options[option.name].cost;
+            }
+            $scope.newOrder.options[option.name] = radio;
+            $scope.newOrder.cost += radio.cost;
         };
 
         $scope.selectOption = function(option){
-            console.log(option);
-        }
+            if($scope.newOrder.options[option.name]) {
+                $scope.newOrder.options[option.name] = undefined;
+                $scope.newOrder.cost -= option.cost;
+            }
+            else {
+                $scope.newOrder.options[option.name] = option;
+                $scope.newOrder.cost += option.cost;
+            }
+        };
+
+        $scope.requestOrder = function(){
+            var options = [];
+            for(var key in $scope.newOrder.options) {
+                var option = $scope.newOrder.options[key];
+                if(!option) continue;
+                options.push(option);
+            }
+            $scope.newOrder.options = options;
+            $scope.addOrder($scope.newOrder);
+        };
 
         $scope.addOrder = function(order){
-            for(var o in $scope.orders){
-                if(order.name != o.name) continue;
-                else if(order.options.length != o.options.length) continue;
+            for(var idx in $scope.orders){
+                var _order = $scope.orders[idx];
+                console.log(order.menu.name);
+                console.log(_order.menu.name);
+                console.log((order.menu.name != _order.menu.name));
+                if(order.menu.name != _order.menu.name) {
+                    continue;
+                }
+                else if(order.options.length != _order.options.length){
+                    continue;
+                }
                 else {
                     var isEqual = true;
                     for(var i=0; i< order.options.length; i++){
-                        if(isEqual &= (order.options[i] != o.options[i])) break;
+
+                        if(isEqual &= (order.options[idx] == _order.options[idx])) break;
                     }
                     if(!isEqual) continue;
                     else {
-                        $scope.increaseOrder(o);
+                        $scope.increaseOrder(_order);
                         return;
                     }
                 }
@@ -104,22 +144,26 @@ app.controller('CafesCtrl', [
 
         $scope.createOrder = function(order){
             $scope.orders.push(order);
+            $scope.totalCost += order.cost;
         };
 
         $scope.increaseOrder = function(order){
             order.count++;
+            $scope.totalCost += order.cost;
         };
 
         $scope.decreaseOrder = function(order){
             order.count--;
-            if(order.count <= 0) $scope.removeOrder(order);
+            $scope.totalCost -= order.cost;
+            if(order.count <= 0)
+                $scope.removeOrder(order);
         };
 
         $scope.removeOrder = function(order){
             var idx = $scope.orders.indexOf(order);
-            if(idx >= 0) {
-                $scope.orders.splice(idx, idx);
-            }
+            if(idx >= 0)
+                $scope.orders.splice(idx, idx+1);
+            if(order.count > 0) $scope.totalCost -= (order.cost * order.count);
         }
     }
 ]);
