@@ -8,6 +8,14 @@
   margin:0;
 }
 
+.top-full-margin{
+    margin-top:15px;
+}
+
+.bottom-full-margin{
+    margin-bottom: 15px;
+}
+
 .left-full-margin{
   margin-left:15px;
 }
@@ -104,4 +112,8 @@
 .right-conner{
     bottom:5%;
     right:5%;
+}
+
+.nav-top-fixed-body{
+    padding-top:70px;
 }

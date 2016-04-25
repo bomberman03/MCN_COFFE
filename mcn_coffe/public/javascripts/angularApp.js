@@ -12,7 +12,17 @@ app.config([
             .state('home', {
                 url: '/home',
                 templateUrl: '/home.html',
-                controller: 'MainCtrl'
+                controller: 'MainCtrl',
+                resolve: {
+                    postPromise: ['cafes', function(cafes){
+                        return cafes.getAll();
+                    }]
+                }
+            })
+            .state('registerCafes', {
+                url: '/register/cafes',
+                templateUrl: '/register/cafes.html',
+                controller: 'RegisterCafesCtrl'
             })
             .state('cafes', {
                 url: '/cafes/{id}',
@@ -23,7 +33,7 @@ app.config([
         $urlRouterProvider.otherwise('home');
     }]);
 
-app.factory('cafes', [ function(){
+app.factory('cafes', ['$http', function($http){
     var option_options_dummy = [
         { name: '없음', cost: 0 },
         { name: '1샷추가', cost: 500 },
@@ -45,23 +55,71 @@ app.factory('cafes', [ function(){
     ];
     var o = {
         cafes: [
-            { name: 'Dazzle', thumbnail: '/images/cafe1.jpg', menus: menu_dummy },
-            { name: 'CoffeBubble', thumbnail: '/images/cafe2.jpg', menus: menu_dummy },
-            { name: 'StarBucks', thumbnail: '/images/cafe3.jpg', menus: menu_dummy },
-            { name: 'Angelinous', thumbnail: '/images/cafe4.jpg', menus: menu_dummy },
-            { name: 'CoolCafe', thumbnail: '/images/cafe5.jpg', menus: menu_dummy }
         ],
         orders: [
         ]
     };
+    o.getAll = function(){
+        return $http.get('/cafes').success(function(data){
+            angular.copy(data, o.cafes);
+        });
+    };
+    o.create = function(cafe) {
+        return $http.post('/cafes', cafe).success(function(data){
+            console.log("new cafe is successfully registered")
+        });
+    };
     return o;
 }]);
+
+app.controller('RegisterCafesCtrl', [
+    '$scope',
+    'cafes',
+    function($scope, cafes){
+        $(document).ready(function() {
+            $.material.init();
+
+            var $element = $('#textArea').get(0);
+
+            $element.addEventListener('keyup', function() {
+                this.style.overflow = 'hidden';
+                this.style.height = 0;
+                this.style.height = this.scrollHeight + 'px';
+            }, false);
+        });
+
+        $scope.createCafe = function(){
+            if($scope.name == '' || $scope.detail == '') return;
+            cafes.create({
+                name: $scope.name,
+                detail: $scope.detail
+            });
+            $scope.name = '';
+            $scope.detail = '';
+        }
+    }
+]);
 
 app.controller('MainCtrl', [
     '$scope',
     'cafes',
     function($scope, cafes){
         $scope.cafes = cafes.cafes;
+
+        $(document).ready(function(){
+            $('[data-toggle="tooltip"]').tooltip();
+
+            $('#myModal').on('shown.bs.modal', function() {
+                var options = $(".modal-body > .form-group .option-block");
+                for (var i=0; i<options.size(); i++){
+                    var option = $(options[i]);
+                    var default_radio = $(option.find("input[type=radio]")[0]);
+                    default_radio.click();
+                    var default_check = $(option.find("input[type=checkbox]")[0]);
+                    default_check.prop("checked",false);
+                }
+            })
+        });
     }
 ]);
 
@@ -116,6 +174,7 @@ app.controller('CafesCtrl', [
 
         $scope.addOrder = function(order){
             for(var idx in $scope.orders){
+                console.log(idx);
                 var _order = $scope.orders[idx];
                 console.log(order.menu.name);
                 console.log(_order.menu.name);
@@ -129,8 +188,10 @@ app.controller('CafesCtrl', [
                 else {
                     var isEqual = true;
                     for(var i=0; i< order.options.length; i++){
-
-                        if(isEqual &= (order.options[idx] == _order.options[idx])) break;
+                        console.log(order.options[i]);
+                        console.log(_order.options[i]);
+                        console.log((order.options[i] == _order.options[i]));
+                        if(isEqual &= (order.options[i] == _order.options[i])) break;
                     }
                     if(!isEqual) continue;
                     else {
