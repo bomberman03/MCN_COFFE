@@ -24,10 +24,25 @@ app.config([
                 templateUrl: '/register/cafes.html',
                 controller: 'RegisterCafesCtrl'
             })
+            .state('registerMenus', {
+                url: '/cafes/{id}/register/menus',
+                templateUrl: '/register/menus.html',
+                controller: 'RegisterMenuCtrl',
+                resolve: {
+                    cafe: ['$stateParams', 'cafes', function($stateParams, cafes){
+                        return cafes.get($stateParams.id);
+                    }]
+                }
+            })
             .state('cafes', {
                 url: '/cafes/{id}',
                 templateUrl: '/cafes.html',
-                controller: 'CafesCtrl'
+                controller: 'CafesCtrl',
+                resolve: {
+                    cafe: ['$stateParams', 'cafes', function($stateParams, cafes){
+                        return cafes.get($stateParams.id);
+                    }]
+                }
             });
 
         $urlRouterProvider.otherwise('home');
@@ -67,6 +82,11 @@ app.factory('cafes', ['$http', function($http){
     o.create = function(cafe) {
         return $http.post('/cafes', cafe).success(function(data){
             console.log("new cafe is successfully registered")
+        });
+    };
+    o.get = function(id){
+        return $http.get('/cafes/' + id).then(function(res){
+            return res.data;
         });
     };
     return o;
@@ -123,12 +143,52 @@ app.controller('MainCtrl', [
     }
 ]);
 
+app.controller('RegisterMenuCtrl', [
+    '$scope',
+    'cafes',
+    'cafe',
+    function($scope, cafes, cafe) {
+        $scope.cafe = cafe;
+        $scope.options = [];
+        var option_dummy = { name: '크림추가', cost: 300 };
+
+        $scope.createOption = function(option){
+            if(option == undefined) option = $scope;
+            option.options.push({
+                name: "",
+                cost: 0
+            });
+        };
+
+        $scope.createOptionGroup = function(){
+            $scope.options.push({
+                name: "",
+                options: []
+            });
+        };
+
+        $scope.createMenu = function(){
+
+        };
+
+        $(document).ready(function() {
+            $.material.init();
+
+            $('#inputMenuName').get(0).addEventListener('keyup', function() {
+                var name = $(this).val();
+                if(name.length == 0) name = "새 메뉴 이름";
+                $('#base_option').html(name);
+            }, false);
+        });
+    }
+]);
+
 app.controller('CafesCtrl', [
     '$scope',
-    '$stateParams',
     'cafes',
-    function($scope, $stateParams, cafes){
-        $scope.cafe = cafes.cafes[$stateParams.id];
+    'cafe',
+    function($scope, cafes, cafe){
+        $scope.cafe = cafe;
         $scope.orders = cafes.orders;
         $scope.newOrder = {};
         $scope.totalCost = 0;
@@ -174,23 +234,12 @@ app.controller('CafesCtrl', [
 
         $scope.addOrder = function(order){
             for(var idx in $scope.orders){
-                console.log(idx);
                 var _order = $scope.orders[idx];
-                console.log(order.menu.name);
-                console.log(_order.menu.name);
-                console.log((order.menu.name != _order.menu.name));
-                if(order.menu.name != _order.menu.name) {
-                    continue;
-                }
-                else if(order.options.length != _order.options.length){
-                    continue;
-                }
+                if(order.menu.name != _order.menu.name) {continue;}
+                else if(order.options.length != _order.options.length){continue;}
                 else {
                     var isEqual = true;
                     for(var i=0; i< order.options.length; i++){
-                        console.log(order.options[i]);
-                        console.log(_order.options[i]);
-                        console.log((order.options[i] == _order.options[i]));
                         if(isEqual &= (order.options[i] == _order.options[i])) break;
                     }
                     if(!isEqual) continue;

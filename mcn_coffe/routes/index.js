@@ -35,7 +35,7 @@ router.param('cafe', function(req, res, next, id) {
 });
 
 router.get('/cafes/:cafe', function(req, res) {
-    res.json(req.post);
+    res.json(req.cafe);
 });
 
 module.exports = router;
