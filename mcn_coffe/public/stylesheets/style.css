@@ -1,3 +1,14 @@
+@import url(http://fonts.googleapis.com/earlyaccess/nanumgothic.css);
+@import url(http://fonts.googleapis.com/earlyaccess/nanumbrushscript.css);
+
+.NanumGothic{
+    font-family: 'Nanum Gothic Coding', serif;
+}
+
+.NanumBrush{
+    font-family: 'Nanum Brush Script', serif;
+}
+
 .row {
   margin-top:15px;
   margin-left:15px;
