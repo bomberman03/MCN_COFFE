@@ -6,6 +6,8 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 require('./models/Cafes');
+require('./models/Menus');
+require('./models/Options');
 var passport = require('passport');
 
 mongoose.connect('mongodb://localhost/coffee');

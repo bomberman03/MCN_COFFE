@@ -49,25 +49,6 @@ app.config([
     }]);
 
 app.factory('cafes', ['$http', function($http){
-    var option_options_dummy = [
-        { name: '없음', cost: 0 },
-        { name: '1샷추가', cost: 500 },
-        { name: '2샷추가', cost: 1000 }
-    ];
-    var options_dummy = [
-        { name: '샷추가', options: option_options_dummy },
-        { name: '크림추가', cost: 300 }
-    ];
-    var options_dummy2 = [
-        { name: '크림추가', cost: 300 }
-    ];
-    var menu_dummy = [
-        { name: 'Affogato', cost: 3000, thumbnail: '/images/coffee1.png', wait: 5, options: options_dummy },
-        { name: 'Americano', cost: 2000, thumbnail: '/images/coffee2.png', wait: 14, options: options_dummy2 },
-        { name: 'Bicerin', cost: 4000, thumbnail: '/images/coffee3.png', wait: 3 , options: options_dummy},
-        { name: 'Café Bombón', cost: 5000, thumbnail: '/images/coffee4.png', wait: 23, options: options_dummy2},
-        { name: 'Café au lait', cost: 100000, thumbnail: '/images/coffee5.png', wait: 8, options: options_dummy}
-    ];
     var o = {
         cafes: [
         ],
@@ -81,12 +62,17 @@ app.factory('cafes', ['$http', function($http){
     };
     o.create = function(cafe) {
         return $http.post('/cafes', cafe).success(function(data){
-            console.log("new cafe is successfully registered")
+            console.log("new cafe is successfully registered");
         });
     };
     o.get = function(id){
         return $http.get('/cafes/' + id).then(function(res){
             return res.data;
+        });
+    };
+    o.createMenu = function(menu) {
+        return $http.post('/menus', menu).success(function(data){
+            console.log("new cafe is successfully registered");
         });
     };
     return o;
@@ -150,6 +136,11 @@ app.controller('RegisterMenuCtrl', [
     function($scope, cafes, cafe) {
         $scope.cafe = cafe;
         $scope.options = [];
+        $scope.menu = {
+            name: "",
+            cost: 0,
+            options: $scope.options
+        };
 
         $scope.createOption = function(option){
             if(option == undefined) option = $scope;
@@ -162,11 +153,15 @@ app.controller('RegisterMenuCtrl', [
         $scope.createOptionGroup = function(){
             $scope.options.push({
                 name: "",
-                options: []
+                options: [{
+                    name:"",
+                    cost:""
+                }]
             });
         };
 
         $scope.createMenu = function(){
+            cafes.createMenu($scope.menu, $scope.options);
         };
 
         $(document).ready(function() {
