@@ -116,7 +116,7 @@ app.controller('RegisterCafesCtrl', [
             });
             $scope.name = '';
             $scope.detail = '';
-        }
+        };
     }
 ]);
 
@@ -150,7 +150,6 @@ app.controller('RegisterMenuCtrl', [
     function($scope, cafes, cafe) {
         $scope.cafe = cafe;
         $scope.options = [];
-        var option_dummy = { name: '크림추가', cost: 300 };
 
         $scope.createOption = function(option){
             if(option == undefined) option = $scope;
@@ -168,7 +167,6 @@ app.controller('RegisterMenuCtrl', [
         };
 
         $scope.createMenu = function(){
-
         };
 
         $(document).ready(function() {
