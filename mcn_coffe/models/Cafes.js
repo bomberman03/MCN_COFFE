@@ -8,7 +8,8 @@ var CafeSchema = new mongoose.Schema({
     name: String,
     detail: String,
     thumbnail: {type: String, default: 'blank'},
-    likes: {type: Number, default: 0}
+    likes: {type: Number, default: 0},
+    menus: [{type: mongoose.Schema.Types.ObjectId, ref: 'Menu'}]
 });
 
 mongoose.model('Cafe', CafeSchema);

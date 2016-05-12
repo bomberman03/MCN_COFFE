@@ -70,10 +70,17 @@ app.factory('cafes', ['$http', function($http){
             return res.data;
         });
     };
-    o.createMenu = function(menu) {
-        return $http.post('/menus', menu).success(function(data){
-            console.log("new cafe is successfully registered");
+    o.createMenu = function(id, menu) {
+        return $http.post('/cafes/' + id + '/menus', menu).success(function(data){
+            console.log("new menu is successfully registered");
+            console.log(data);
+            for(var i=0; i<menu.options.length; i++){
+                console.log('/menus/' + data._id + '/options');
+            }
         });
+    };
+    o.createOption = function(id, option) {
+
     };
     return o;
 }]);
@@ -139,7 +146,7 @@ app.controller('RegisterMenuCtrl', [
         $scope.menu = {
             name: "",
             cost: 0,
-            options: $scope.options
+            option: $scope.options
         };
 
         $scope.createOption = function(option){
@@ -161,7 +168,7 @@ app.controller('RegisterMenuCtrl', [
         };
 
         $scope.createMenu = function(){
-            cafes.createMenu($scope.menu, $scope.options);
+            cafes.createMenu($scope.cafe._id, $scope.menu);
         };
 
         $(document).ready(function() {

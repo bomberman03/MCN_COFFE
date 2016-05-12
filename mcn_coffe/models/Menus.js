@@ -10,4 +10,4 @@ var MenuSchema = new mongoose.Schema({
     options : [{type: mongoose.Schema.Types.ObjectId, ref: 'Option'}]
 });
 
-mongoose.model('OptionGroup', MenuSchema);
+mongoose.model('Menu', MenuSchema);
