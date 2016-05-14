@@ -51,8 +51,6 @@ app.config([
 app.factory('cafes', ['$http', function($http){
     var o = {
         cafes: [
-        ],
-        orders: [
         ]
     };
     o.getAll = function(){
@@ -66,21 +64,43 @@ app.factory('cafes', ['$http', function($http){
         });
     };
     o.get = function(id){
-        return $http.get('/cafes/' + id).then(function(res){
-            return res.data;
+        return $http.get('/cafes/' + id).then(function(data){
+            return data.data;
         });
     };
-    o.createMenu = function(id, menu) {
-        return $http.post('/cafes/' + id + '/menus', menu).success(function(data){
+    o.createMenu = function(cafe_id, menu) {
+        return $http.post('/cafes/' + cafe_id + '/menus', menu).success(function(data){
             console.log("new menu is successfully registered");
-            console.log(data);
             for(var i=0; i<menu.options.length; i++){
                 console.log('/menus/' + data._id + '/options');
+                o.createMenuOption(data._id, menu.options[i]);
             }
         });
     };
-    o.createOption = function(id, option) {
-
+    o.createMenuOption = function(menu_id, option) {
+        return $http.post('/menus/' + menu_id + '/options', option).success(function(data){
+            console.log("new menuOption is successfully registered");
+            for(var i=0; i<option.options.length; i++){
+                console.log('/options/' + data._id + 'options');
+                o.createOptionOption(data._id, option.options[i]);
+            }
+        });
+    };
+    o.createOptionOption = function(option_id, option) {
+        return $http.post('/options/' + option_id + '/options', option).success(function(data){
+            console.log("new optionOption is successfully registered");
+        })
+    };
+    o.getMenu = function(cafe, menu_id, next){
+        return $http.get('/menus/' + menu_id).then(function(data){
+            for(var i=0; i<cafe.menus.length; i++){
+                if(cafe.menus[i]._id == menu_id) {
+                    cafe.menus[i] = data.data;
+                    next(cafe.menus[i]);
+                    break;
+                }
+            }
+        });
     };
     return o;
 }]);
@@ -146,7 +166,7 @@ app.controller('RegisterMenuCtrl', [
         $scope.menu = {
             name: "",
             cost: 0,
-            option: $scope.options
+            options: $scope.options
         };
 
         $scope.createOption = function(option){
@@ -194,12 +214,14 @@ app.controller('CafesCtrl', [
         $scope.totalCost = 0;
 
         $scope.selectMenu = function(menu){
-            $scope.newOrder = {
-                menu: menu,
-                options: {},
-                cost: menu.cost,
-                count: 1
-            };
+            cafes.getMenu($scope.cafe, menu._id, function(_menu){
+                $scope.newOrder = {
+                    menu: _menu,
+                    options: {},
+                    cost: _menu.cost,
+                    count: 1
+                };
+            });
         };
 
         $scope.selectRadioOption = function(option, radio){

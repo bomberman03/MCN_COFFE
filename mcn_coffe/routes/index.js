@@ -39,7 +39,9 @@ router.param('cafe', function(req, res, next, id) {
 });
 
 router.get('/cafes/:cafe', function(req, res) {
-    res.json(req.cafe);
+    req.cafe.populate('menus', function(err, cafe){
+        res.json(cafe);
+    });
 });
 
 /* menu related API */
@@ -52,11 +54,15 @@ router.get('/menus', function(req, res, next){
 });
 
 router.post('/cafes/:cafe/menus', function(req, res, next){
+    req.body.options = [];
     var menu = new Menu(req.body);
     menu.save(function(err, menu){
         if(err){ return next(err); }
-        res.json(menu);
         req.cafe.menus.push(menu);
+        req.cafe.save(function(err, cafe){
+            if(err){ return next(err); }
+            res.json(menu);
+        });
     });
 });
 
@@ -71,7 +77,9 @@ router.param('menu', function(req, res, next, id) {
 });
 
 router.get('/menus/:menu', function(req, res) {
-    res.json(req.menu);
+    req.menu.populate('options', function(err, menu){
+        res.json(menu);
+    });
 });
 
 /* option related API */
@@ -84,10 +92,16 @@ router.get('/options', function(req, res, next){
 });
 
 router.post('/menus/:menu/options', function(req, res, next){
+    console.log(req.body);
+    req.body.options = [];
     var option = new Option(req.body);
     option.save(function(err, option){
         if(err){ return next(err); }
-        res.json(option);
+        req.menu.options.push(option);
+        req.menu.save(function(err, menu){
+            if(err){ return next(err); }
+            res.json(option);
+        });
     });
 });
 
@@ -109,7 +123,11 @@ router.post('/options/:option/options', function(req, res, next){
     var option = new Option(req.body);
     option.save(function(err, option){
         if(err){ return next(err); }
-        res.json(option);
+        req.option.options.push(option);
+        req.option.save(function(err, _option){
+            if(err) { return next(err); }
+            res.json(option);
+        });
     });
 });
 
