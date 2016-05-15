@@ -30,7 +30,7 @@ app.config([
                 controller: 'RegisterMenuCtrl',
                 resolve: {
                     cafe: ['$stateParams', 'cafes', function($stateParams, cafes){
-                        return cafes.get($stateParams.id);
+                        return cafes.getCafe($stateParams.id);
                     }]
                 }
             })
@@ -40,7 +40,7 @@ app.config([
                 controller: 'CafesCtrl',
                 resolve: {
                     cafe: ['$stateParams', 'cafes', function($stateParams, cafes){
-                        return cafes.get($stateParams.id);
+                        return cafes.getCafe($stateParams.id);
                     }]
                 }
             });
@@ -51,6 +51,8 @@ app.config([
 app.factory('cafes', ['$http', function($http){
     var o = {
         cafes: [
+        ],
+        orders: [
         ]
     };
     o.getAll = function(){
@@ -63,11 +65,7 @@ app.factory('cafes', ['$http', function($http){
             console.log("new cafe is successfully registered");
         });
     };
-    o.get = function(id){
-        return $http.get('/cafes/' + id).then(function(data){
-            return data.data;
-        });
-    };
+
     o.createMenu = function(cafe_id, menu) {
         return $http.post('/cafes/' + cafe_id + '/menus', menu).success(function(data){
             console.log("new menu is successfully registered");
@@ -91,12 +89,32 @@ app.factory('cafes', ['$http', function($http){
             console.log("new optionOption is successfully registered");
         })
     };
-    o.getMenu = function(cafe, menu_id, next){
+
+    o.getCafe = function(cafe_id){
+        return $http.get('/cafes/' + cafe_id).then(function(data){
+            return data.data;
+        });
+    };
+    o.getMenu = function(cafe, menu_id){
         return $http.get('/menus/' + menu_id).then(function(data){
             for(var i=0; i<cafe.menus.length; i++){
                 if(cafe.menus[i]._id == menu_id) {
                     cafe.menus[i] = data.data;
-                    next(cafe.menus[i]);
+                    console.log(data.data);
+                    for(var j=0; j<cafe.menus[i].options.length; j++){
+                        o.getOption(cafe.menus[i], cafe.menus[i].options[j]._id);
+                    }
+                    break;
+                }
+            }
+        });
+    };
+    o.getOption = function(menu, option_id){
+        return $http.get('/options/' + option_id).then(function(data){
+            for(var i=0; i<menu.options.length; i++){
+                if(menu.options[i]._id == option_id){
+                    menu.options[i] = data.data;
+                    console.log(data.data);
                     break;
                 }
             }
@@ -213,15 +231,21 @@ app.controller('CafesCtrl', [
         $scope.newOrder = {};
         $scope.totalCost = 0;
 
+        $scope.populateCafe = function(){
+            for(var i=0; i<cafe.menus.length; i++){
+                cafes.getMenu(cafe, cafe.menus[i]._id);
+            }
+        };
+        $scope.populateCafe();
+
         $scope.selectMenu = function(menu){
-            cafes.getMenu($scope.cafe, menu._id, function(_menu){
-                $scope.newOrder = {
-                    menu: _menu,
-                    options: {},
-                    cost: _menu.cost,
-                    count: 1
-                };
-            });
+            console.log($scope.cafe);
+            $scope.newOrder = {
+                menu: menu,
+                options: {},
+                cost: menu.cost,
+                count: 1
+            };
         };
 
         $scope.selectRadioOption = function(option, radio){

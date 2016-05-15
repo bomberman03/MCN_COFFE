@@ -233,7 +233,7 @@
                             <div ng-repeat="option in newOrder.menu.options">
                                 <div class="option-block">
                                     <h4>{{option.name}}</h4>
-                                    <div ng-show="option.options">
+                                    <div ng-show="option.options.length">
                                         <div ng-repeat="radio in option.options" class="radio">
                                             <div class="radio">
                                                 <label>
@@ -243,7 +243,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div ng-hide="option.options">
+                                    <div ng-hide="option.options.length">
                                         <div class="checkbox">
                                             <label class="left-half-margin">
                                                 <input ng-click="selectOption(option)" name="{{option.name}}" type="checkbox">

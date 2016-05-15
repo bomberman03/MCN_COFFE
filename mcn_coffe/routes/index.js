@@ -116,7 +116,9 @@ router.param('option', function(req, res, next, id) {
 });
 
 router.get('/options/:option', function(req, res) {
-    res.json(req.option);
+    req.option.populate('options', function(err, option){
+        res.json(option);
+    });
 });
 
 router.post('/options/:option/options', function(req, res, next){
