@@ -8,6 +8,8 @@ var mongoose = require('mongoose');
 require('./models/Cafes');
 require('./models/Menus');
 require('./models/Options');
+require('./models/Users');
+require('./config/passport')
 var passport = require('passport');
 
 mongoose.connect('mongodb://localhost/coffee');
@@ -28,9 +30,11 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(passport.initialize());
 
 app.use('/', routes);
 app.use('/users', users);
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
