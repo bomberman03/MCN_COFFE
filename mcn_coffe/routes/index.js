@@ -102,6 +102,19 @@ router.post('/cafes/:cafe/menus', function(req, res, next){
     });
 });
 
+router.delete('/cafes/:cafe/menus/:menu', function(req, res, next){
+    var menu_id = req.menu._id;
+    Menu.remove({id: req.menu._id}, function(err){
+        if(err) { next(err); }
+        var idx = req.cafe.menus.indexOf(menu_id);
+        req.cafe.menus.splice(idx, idx);
+        req.cafe.save(function(err, cafe){
+            if(err) { return next(err); }
+            res.json(cafe);
+        });
+    });
+});
+
 router.param('menu', function(req, res, next, id) {
     var query = Menu.findById(id);
     query.exec(function (err, menu){
@@ -117,7 +130,6 @@ router.get('/menus/:menu', function(req, res) {
         res.json(menu);
     });
 });
-
 /* option related API */
 
 router.get('/options', function(req, res, next){

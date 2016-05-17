@@ -73,11 +73,11 @@ app.factory('auth', ['$http', '$window', function($http, $window){
     var auth = {};
 
     auth.saveToken = function(token){
-        $window.localStorage['flapper-news-token'] = token;
+        $window.localStorage['mcn-coffee-token'] = token;
     };
 
     auth.getToken = function() {
-        return $window.localStorage['flapper-news-token'];
+        return $window.localStorage['mcn-coffee-token'];
     };
 
     auth.isLoggedIn = function() {
@@ -85,7 +85,6 @@ app.factory('auth', ['$http', '$window', function($http, $window){
 
         if(token) {
             var payload = JSON.parse($window.atob(token.split('.')[1]));
-
             return payload.exp = Date.now() / 1000;
         } else {
             return false;
@@ -114,11 +113,21 @@ app.factory('auth', ['$http', '$window', function($http, $window){
     };
 
     auth.logOut = function() {
-        $window.localStorage.removeItem('flapper-news-token');
+        $window.localStorage.removeItem('mcn-coffee-token');
     };
 
     return auth;
 }]);
+
+app.controller('NavCtrl', [
+    '$scope',
+    'auth',
+    function($scope, auth){
+        $scope.isLoggedIn = auth.isLoggedIn;
+        $scope.currentUser = auth.currentUser;
+        $scope.logOut = auth.logOut;
+    }
+]);
 
 app.controller('AuthCtrl', [
     '$scope',
@@ -166,7 +175,6 @@ app.factory('cafes', ['$http', function($http){
             console.log("new cafe is successfully registered");
         });
     };
-
     o.createMenu = function(cafe_id, menu) {
         return $http.post('/cafes/' + cafe_id + '/menus', menu).success(function(data){
             console.log("new menu is successfully registered");
@@ -174,6 +182,11 @@ app.factory('cafes', ['$http', function($http){
                 console.log('/menus/' + data._id + '/options');
                 o.createMenuOption(data._id, menu.options[i]);
             }
+        });
+    };
+    o.deleteMenu = function(cafe_id, menu){
+        return $http.delete('/cafes/' + cafe_id + '/menus/' + menu._id).success(function(data){
+            console.log(data);
         });
     };
     o.createMenuOption = function(menu_id, option) {
@@ -201,7 +214,6 @@ app.factory('cafes', ['$http', function($http){
             for(var i=0; i<cafe.menus.length; i++){
                 if(cafe.menus[i]._id == menu_id) {
                     cafe.menus[i] = data.data;
-                    console.log(data.data);
                     for(var j=0; j<cafe.menus[i].options.length; j++){
                         o.getOption(cafe.menus[i], cafe.menus[i].options[j]._id);
                     }
@@ -260,17 +272,6 @@ app.controller('MainCtrl', [
 
         $(document).ready(function(){
             $('[data-toggle="tooltip"]').tooltip();
-
-            $('#myModal').on('shown.bs.modal', function() {
-                var options = $(".modal-body > .form-group .option-block");
-                for (var i=0; i<options.size(); i++){
-                    var option = $(options[i]);
-                    var default_radio = $(option.find("input[type=radio]")[0]);
-                    default_radio.click();
-                    var default_check = $(option.find("input[type=checkbox]")[0]);
-                    default_check.prop("checked",false);
-                }
-            })
         });
     }
 ]);
@@ -340,13 +341,22 @@ app.controller('CafesCtrl', [
         $scope.populateCafe();
 
         $scope.selectMenu = function(menu){
-            console.log($scope.cafe);
             $scope.newOrder = {
                 menu: menu,
                 options: {},
                 cost: menu.cost,
                 count: 1
             };
+            $('#myModal').on('shown.bs.modal', function() {
+                var options = $(".modal-body > .form-group .option-block");
+                for (var i=0; i<options.size(); i++){
+                    var option = $(options[i]);
+                    var default_radio = $(option.find("input[type=radio]")[0]);
+                    default_radio.click();
+                    var default_check = $(option.find("input[type=checkbox]")[0]);
+                    default_check.prop("checked",false);
+                }
+            });
         };
 
         $scope.selectRadioOption = function(option, radio){
@@ -421,6 +431,10 @@ app.controller('CafesCtrl', [
             if(idx >= 0)
                 $scope.orders.splice(idx, idx+1);
             if(order.count > 0) $scope.totalCost -= (order.cost * order.count);
+        };
+
+        $scope.deleteMenu = function(menu) {
+            cafes.deleteMenu($scope.cafe._id, menu);
         }
     }
 ]);

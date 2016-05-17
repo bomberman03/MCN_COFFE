@@ -9,6 +9,10 @@
 
     <link rel="stylesheet" type="text/css" href="stylesheets/style.css">
 
+    <!-- Material Design fonts -->
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Roboto:300,400,500,700">
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/icon?family=Material+Icons">
+
     <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
 
@@ -19,7 +23,7 @@
     <script src="/javascripts/material.js"></script>
     <script src="/javascripts/angularApp.js"></script>
 </head>
-<body class="nav-top-fixed-body" ng-app="mcnCoffee" ng-controller="MainCtrl">
+<body class="nav-top-fixed-body" ng-app="mcnCoffee" ng-controller="NavCtrl">
     <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
@@ -31,9 +35,11 @@
             <a class="navbar-brand" href="#/home">COFFEE</a>
         </div>
         <div class="collapse navbar-collapse navbar-ex1-collapse">
-            <ul class="nav navbar-nav navbar-right">
-                <li><a href="#/login">Login</a></li>
-                <li><a href="#/register">Register</a></li>
+            <ul class="nav navbar-nav navbar-right right-half-margin">
+                <li ng-show="isLoggedIn()"><a>{{ currentUser() }}</a></li>
+                <li ng-show="isLoggedIn()"><a href="" ng-click="logOut()">Log Out</a></li>
+                <li ng-hide="isLoggedIn()"><a href="/#/login">Log In</a></li>
+                <li ng-hide="isLoggedIn()"><a href="/#/register">Register</a></li>
             </ul>
         </div>
     </nav>
@@ -46,7 +52,7 @@
                     <div class="panel panel-default">
                         <div class="panel-body">
                             <div class="thumbnail no-margin">
-                                <img src='{{cafe.thumbnail}}' onerror="this.src='/images/default.png'">
+                                <img src='{{cafe.thumbnail}}' onerror="this.src='/images/cafe_default.png'">
                             </div>
                         </div>
                         <div class="panel-footer">
@@ -158,13 +164,17 @@
                 <div ng-show="cafe.menus.length" class="list-group">
                     <div ng-repeat="menu in cafe.menus">
                         <div ng-click="selectMenu(menu)" class="list-group-item" data-toggle="modal" data-target="#myModal">
-                            <div class="row-action-primary">
-                                <i class="material-icons">coffee</i>
+                            <div class="row-picture">
+                                <img class="circle" src='' onerror="this.src='/images/coffee_default.png'">
                             </div>
                             <div class="row-content">
-                                <div class="least-content">{{menu.cost}}원</div>
+                                <div class="least-content">{{menu.cost}} 원</div>
+                                <div class="control">
+                                    <button ng-click="$event.stopPropagation();" type="button" class="btn btn-raised btn-xs">수정</button>
+                                    <button ng-click="deleteMenu(menu); $event.stopPropagation();" type="button" class="btn btn-raised btn-xs">삭제</button>
+                                </div>
                                 <h4 class="list-group-item-heading">{{menu.name}}</h4>
-                                <p class="list-group-item-text">커피에대한 설명이 옵니다.</p>
+                                <p class="list-group-item-text">커피에 대한 설명이 옵니다.</p>
                             </div>
                         </div>
                         <div class="list-group-separator"></div>
@@ -317,7 +327,7 @@
                             <span class="material-input"></span>
                         </div>
                         <div class="form-group is-empty">
-                            <label for="inputPassword" class="col-md-2 control-label">이름</label>
+                            <label for="inputPassword" class="col-md-2 control-label">비밀번호</label>
                             <div class="col-md-10">
                                 <input id=inputPassword" type="password" class="form-control" placeholder="비밀번호" ng-model="user.password"/>
                             </div>
@@ -337,7 +347,7 @@
                 <span>{{ error.message }}</span>
             </div>
             <div class="well bs-component">
-                <form class="form-horizontal">
+                <form ng-submit="logIn()" class="form-horizontal">
                     <fieldset>
                         <legend>
                             로그인
@@ -350,14 +360,14 @@
                             <span class="material-input"></span>
                         </div>
                         <div class="form-group is-empty">
-                            <label for="inputPassword" class="col-md-2 control-label">이름</label>
+                            <label for="inputPassword" class="col-md-2 control-label">비밀번호</label>
                             <div class="col-md-10">
                                 <input id=inputPassword" type="password" class="form-control" placeholder="비밀번호" ng-model="user.password"/>
                             </div>
                             <span class="material-input"></span>
                         </div>
                         <div class="form-group is-empty pull-center">
-                            <button ng-click="login()" class="btn btn-raised btn-primary">로그인</button>
+                            <button type="submit" class="btn btn-raised btn-primary">로그인</button>
                         </div>
                     </fieldset>
                 </form>

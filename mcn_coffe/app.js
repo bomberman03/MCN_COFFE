@@ -9,7 +9,7 @@ require('./models/Cafes');
 require('./models/Menus');
 require('./models/Options');
 require('./models/Users');
-require('./config/passport')
+require('./config/passport');
 var passport = require('passport');
 
 mongoose.connect('mongodb://localhost/coffee');
