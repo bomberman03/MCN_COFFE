@@ -332,22 +332,37 @@
         </div>
     </script>
     <script type="text/ng-template" id="/login.html">
-        <div class="page-header">
-            <h1>Flapper News</h1>
-        </div>
-        <div ng-show="error" class="alert alert-danger row">
-            <span>{{ error.message }}</span>
-        </div>
-        <form ng-submit="logIn()" style="margin-top:30px;">
-            <h3>Log In</h3>
-            <div class="form-group">
-                <input type="text" class="form-control"	placeholder="Username" ng-model="user.username"/>
+        <div class="container col-md-offset-2 col-md-8">
+            <div ng-show="error" class="alert alert-danger row">
+                <span>{{ error.message }}</span>
             </div>
-            <div class="form-group">
-                <input type="password"	class="form-control" placeholder="Password"	ng-model="user.password"/>
+            <div class="well bs-component">
+                <form class="form-horizontal">
+                    <fieldset>
+                        <legend>
+                            로그인
+                        </legend>
+                        <div class="form-group is-empty">
+                            <label for="inputName" class="col-md-2 control-label">이름</label>
+                            <div class="col-md-10">
+                                <input id="inputName" type="text" class="form-control" placeholder="이름" ng-model="user.username"/>
+                            </div>
+                            <span class="material-input"></span>
+                        </div>
+                        <div class="form-group is-empty">
+                            <label for="inputPassword" class="col-md-2 control-label">이름</label>
+                            <div class="col-md-10">
+                                <input id=inputPassword" type="password" class="form-control" placeholder="비밀번호" ng-model="user.password"/>
+                            </div>
+                            <span class="material-input"></span>
+                        </div>
+                        <div class="form-group is-empty pull-center">
+                            <button ng-click="login()" class="btn btn-raised btn-primary">로그인</button>
+                        </div>
+                    </fieldset>
+                </form>
             </div>
-            <button type="submit" class="btn btn-primary">Log In</button>
-        </form>
+        </div>
     </script>
 </body>
 </html>
