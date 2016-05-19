@@ -170,9 +170,14 @@ app.factory('cafes', ['$http', function($http){
             angular.copy(data, o.cafes);
         });
     };
-    o.create = function(cafe) {
+    o.createCafe = function(cafe) {
         return $http.post('/cafes', cafe).success(function(data){
             console.log("new cafe is successfully registered");
+        });
+    };
+    o.deleteCafe = function(cafe) {
+        return $http.delete('/cafes/' + cafe._id).success(function(data){
+            console.log("deleted", data);
         });
     };
     o.createMenu = function(cafe_id, menu) {
@@ -227,7 +232,6 @@ app.factory('cafes', ['$http', function($http){
             for(var i=0; i<menu.options.length; i++){
                 if(menu.options[i]._id == option_id){
                     menu.options[i] = data.data;
-                    console.log(data.data);
                     break;
                 }
             }
@@ -254,7 +258,7 @@ app.controller('RegisterCafesCtrl', [
 
         $scope.createCafe = function(){
             if($scope.name == '' || $scope.detail == '') return;
-            cafes.create({
+            cafes.createCafe({
                 name: $scope.name,
                 detail: $scope.detail
             });
@@ -435,7 +439,12 @@ app.controller('CafesCtrl', [
 
         $scope.deleteMenu = function(menu) {
             cafes.deleteMenu($scope.cafe._id, menu);
+        };
+
+        $scope.deleteCafe = function() {
+            cafes.deleteCafe($scope.cafe);
         }
+
     }
 ]);
 
