@@ -54,6 +54,19 @@ app.config([
                     }]
                 }
             })
+            .state('orders', {
+                url: '/cafes/{id}/orders',
+                templateUrl: '/orders.html',
+                controller: 'OrdersCtrl',
+                resolve: {
+                    cafe: ['$stateParams', 'cafes', function($stateParams, cafes){
+                        return cafes.getCafe($stateParams.id);
+                    }],
+                    postPromise: ['cafes', function(cafes){
+                        return cafes.getOrders();
+                    }]
+                }
+            })
             .state('cafes', {
                 url: '/cafes/{id}',
                 templateUrl: '/cafes.html',
@@ -208,10 +221,14 @@ app.factory('cafes', ['$http', function($http){
             console.log("new optionOption is successfully registered");
         })
     };
-
     o.getCafe = function(cafe_id){
         return $http.get('/cafes/' + cafe_id).then(function(data){
             return data.data;
+        });
+    };
+    o.getOrders = function(){
+        return $http.get('/orders').success(function(data){
+            angular.copy(data, o.orders);
         });
     };
     o.getMenu = function(cafe, menu_id){
@@ -235,6 +252,11 @@ app.factory('cafes', ['$http', function($http){
                     break;
                 }
             }
+        });
+    };
+    o.postOrder = function(order){
+        return $http.post('/orders', order).success(function(data){
+            console.log("order is successfully created");
         });
     };
     return o;
@@ -327,15 +349,76 @@ app.controller('RegisterMenuCtrl', [
     }
 ]);
 
-app.controller('CafesCtrl', [
+app.controller('OrdersCtrl', [
     '$scope',
     'cafes',
     'cafe',
     function($scope, cafes, cafe){
         $scope.cafe = cafe;
         $scope.orders = cafes.orders;
+
+        $(document).ready(function(){
+            var container = $(".container")[0];
+            var order_list = $("#order_list");
+            order_list.html($(container).html());
+            var sub_container = order_list.find(".container");
+            sub_container.attr("style","");
+        });
+
+        $scope.selectOrder = function()
+        {
+        };
+
+        $scope.getOrders = function(){
+            for(var i=0; i<$scope.orders.length; i++){
+                $scope.appendOrder($scope.orders[i]);
+            }
+        };
+
+        $scope.appendOrder = function(order){
+            var grid = document.querySelector('#columns');
+            var item = document.createElement('div');
+            var h = '<div ng-click="selectOrder()" class="panel panel-primary">';
+            h += '<div class="panel-heading">';
+            h += '주문번호 1234';
+            h += '</div>';
+            h += '<div class="panel-body">';
+            for(var i=0; i<order.orders.length; i++) {
+                h += '<div class="right-half-margin bottom-half-margin">';
+                h += '<div class="right-half-margin">';
+                h += '<span class="right-half-margin">' + order.orders[i].menu.name + '</span>';
+                h += '<span class="right-half-margin">' + order.orders[i].count + '개</span>';
+                h += '</div>';
+                h += '<div class="right-half-margin">';
+                for (var j=0; j < order.orders[i].options.length; j++) {
+                    h += '<span class="label label-default right-half-margin">' + order.orders[i].options[j].name + '</span>';
+                }
+                h += '</div>';
+                h += '</div>';
+            }
+            h += '</div>';
+            h += '<div class="panel-footer">';
+            h += order.cost + '원';
+            h += '</div>';
+            h += '</div>';
+            salvattore['append_elements'](grid, [item]);
+            item.outerHTML = h;
+        };
+        $scope.getOrders();
+    }
+]);
+
+app.controller('CafesCtrl', [
+    '$scope',
+    'cafes',
+    'cafe',
+    function($scope, cafes, cafe){
+        $scope.cafe = cafe;
+        $scope.order = {
+            orders:[],
+            cost:0
+        };
         $scope.newOrder = {};
-        $scope.totalCost = 0;
 
         $scope.populateCafe = function(){
             for(var i=0; i<cafe.menus.length; i++){
@@ -351,7 +434,7 @@ app.controller('CafesCtrl', [
                 cost: menu.cost,
                 count: 1
             };
-            $('#myModal').on('shown.bs.modal', function() {
+            $('#selectMenuModal').on('shown.bs.modal', function() {
                 var options = $(".modal-body > .form-group .option-block");
                 for (var i=0; i<options.size(); i++){
                     var option = $(options[i]);
@@ -414,18 +497,18 @@ app.controller('CafesCtrl', [
         };
 
         $scope.createOrder = function(order){
-            $scope.orders.push(order);
-            $scope.totalCost += order.cost;
+            $scope.order.orders.push(order);
+            $scope.order.cost += order.cost;
         };
 
         $scope.increaseOrder = function(order){
             order.count++;
-            $scope.totalCost += order.cost;
+            $scope.order.cost += order.cost;
         };
 
         $scope.decreaseOrder = function(order){
             order.count--;
-            $scope.totalCost -= order.cost;
+            $scope.order.cost -= order.cost;
             if(order.count <= 0)
                 $scope.removeOrder(order);
         };
@@ -434,7 +517,7 @@ app.controller('CafesCtrl', [
             var idx = $scope.orders.indexOf(order);
             if(idx >= 0)
                 $scope.orders.splice(idx, idx+1);
-            if(order.count > 0) $scope.totalCost -= (order.cost * order.count);
+            if(order.count > 0) $scope.order.cost -= (order.cost * order.count);
         };
 
         $scope.deleteMenu = function(menu) {
@@ -443,7 +526,11 @@ app.controller('CafesCtrl', [
 
         $scope.deleteCafe = function() {
             cafes.deleteCafe($scope.cafe);
-        }
+        };
+
+        $scope.postOrder = function(){
+            cafes.postOrder($scope.order);
+        };
 
     }
 ]);

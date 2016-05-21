@@ -23,6 +23,10 @@
     margin-top:15px;
 }
 
+.bottom-half-margin{
+    margin-bottom:7px;
+}
+
 .bottom-full-margin{
     margin-bottom: 15px;
 }
@@ -133,4 +137,20 @@
 
 .nav-top-fixed-body{
     padding-top:70px;
+}
+
+@media screen and (min-width: 1px) and (max-width: 767px){
+    #columns[data-columns]::before {
+        content: '2 .col-xs-6';
+    }
+}
+@media screen and (min-width:768px) and (max-width: 991px){
+    #columns[data-columns]::before {
+        content: '3 .col-sm-4';
+    }
+}
+@media screen and (min-width:992px) and (max-width: 9999px){
+    #columns[data-columns]::before {
+        content: '4 .col-md-3';
+    }
 }

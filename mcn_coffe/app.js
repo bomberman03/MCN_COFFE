@@ -9,6 +9,7 @@ require('./models/Cafes');
 require('./models/Menus');
 require('./models/Options');
 require('./models/Users');
+require('./models/Orders');
 require('./config/passport');
 var passport = require('passport');
 

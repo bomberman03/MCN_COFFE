@@ -7,6 +7,7 @@ var User = mongoose.model('User');
 var Cafe = mongoose.model('Cafe');
 var Option = mongoose.model('Option');
 var Menu = mongoose.model('Menu');
+var Order = mongoose.model('Order');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -152,7 +153,6 @@ router.get('/options', function(req, res, next){
 });
 
 router.post('/menus/:menu/options', function(req, res, next){
-    console.log(req.body);
     req.body.options = [];
     var option = new Option(req.body);
     option.save(function(err, option){
@@ -190,6 +190,37 @@ router.post('/options/:option/options', function(req, res, next){
             if(err) { return next(err); }
             res.json(option);
         });
+    });
+});
+
+/* Order related API */
+
+router.get('/orders/', function(req, res, next){
+    Order.find(function(err, orders){
+        if(err) { return next(err); }
+        res.json(orders);
+    });
+});
+
+router.param('order', function(req, res, next, id){
+    var query = Order.findById(id);
+    query.exec(function (err, order){
+        if (err) { return next(err); }
+        if (!order) { return next(new Error('can\'t find order')); }
+        req.order = order;
+        return next();
+    });
+});
+
+router.get('/orders/:order', function(req, res, next){
+    res.json(req.order);
+});
+
+router.post('/orders/', function(req, res, next){
+    var order = new Order(req.body);
+    order.save(function(err, order){
+        if(err){ return next(err); }
+        res.json(order);
     });
 });
 

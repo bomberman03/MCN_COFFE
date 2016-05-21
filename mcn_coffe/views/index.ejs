@@ -83,7 +83,7 @@
             </div>
             <ul class="breadcrumb bottom-full-margin">
                 <li><a href="#/cafes/{{cafe._id}}">주문하기</a></li>
-                <li><a href="javascript:void(0)">주문리스트</a></li>
+                <li><a href="#/cafes/{{cafe._id}}/orders">주문리스트</a></li>
                 <li><a href="javascript:void(0)">메뉴추가</a></li>
                 <li><a href="javascript:void(0)">카페정보수정</a></li>
                 <li><a data-toggle="modal" data-target="#deleteCafeModal">카페삭제</a></li>
@@ -156,7 +156,7 @@
             </div>
             <ul class="breadcrumb bottom-full-margin">
                 <li><a href="javascript:void(0)">주문하기</a></li>
-                <li><a href="javascript:void(0)">주문리스트</a></li>
+                <li><a href="#/cafes/{{cafe._id}}/orders">주문리스트</a></li>
                 <li><a href="#/cafes/{{cafe._id}}/register/menus">메뉴추가</a></li>
                 <li><a href="javascript:void(0)">카페정보수정</a></li>
                 <li><a data-toggle="modal" data-target="#deleteCafeModal">카페삭제</a></li>
@@ -187,9 +187,9 @@
                 <div class="panel panel-default">
                     <div class="panel-body">주문리스트</div>
                 </div>
-                <p ng-hide="orders.length" class="bg-default full-padding">주문 내역이 없습니다.</p>
-                <div ng-show="orders.length" class="list-group no-margin">
-                    <div ng-repeat="order in orders">
+                <p ng-hide="order.orders.length" class="bg-default full-padding">주문 내역이 없습니다.</p>
+                <div ng-show="order.orders.length" class="list-group no-margin">
+                    <div ng-repeat="order in order.orders">
                         <div class="panel panel-default">
                             <div class="panel-body">
                                 <div class="menu-name">
@@ -213,11 +213,11 @@
                 </div>
                 <div class="panel panel-default">
                     <div class="panel-body">
-                        <p class="pull-right">{{ totalCost }} 원</p>
+                        <p class="pull-right">{{ order.cost }} 원</p>
                         <p>합계</p>
                     </div>
                 </div>
-                <button type="button" class="btn btn-raised btn-primary btn-block pull-center">주문하기</button>
+                <button ng-click="postOrder()" type="button" class="btn btn-raised btn-primary btn-block pull-center">주문하기</button>
             </div>
         </div>
         <!-- Modal -->
@@ -292,6 +292,23 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+    </script>
+    <script type="text/ng-template" id="/orders.html">
+        <div class="row">
+            <div class="page-header left-full-margin right-full-margin">
+                <h1 class="NanumBrush">{{cafe.name}}</h1>
+                <small class="NanumGothic"> {{cafe.detail}}</small>
+            </div>
+            <ul class="breadcrumb bottom-full-margin">
+                <li><a href="javascript:void(0)">주문하기</a></li>
+                <li><a href="#/cafes/{{cafe._id}}/orders">주문리스트</a></li>
+                <li><a href="#/cafes/{{cafe._id}}/register/menus">메뉴추가</a></li>
+                <li><a href="javascript:void(0)">카페정보수정</a></li>
+                <li><a data-toggle="modal" data-target="#deleteCafeModal">카페삭제</a></li>
+            </ul>
+            <div id="order_list">
             </div>
         </div>
     </script>
@@ -393,5 +410,13 @@
             </div>
         </div>
     </script>
+    <div class="container" style="display:none">
+        <div data-columns="" id="columns">
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </div>
+    <script src="/javascripts/salvattore.js"></script>
 </body>
 </html>

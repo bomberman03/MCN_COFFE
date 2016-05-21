@@ -7,8 +7,15 @@ var mongoose = require('mongoose');
 var OrderSchema = new mongoose.Schema({
     cost: {type: Number, default: 0},
     orders: [{
-        menu: {type: mongoose.Schema.Types.ObjectId, ref: 'Menu'},
-        options: [{type: mongoose.Schema.Types.ObjectId, ref: 'Option'}],
+        menu: {
+            _id: String,
+            name: String
+        },
+        options: [{
+            _id: String,
+            name: String
+        }],
+        cost: {type:Number, default:0},
         count: {type: Number, default:0}
     }]
 });
