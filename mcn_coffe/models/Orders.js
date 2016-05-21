@@ -5,6 +5,8 @@
 var mongoose = require('mongoose');
 
 var OrderSchema = new mongoose.Schema({
+    cafe: {type: mongoose.Schema.Types.ObjectId, ref: 'Cafe'},
+    user: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
     cost: {type: Number, default: 0},
     orders: [{
         menu: {

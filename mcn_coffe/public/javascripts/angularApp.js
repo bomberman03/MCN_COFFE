@@ -108,8 +108,7 @@ app.factory('auth', ['$http', '$window', function($http, $window){
         if(auth.isLoggedIn()) {
             var token = auth.getToken();
             var payload = JSON.parse($window.atob(token.split('.')[1]));
-
-            return payload.username;
+            return payload;
         }
     };
 
@@ -254,10 +253,13 @@ app.factory('cafes', ['$http', function($http){
             }
         });
     };
-    o.postOrder = function(order){
-        return $http.post('/orders', order).success(function(data){
+    o.postOrder = function(cafe, order){
+        return $http.post('/cafes/' + cafe._id + '/orders', order).success(function(data){
             console.log("order is successfully created");
         });
+    };
+    o.updateOrder = function(order){
+
     };
     return o;
 }]);
@@ -351,36 +353,68 @@ app.controller('RegisterMenuCtrl', [
 
 app.controller('OrdersCtrl', [
     '$scope',
+    '$compile',
     'cafes',
     'cafe',
-    function($scope, cafes, cafe){
+    function($scope, $compile, cafes, cafe){
         $scope.cafe = cafe;
         $scope.orders = cafes.orders;
+        $scope.selectedOrders = [];
 
         $(document).ready(function(){
+            // activate tooltip on right coner
+            $('[data-toggle="tooltip"]').tooltip();
+
+            // copy salvattore template from bottom
             var container = $(".container")[0];
             var order_list = $("#order_list");
             order_list.html($(container).html());
             var sub_container = order_list.find(".container");
             sub_container.attr("style","");
+
+            // activate copied template
+            var grid = document.querySelector('#columns');
+            salvattore['register_grid'](grid);
         });
 
-        $scope.selectOrder = function()
+        $scope.selectedIndex = function(order_id){
+            function findById(order){
+                return order._id == order_id;
+            }
+            return $scope.selectedOrders.findIndex(findById);
+        };
+
+        $scope.selectOrder = function(order_id)
         {
+            function findById(order){
+                return order._id == order_id;
+            }
+            var order = $scope.orders.find(findById);
+            var order_div = $("#" + order_id);
+
+            var selected_idx = $scope.selectedIndex(order_id);
+            if( selected_idx != -1) {
+                $scope.selectedOrders.splice(selected_idx, 1);
+                order_div.removeClass("panel-success");
+            } else{
+                $scope.selectedOrders.push(order);
+                order_div.addClass("panel-success");
+            }
         };
 
         $scope.getOrders = function(){
             for(var i=0; i<$scope.orders.length; i++){
-                $scope.appendOrder($scope.orders[i]);
+                $scope.appendOrder($scope.orders[i], i);
             }
         };
 
-        $scope.appendOrder = function(order){
+        $scope.appendOrder = function(order, i){
             var grid = document.querySelector('#columns');
             var item = document.createElement('div');
-            var h = '<div ng-click="selectOrder()" class="panel panel-primary">';
+            var order_id = "'" + order._id + "'";
+            var h = '<div id=' + order_id + 'ng-click="selectOrder(' + order_id +')" class="panel panel-primary">';
             h += '<div class="panel-heading">';
-            h += '주문번호 1234';
+            h += '주문번호 ' + i;
             h += '</div>';
             h += '<div class="panel-body">';
             for(var i=0; i<order.orders.length; i++) {
@@ -402,21 +436,37 @@ app.controller('OrdersCtrl', [
             h += '</div>';
             h += '</div>';
             salvattore['append_elements'](grid, [item]);
-            item.outerHTML = h;
+            h = $compile(h)($scope);
+            $(item).html(h);
         };
         $scope.getOrders();
+
+        $scope.deleteOrder = function(){
+
+        };
+
+        $scope.cancelOrder = function(){
+
+        };
+
+        $scope.completeOrder = function(){
+
+        };
     }
 ]);
 
 app.controller('CafesCtrl', [
     '$scope',
     'cafes',
+    'auth',
     'cafe',
-    function($scope, cafes, cafe){
+    function($scope, cafes, auth, cafe){
         $scope.cafe = cafe;
         $scope.order = {
+            cafe: $scope.cafe,
+            user: auth.currentUser(),
             orders:[],
-            cost:0
+            cost: 0
         };
         $scope.newOrder = {};
 
@@ -516,7 +566,7 @@ app.controller('CafesCtrl', [
         $scope.removeOrder = function(order){
             var idx = $scope.orders.indexOf(order);
             if(idx >= 0)
-                $scope.orders.splice(idx, idx+1);
+                $scope.orders.splice(idx, 1);
             if(order.count > 0) $scope.order.cost -= (order.cost * order.count);
         };
 
@@ -529,9 +579,9 @@ app.controller('CafesCtrl', [
         };
 
         $scope.postOrder = function(){
-            cafes.postOrder($scope.order);
+            $scope.order.user = auth.currentUser();
+            cafes.postOrder($scope.cafe, $scope.order);
         };
-
     }
 ]);
 

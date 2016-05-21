@@ -130,8 +130,13 @@
     position:fixed;
 }
 
-.right-conner{
+.right-conner-1{
     bottom:5%;
+    right:5%;
+}
+
+.right-conner-2{
+    bottom:calc(5% + 65px);
     right:5%;
 }
 

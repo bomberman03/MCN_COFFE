@@ -36,7 +36,7 @@
         </div>
         <div class="collapse navbar-collapse navbar-ex1-collapse">
             <ul class="nav navbar-nav navbar-right right-half-margin">
-                <li ng-show="isLoggedIn()"><a>{{ currentUser() }}</a></li>
+                <li ng-show="isLoggedIn()"><a>{{ currentUser().username }}</a></li>
                 <li ng-show="isLoggedIn()"><a href="" ng-click="logOut()">Log Out</a></li>
                 <li ng-hide="isLoggedIn()"><a href="/#/login">Log In</a></li>
                 <li ng-hide="isLoggedIn()"><a href="/#/register">Register</a></li>
@@ -70,7 +70,7 @@
         </div>
         <a href="#/register/cafes"
            data-toggle="tooltip" data-placement="top" title="" data-original-title="새로운 마켓을 등록합니다."
-           style="position:fixed;" class="btn btn-primary btn-fab right-conner">
+           style="position:fixed;" class="btn btn-primary btn-fab right-conner-1">
             <i class="material-icons">add</i>
             <div class="ripple-container"></div>
         </a>
@@ -310,6 +310,20 @@
             </ul>
             <div id="order_list">
             </div>
+        </div>
+        <div ng-show="selectedOrders.length">
+            <a ng-click="completeOrder()" href="#"
+               data-toggle="tooltip" data-placement="top" data-original-title="주문자를 호출합니다"
+               style="position:fixed;" class="btn btn-primary btn-fab right-conner-1">
+                <i class="material-icons">notifications_active</i>
+                <div class="ripple-container"></div>
+            </a>
+            <a ng-click="deleteOrder()" href="#"
+               data-toggle="tooltip" data-placement="top" data-original-title="주문을 취소합니다"
+               style="position:fixed;" class="btn btn-warning btn-fab right-conner-2">
+                <i class="material-icons">delete</i>
+                <div class="ripple-container"></div>
+            </a>
         </div>
     </script>
     <script type="text/ng-template" id="/register/cafes.html">

@@ -27,7 +27,6 @@ router.post('/register', function(req, res, next){
 
     user.save(function (err){
         if(err){
-            console.log(err.code);
             if(err.code == 11000) return res.status(400).json({message: '중복된 아이디입니다.'});
             else return res.status(400).json({message: '처리 중 문제가 발생했습니다.'});
         }
@@ -53,7 +52,6 @@ router.post('/login', function(req, res, next){
 });
 
 /* cafe related API */
-
 router.get('/cafes', function(req, res, next){
     Cafe.find(function(err, cafes){
         if(err){ return next(err); }
@@ -120,7 +118,7 @@ router.delete('/cafes/:cafe/menus/:menu', function(req, res, next){
     Menu.remove({_id: req.menu._id}, function(err){
         if(err) { next(err); }
         var idx = req.cafe.menus.indexOf(menu_id);
-        req.cafe.menus.splice(idx, idx);
+        req.cafe.menus.splice(idx, 1);
         req.cafe.save(function(err, cafe){
             if(err) { return next(err); }
             res.json(cafe);
@@ -222,6 +220,19 @@ router.post('/orders/', function(req, res, next){
         if(err){ return next(err); }
         res.json(order);
     });
+});
+
+router.post('/cafes/:cafe/orders/', function(req, res, next){
+    req.body.cafe = req.cafe;
+    var order = new Order(req.body);
+    order.save(function(err, order){
+        if(err){ return next(err); }
+        res.json(order);
+    });
+});
+
+router.delete('/orders/:order', function(req, res, next){
+
 });
 
 module.exports = router;
