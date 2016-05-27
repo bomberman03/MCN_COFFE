@@ -100,6 +100,13 @@ router.get('/menus', function(req, res, next){
     });
 });
 
+router.get('/cafes/:cafe/menus', function(req, res, next){
+    Menu.find({_id: {$in: req.cafe.menus }}, function(err, menus){
+        if(err) { return next(err); }
+        res.json(menus);
+    });
+});
+
 router.post('/cafes/:cafe/menus', function(req, res, next){
     req.body.options = [];
     var menu = new Menu(req.body);
@@ -170,6 +177,18 @@ router.param('option', function(req, res, next, id) {
         if (!option) { return next(new Error('can\'t find option')); }
         req.option = option;
         return next();
+    });
+});
+
+router.get('/menus/:menu/options', function(req, res) {
+    Option.find({_id : { $in: req.menu.options }}, function(err, options){
+        res.json(options);
+    });
+});
+
+router.get('/options/:option/options', function(req, res) {
+    Option.find({_id : { $in: req.option.options }}, function(err, options){
+        res.json(options);
     });
 });
 
