@@ -22,6 +22,7 @@
     <script src="/javascripts/ripples.js"></script>
     <script src="/javascripts/material.js"></script>
     <script src="/javascripts/angularApp.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
 </head>
 <body class="nav-top-fixed-body" ng-app="mcnCoffee" ng-controller="NavCtrl">
     <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -302,13 +303,14 @@
                 <small class="NanumGothic"> {{cafe.detail}}</small>
             </div>
             <ul class="breadcrumb bottom-full-margin">
-                <li><a href="javascript:void(0)">주문하기</a></li>
+                <li><a href="#/cafes/{{cafe._id}}">주문하기</a></li>
                 <li><a href="#/cafes/{{cafe._id}}/orders">주문리스트</a></li>
                 <li><a href="#/cafes/{{cafe._id}}/register/menus">메뉴추가</a></li>
                 <li><a href="javascript:void(0)">카페정보수정</a></li>
                 <li><a data-toggle="modal" data-target="#deleteCafeModal">카페삭제</a></li>
             </ul>
-            <div id="order_list">
+            <p ng-hide="getOrderLength()" class="bg-default full-padding">대기중인 주문이 없습니다.</p>
+            <div ng-show="getOrderLength()" id="order_list">
             </div>
         </div>
         <div ng-show="selectedOrders.length">

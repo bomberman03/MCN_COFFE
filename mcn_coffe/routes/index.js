@@ -9,6 +9,22 @@ var Option = mongoose.model('Option');
 var Menu = mongoose.model('Menu');
 var Order = mongoose.model('Order');
 
+var app = express();
+
+var http = require('http').createServer(app);
+var io = require('socket.io')(http);
+http.listen(8080, '218.150.181.81');
+
+io.on('connection', function (socket) {
+    var id = socket.handshake.query.id;
+    socket.on(id, function(data){
+        console.log(data);
+        io.emit(id, {
+            data: data
+        });
+    });
+});
+
 /* GET home page. */
 router.get('/', function(req, res, next) {
   res.render('index', { title: 'MCN_COFFEE' });
@@ -87,7 +103,10 @@ router.delete('/cafes/:cafe', function(req, res){
     var cafe_id = req.cafe._id;
     Cafe.remove({_id: req.cafe._id}, function(err){
         if(err) { return next(err); }
-        return res.status(200).json({message: '삭제가 정상적으로 처리되었습니다.'});
+        return res.status(200).json({
+            message: '삭제가 정상적으로 처리되었습니다.',
+            id: cafe_id
+        });
     });
 });
 
@@ -128,7 +147,10 @@ router.delete('/cafes/:cafe/menus/:menu', function(req, res, next){
         req.cafe.menus.splice(idx, 1);
         req.cafe.save(function(err, cafe){
             if(err) { return next(err); }
-            res.json(cafe);
+            return res.status(200).json({
+                message: '삭제가 정상적으로 처리되었습니다.',
+                id: menu_id
+            });
         });
     });
 });
@@ -212,8 +234,15 @@ router.post('/options/:option/options', function(req, res, next){
 
 /* Order related API */
 
-router.get('/orders/', function(req, res, next){
+router.get('/orders', function(req, res, next){
     Order.find(function(err, orders){
+        if(err) { return next(err); }
+        res.json(orders);
+    });
+});
+
+router.get('/cafes/:cafe/orders/', function(req, res, next){
+    Order.find({cafe: req.cafe._id}, function(err, orders){
         if(err) { return next(err); }
         res.json(orders);
     });
@@ -246,11 +275,63 @@ router.post('/cafes/:cafe/orders/', function(req, res, next){
     var order = new Order(req.body);
     order.save(function(err, order){
         if(err){ return next(err); }
+        io.emit(req.cafe._id, {
+            method: 'post',
+            name: 'order',
+            id: order._id,
+            data: order
+        });
         res.json(order);
     });
 });
 
 router.delete('/orders/:order', function(req, res, next){
+    var cafe = req.order.cafe;
+    console.log(cafe);
+    var order_id = req.order._id;
+    Order.remove({_id: req.order._id}, function(err){
+        if(err) { return next(err); }
+        io.emit(cafe, {
+            method:'delete',
+            name:'order',
+            id:order_id
+        });
+        return res.status(200).json({
+            message: '삭제가 정상적으로 처리되었습니다.',
+            id: order_id
+        });
+    });
+});
+
+router.put('/orders/:order/complete', function(req, res, next){
+    req.order.complete(function(err, order){
+        if(err) { next(err); }
+        console.log(order);
+        io.emit(order.cafe, {
+            method: 'put',
+            name: 'order',
+            id: order._id,
+            data: order
+        });
+        res.json(order);
+    });
+});
+
+router.put('/orders/:order/receive', function(req, res, next){
+    req.order.receive(function(err, order){
+        if(err) { next(err); }
+        console.log(order);
+        io.emit(order.cafe, {
+            method: 'put',
+            name: 'order',
+            id: order._id,
+            data: order
+        });
+        res.json(order);
+    });
+});
+
+router.put('/orders/:order/cancel', function(req, res, next){
 
 });
 

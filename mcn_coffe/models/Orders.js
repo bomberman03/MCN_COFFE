@@ -19,7 +19,23 @@ var OrderSchema = new mongoose.Schema({
         }],
         cost: {type:Number, default:0},
         count: {type: Number, default:0}
-    }]
+    }],
+    status: {type:Number, default:0}
 });
+
+OrderSchema.methods.complete = function(cb){
+    this.status = 1;
+    this.save(cb);
+};
+
+OrderSchema.methods.cancel = function(cb){
+    this.status = 2;
+    this.save(cb);
+};
+
+OrderSchema.methods.receive = function(cb){
+    this.status = 3;
+    this.save(cb);
+};
 
 mongoose.model('Order', OrderSchema);

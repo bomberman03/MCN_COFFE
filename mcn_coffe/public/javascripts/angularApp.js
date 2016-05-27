@@ -62,8 +62,8 @@ app.config([
                     cafe: ['$stateParams', 'cafes', function($stateParams, cafes){
                         return cafes.getCafe($stateParams.id);
                     }],
-                    postPromise: ['cafes', function(cafes){
-                        return cafes.getOrders();
+                    postPromise: ['$stateParams', 'cafes', function($stateParams, cafes){
+                        return cafes.getOrders($stateParams.id);
                     }]
                 }
             })
@@ -172,10 +172,8 @@ app.controller('AuthCtrl', [
 
 app.factory('cafes', ['$http', function($http){
     var o = {
-        cafes: [
-        ],
-        orders: [
-        ]
+        cafes: [],
+        orders: []
     };
     o.getAll = function(){
         return $http.get('/cafes').success(function(data){
@@ -225,8 +223,8 @@ app.factory('cafes', ['$http', function($http){
             return data.data;
         });
     };
-    o.getOrders = function(){
-        return $http.get('/orders').success(function(data){
+    o.getOrders = function(cafe_id){
+        return $http.get('/cafes/' + cafe_id + '/orders').success(function(data){
             angular.copy(data, o.orders);
         });
     };
@@ -258,8 +256,17 @@ app.factory('cafes', ['$http', function($http){
             console.log("order is successfully created");
         });
     };
-    o.updateOrder = function(order){
-
+    o.deleteOrder = function(order, next){
+        return $http.delete('/orders/' + order._id).success(function(data){
+            console.log("order is successfully deleted");
+            next(data.id);
+        });
+    };
+    o.completeOrder = function(order, next){
+        return $http.put('/orders/' + order._id + '/complete/').success(function(data){
+            console.log("order is successfully updated");
+            next(data);
+        });
     };
     return o;
 }]);
@@ -359,6 +366,7 @@ app.controller('OrdersCtrl', [
     function($scope, $compile, cafes, cafe){
         $scope.cafe = cafe;
         $scope.orders = cafes.orders;
+        $scope.mappedOrders = [];
         $scope.selectedOrders = [];
 
         $(document).ready(function(){
@@ -369,52 +377,100 @@ app.controller('OrdersCtrl', [
             var container = $(".container")[0];
             var order_list = $("#order_list");
             order_list.html($(container).html());
-            var sub_container = order_list.find(".container");
-            sub_container.attr("style","");
+            order_list.find(".container").attr("style","");
 
             // activate copied template
-            var grid = document.querySelector('#columns');
+            var grid = document.querySelector('#order_list > #columns');
             salvattore['register_grid'](grid);
-        });
 
+            // localhost로 연결한다.
+            var socket = io.connect('http://218.150.181.81:8080', {query: 'id=' + $scope.cafe._id});
+            socket.emit($scope.cafe._id, "hello world!");
+            // 서버에서 news 이벤트가 일어날 때 데이터를 받는다.
+            socket.on($scope.cafe._id, function (data) {
+                console.log(data);
+                switch(data.method) {
+                    case 'delete':
+                        $scope.removeOrder(data.id);
+                        break;
+                    case 'put':
+                        $scope.updateOrder(data.data);
+                        break;
+                    case 'post':
+                        $scope.newOrder(data.data);
+                        break;
+                }
+            });
+        });
+        $scope.getSelectionClass = function(order_id){
+            if($scope.selectedIndex(order_id) == -1){
+                /*
+                if($scope.mappedOrders[order_id].status==0) return "panel-primary";
+                else return "panel-default";
+                */
+                return "panel-primary";
+            }
+            else return "panel-success";
+        };
+        $scope.getStatusLabel = function(order_id){
+            var order = $scope.mappedOrders[order_id];
+            if(order == undefined) return -1;
+            var ret = "신규 주문";
+            switch($scope.mappedOrders[order_id].status){
+                case 1:
+                    ret = "수령 대기";
+                    break;
+                case 2:
+                    ret = "주문 취소";
+                    break;
+                case 3:
+                    ret = "수령 완료";
+                    break;
+            }
+            return ret;
+        };
+        $scope.getStatusClass = function(order_id){
+            var order = $scope.mappedOrders[order_id];
+            if(order == undefined) return -1;
+            var ret = "label-default";
+            switch($scope.mappedOrders[order_id].status){
+                case 1:
+                    ret = "label-info";
+                    break;
+                case 2:
+                    ret = "label-warning";
+                    break;
+                case 3:
+                    ret = "label-success";
+                    break;
+            }
+            return ret;
+        };
         $scope.selectedIndex = function(order_id){
             function findById(order){
                 return order._id == order_id;
             }
             return $scope.selectedOrders.findIndex(findById);
         };
-
-        $scope.selectOrder = function(order_id)
-        {
+        $scope.selectOrder = function(order_id) {
             function findById(order){
                 return order._id == order_id;
             }
             var order = $scope.orders.find(findById);
-            var order_div = $("#" + order_id);
-
             var selected_idx = $scope.selectedIndex(order_id);
             if( selected_idx != -1) {
                 $scope.selectedOrders.splice(selected_idx, 1);
-                order_div.removeClass("panel-success");
             } else{
                 $scope.selectedOrders.push(order);
-                order_div.addClass("panel-success");
             }
         };
-
-        $scope.getOrders = function(){
-            for(var i=0; i<$scope.orders.length; i++){
-                $scope.appendOrder($scope.orders[i], i);
-            }
-        };
-
-        $scope.appendOrder = function(order, i){
-            var grid = document.querySelector('#columns');
-            var item = document.createElement('div');
+        $scope.generateOrderItem = function(order, i){
             var order_id = "'" + order._id + "'";
-            var h = '<div id=' + order_id + 'ng-click="selectOrder(' + order_id +')" class="panel panel-primary">';
+            var h = '<div id=' + order_id + 'ng-class="getSelectionClass(' + order_id + ')" ng-click="selectOrder('
+                + order_id +')" class="panel">';
             h += '<div class="panel-heading">';
             h += '주문번호 ' + i;
+            h += '<span ng-class="getStatusClass(' + order_id + ')" class="right label right-half-margin">{{getStatusLabel(' + order_id + ')}}</span>';
             h += '</div>';
             h += '<div class="panel-body">';
             for(var i=0; i<order.orders.length; i++) {
@@ -435,22 +491,59 @@ app.controller('OrdersCtrl', [
             h += order.cost + '원';
             h += '</div>';
             h += '</div>';
-            salvattore['append_elements'](grid, [item]);
             h = $compile(h)($scope);
-            $(item).html(h);
+            return h;
+        };
+        $scope.getOrders = function(){
+            for(var i=0; i<$scope.orders.length; i++){
+                $scope.mappedOrders[$scope.orders[i]._id] = $scope.orders[i];
+                $scope.appendOrder($scope.orders[i], i);
+            }
+        };
+        $scope.getOrderLength = function(){
+            return Object.keys($scope.mappedOrders).length;
+        };
+        $scope.newOrder = function(order){
+            $scope.mappedOrders[order._id] = order;
+            $scope.appendOrder(order, Object.keys($scope.mappedOrders).length);
+        };
+        $scope.appendOrder = function(order, i){
+            var query = "#order_list > #columns";
+            var grid = document.querySelector(query);
+            var item = document.createElement('div');
+            salvattore['append_elements'](grid, [item]);
+            $(item).html($scope.generateOrderItem(order, i));
         };
         $scope.getOrders();
-
+        $scope.removeOrder = function(order_id){
+            var order_div = $("div[id=" + order_id + "]");
+            if(order_div != undefined)
+                order_div.remove();
+            if($scope.mappedOrders[order_id] != undefined)
+                delete $scope.mappedOrders[order_id];
+        };
+        $scope.updateOrder = function(order){
+            if($scope.mappedOrders[order._id] != undefined) {
+                // cheating just compare status changed
+                if($scope.mappedOrders[order._id].status != order.status) {
+                    $scope.$apply(function () {
+                        $scope.mappedOrders[order._id] = order;
+                    });
+                }
+            }
+            console.log($scope.mappedOrders[order._id]);
+        };
         $scope.deleteOrder = function(){
-
+            for(var i=0; i<$scope.selectedOrders.length; i++) {
+                cafes.deleteOrder($scope.selectedOrders[i], $scope.removeOrder);
+            }
+            $scope.selectedOrders = [];
         };
-
-        $scope.cancelOrder = function(){
-
-        };
-
         $scope.completeOrder = function(){
-
+            for(var i=0; i<$scope.selectedOrders.length; i++){
+                if($scope.selectedOrders[i].status == 0) cafes.completeOrder($scope.selectedOrders[i], $scope.updateOrder);
+            }
+            $scope.selectedOrders = [];
         };
     }
 ]);
