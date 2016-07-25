@@ -13,12 +13,12 @@ var app = express();
 
 var http = require('http').createServer(app);
 var io = require('socket.io')(http);
-http.listen(8080, '218.150.181.81');
+
+http.listen(8080, socket_ip);
 
 io.on('connection', function (socket) {
     var id = socket.handshake.query.id;
     socket.on(id, function(data){
-        console.log(data);
         io.emit(id, {
             data: data
         });
@@ -170,6 +170,7 @@ router.get('/menus/:menu', function(req, res) {
         res.json(menu);
     });
 });
+
 /* option related API */
 
 router.get('/options', function(req, res, next){
@@ -287,7 +288,6 @@ router.post('/cafes/:cafe/orders/', function(req, res, next){
 
 router.delete('/orders/:order', function(req, res, next){
     var cafe = req.order.cafe;
-    console.log(cafe);
     var order_id = req.order._id;
     Order.remove({_id: req.order._id}, function(err){
         if(err) { return next(err); }
@@ -306,7 +306,6 @@ router.delete('/orders/:order', function(req, res, next){
 router.put('/orders/:order/complete', function(req, res, next){
     req.order.complete(function(err, order){
         if(err) { next(err); }
-        console.log(order);
         io.emit(order.cafe, {
             method: 'put',
             name: 'order',
@@ -320,7 +319,6 @@ router.put('/orders/:order/complete', function(req, res, next){
 router.put('/orders/:order/receive', function(req, res, next){
     req.order.receive(function(err, order){
         if(err) { next(err); }
-        console.log(order);
         io.emit(order.cafe, {
             method: 'put',
             name: 'order',

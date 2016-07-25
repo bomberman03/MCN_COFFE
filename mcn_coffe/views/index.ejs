@@ -19,9 +19,21 @@
     <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.3.10/angular.min.js"></script>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.10/angular-ui-router.js"></script>
 
-    <script src="/javascripts/ripples.js"></script>
-    <script src="/javascripts/material.js"></script>
+    <script src="/javascripts/libraries/ripples.js"></script>
+    <script src="/javascripts/libraries/material.js"></script>
+
     <script src="/javascripts/angularApp.js"></script>
+
+    <script src="/javascripts/factories/auth.js"></script>
+    <script src="/javascripts/factories/cafe.js"></script>
+
+    <script src="/javascripts/controllers/authController.js"></script>
+    <script src="/javascripts/controllers/cafeController.js"></script>
+    <script src="/javascripts/controllers/mainController.js"></script>
+    <script src="/javascripts/controllers/orderController.js"></script>
+    <script src="/javascripts/controllers/registerCafeController.js"></script>
+    <script src="/javascripts/controllers/registerMenuController.js"></script>
+
     <script src="/socket.io/socket.io.js"></script>
 </head>
 <body class="nav-top-fixed-body" ng-app="mcnCoffee" ng-controller="NavCtrl">
@@ -45,7 +57,7 @@
         </div>
     </nav>
     <ui-view></ui-view>
-    <script type="text/ng-template" id="/home.html">
+    <script type="text/ng-template" id="/main.html">
         <div class="row">
             <div ng-repeat="cafe in cafes">
                 <div class="col-xs-6 col-sm-4 col-md-3">
@@ -338,19 +350,39 @@
                 <form class="form-horizontal">
                     <fieldset>
                         <div class="form-group is-empty">
-                            <label for="inputEmail" class="col-md-2 control-label">카페명</label>
+                            <label for="inputCafeName" class="col-md-2 control-label">카페 이름</label>
                             <div class="col-md-10">
-                                <input ng-model="name" type="text" class="form-control" id="inputCafeName" placeholder="카페명">
+                                <input ng-model="name" type="text" class="form-control" id="inputCafeName" placeholder="이름을 입력해주세요.">
                             </div>
                             <span class="material-input"></span>
                         </div>
                         <div class="form-group is-empty">
-                            <label for="textArea" class="col-md-2 control-label">카페설명</label>
+                            <label for="inputCafeDetail" class="col-md-2 control-label">카페 소개</label>
                             <div class="col-md-10">
-                                <textarea ng-model="detail" class="form-control" id="textArea"></textarea>
-                                <span class="help-block">등록할 카페에 대한 상세 정보를 입력해주세요!</span>
+                                <input ng-model="detail" type="text" class="form-control" id="inputCafeDetail" placeholder="간략한 소개 부탁드려요.">
                             </div>
                             <span class="material-input"></span>
+                        </div>
+                        <div class="form-group is-empty">
+                            <label for="inputCafePhone" class="col-md-2 control-label">전화 번호</label>
+                            <div class="col-md-10">
+                                <input ng-model="phone" type="text" class="form-control" id="inputCafePhone" placeholder="전화번호를 입력하세요">
+                            </div>
+                            <span class="material-input"></span>
+                        </div>
+                        <div class="form-group is-empty">
+                            <label for="inputCafeAddress" class="col-md-2 control-label">카페 주소</label>
+                            <div class="col-md-10">
+                                <input ng-model="address" type="text" class="form-control" id="inputCafeAddress" placeholder="주소를 입력하세요.">
+                            </div>
+                            <span class="material-input"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputFile" class="col-md-2 control-label">카페 이미지</label>
+                            <div class="col-md-10">
+                                <input type="text" readonly="" class="form-control" placeholder="클릭해서 등록하세요">
+                                <input type="file" file-model="myFile">
+                            </div>
                         </div>
                         <div class="form-group is-empty pull-center">
                             <button ng-click="createCafe()" class="btn btn-raised btn-primary">등록하기</button>
@@ -433,6 +465,6 @@
             <div></div>
         </div>
     </div>
-    <script src="/javascripts/salvattore.js"></script>
+    <script src="/javascripts/libraries/salvattore.js"></script>
 </body>
 </html>

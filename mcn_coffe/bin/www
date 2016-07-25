@@ -3,6 +3,7 @@
 /**
  * Module dependencies.
  */
+socket_ip = '210.118.64.165';
 
 var app = require('../app');
 var debug = require('debug')('mcn_coffe:server');
