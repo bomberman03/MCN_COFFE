@@ -16,7 +16,7 @@ app.controller('AuthCtrl', [
             auth.register($scope.user).error(function(error){
                 $scope.error = error;
             }).then(function(){
-                $state.go('home');
+                $state.go('main');
             });
         };
 
@@ -24,7 +24,7 @@ app.controller('AuthCtrl', [
             auth.logIn($scope.user).error(function(error){
                 $scope.error = error;
             }).then(function(){
-                $state.go('home');
+                $state.go('main');
             });
         }
     }
