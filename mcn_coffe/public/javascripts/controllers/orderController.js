@@ -16,15 +16,10 @@ app.controller('OrderCtrl', [
             // activate tooltip on right coner
             $('[data-toggle="tooltip"]').tooltip();
 
-            // copy salvattore template from bottom
-            var container = $(".container")[0];
-            var order_list = $("#order_list");
-            order_list.html($(container).html());
-            order_list.find(".container").attr("style","");
-
-            // activate copied template
-            var grid = document.querySelector('#order_list > #columns');
-            salvattore['register_grid'](grid);
+            $grid = $("#order_list").masonry({
+                itemSelector: '.grid-item',
+                columnWidth: 100
+            });
 
             // localhost로 연결한다.
             var socket = io.connect('http://210.118.64.165:8080', {query: 'id=' + $scope.cafe._id});
@@ -45,9 +40,9 @@ app.controller('OrderCtrl', [
         });
         $scope.getSelectionClass = function(order_id){
             if($scope.selectedIndex(order_id) == -1){
-                return "panel-primary";
+                return "panel panel-primary";
             }
-            else return "panel-success";
+            else return "panel panel-success";
         };
         $scope.getStatusLabel = function(order_id){
             var order = $scope.mappedOrders[order_id];
@@ -103,7 +98,8 @@ app.controller('OrderCtrl', [
         };
         $scope.generateOrderItem = function(order, i){
             var order_id = "'" + order._id + "'";
-            var h = '<div id=' + order_id + 'ng-class="getSelectionClass(' + order_id + ')" ng-click="selectOrder('
+            var h = '<div style="width:300px" class="grid-item">';
+            h += '<div class="top-half-margin left-half-margin right-half-margin" id=' + order_id + 'ng-class="getSelectionClass(' + order_id + ')" ng-click="selectOrder('
                 + order_id +')" class="panel">';
             h += '<div class="panel-heading">';
             h += '주문번호 ' + i;
@@ -128,6 +124,7 @@ app.controller('OrderCtrl', [
             h += order.cost + '원';
             h += '</div>';
             h += '</div>';
+            h += '</div>';
             h = $compile(h)($scope);
             return h;
         };
@@ -145,17 +142,16 @@ app.controller('OrderCtrl', [
             $scope.appendOrder(order, Object.keys($scope.mappedOrders).length);
         };
         $scope.appendOrder = function(order, i){
-            var query = "#order_list > #columns";
-            var grid = document.querySelector(query);
-            var item = document.createElement('div');
-            salvattore['append_elements'](grid, [item]);
-            $(item).html($scope.generateOrderItem(order, i));
+            var $items = $scope.generateOrderItem(order, i);
+            $grid.append($items).masonry( 'appended', $items );
+            $grid.masonry('layout');
         };
         $scope.getOrders();
         $scope.removeOrder = function(order_id){
             var order_div = $("div[id=" + order_id + "]");
-            if(order_div != undefined)
-                order_div.remove();
+            if(order_div != undefined) {
+                $grid.masonry('remove', order_div);
+            }
             if($scope.mappedOrders[order_id] != undefined)
                 delete $scope.mappedOrders[order_id];
         };
@@ -168,7 +164,6 @@ app.controller('OrderCtrl', [
                     });
                 }
             }
-            console.log($scope.mappedOrders[order._id]);
         };
         $scope.deleteOrder = function(){
             for(var i=0; i<$scope.selectedOrders.length; i++) {

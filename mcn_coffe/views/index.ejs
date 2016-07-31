@@ -21,6 +21,7 @@
 
     <script src="/javascripts/libraries/ripples.js"></script>
     <script src="/javascripts/libraries/material.js"></script>
+    <script src="/javascripts/libraries/masonry.pkgd.min.js"></script>
 
     <script src="/javascripts/angularApp.js"></script>
 
@@ -58,9 +59,11 @@
     </nav>
     <ui-view></ui-view>
     <script type="text/ng-template" id="/main.html">
-        <div class="row">
+        <div class="search_background">
+        </div>
+        <div class="row cafe_list">
             <div ng-repeat="cafe in cafes">
-                <div class="col-xs-6 col-sm-4 col-md-3">
+                <div class="cafe_item ">
                     <a href="#/cafes/{{cafe._id}}">
                     <div class="panel panel-default">
                         <div class="panel-body">
@@ -458,13 +461,5 @@
             </div>
         </div>
     </script>
-    <div class="container" style="display:none">
-        <div data-columns="" id="columns">
-            <div></div>
-            <div></div>
-            <div></div>
-        </div>
-    </div>
-    <script src="/javascripts/libraries/salvattore.js"></script>
 </body>
 </html>
