@@ -1,0 +1,30 @@
+<div class="row">
+    <div class="page-header left-full-margin right-full-margin">
+        <h1 class="NanumBrush">{{cafe.name}}</h1>
+        <small class="NanumGothic"> {{cafe.detail}}</small>
+    </div>
+    <ul class="breadcrumb bottom-full-margin">
+        <li><a href="#/cafes/{{cafe._id}}">주문하기</a></li>
+        <li><a href="#/cafes/{{cafe._id}}/orders">주문리스트</a></li>
+        <li><a href="#/cafes/{{cafe._id}}/register/menus">메뉴추가</a></li>
+        <li><a href="javascript:void(0)">카페정보수정</a></li>
+        <li><a data-toggle="modal" data-target="#deleteCafeModal">카페삭제</a></li>
+    </ul>
+    <p ng-hide="getOrderLength()" class="bg-default full-padding">대기중인 주문이 없습니다.</p>
+    <div ng-show="getOrderLength()" id="order_list">
+    </div>
+</div>
+<div ng-show="selectedOrders.length">
+    <a ng-click="completeOrder()" href="#"
+       data-toggle="tooltip" data-placement="top" data-original-title="주문자를 호출합니다"
+       style="position:fixed;" class="btn btn-primary btn-fab right-conner-1">
+        <i class="material-icons">notifications_active</i>
+        <div class="ripple-container"></div>
+    </a>
+    <a ng-click="deleteOrder()" href="#"
+       data-toggle="tooltip" data-placement="top" data-original-title="주문을 취소합니다"
+       style="position:fixed;" class="btn btn-warning btn-fab right-conner-2">
+        <i class="material-icons">delete</i>
+        <div class="ripple-container"></div>
+    </a>
+</div>

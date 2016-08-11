@@ -2210,7 +2210,8 @@ legend {
 }
 .navbar .navbar-brand {
   position: relative;
-  height: 60px;
+  height: 50px;
+  padding:10px 15px;
   line-height: 30px;
   color: inherit;
 }
@@ -2226,8 +2227,8 @@ legend {
 }
 .navbar .navbar-nav > li > a {
   color: inherit;
-  padding-top: 20px;
-  padding-bottom: 20px;
+  padding-top: 15px;
+  padding-bottom: 15px;
 }
 .navbar .navbar-nav > li > a:hover,
 .navbar .navbar-nav > li > a:focus {
@@ -2378,6 +2379,11 @@ fieldset[disabled] .navbar .btn-link:focus {
 .navbar.navbar-default .dropdown-menu li > a {
   font-size: 16px;
   padding: 13px 16px;
+}
+.navbar .dropdown-messages li > a,
+.navbar.navbar-default .dropdown-messages li > a {
+  font-size: 14px;
+  padding: 3px 20px;
 }
 .navbar .dropdown-menu li > a:hover,
 .navbar.navbar-default .dropdown-menu li > a:hover,

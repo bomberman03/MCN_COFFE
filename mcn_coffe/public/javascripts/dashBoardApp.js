@@ -10,8 +10,12 @@ app.config([
         $stateProvider
             .state('main', {
                 url: '/main',
-                templateUrl: '/template/main.html',
-                controller: 'MainCtrl',
+                templateUrl: '/template/admin.html'
+            })
+            .state('cafe', {
+                url: '/create/cafe',
+                templateUrl: '/template/create/cafe.html',
+                controller: 'CreateCafeCtrl',
                 resolve: {
                     postPromise: ['cafes', function(cafes){
                         return cafes.getAll();
@@ -38,45 +42,10 @@ app.config([
                     }
                 }]
             })
-            .state('registerCafes', {
-                url: '/register/cafes',
-                templateUrl: '/template/register/cafes.html',
-                controller: 'RegisterCafeCtrl'
-            })
-            .state('registerMenus', {
-                url: '/cafes/{id}/register/menus',
-                templateUrl: '/template/register/menus.html',
-                controller: 'RegisterMenuCtrl',
-                resolve: {
-                    cafe: ['$stateParams', 'cafes', function($stateParams, cafes){
-                        return cafes.getCafe($stateParams.id);
-                    }]
-                }
-            })
-            .state('orders', {
-                url: '/cafes/{id}/orders',
-                templateUrl: '/template/orders.html',
-                controller: 'OrderCtrl',
-                resolve: {
-                    cafe: ['$stateParams', 'cafes', function($stateParams, cafes){
-                        return cafes.getCafe($stateParams.id);
-                    }],
-                    postPromise: ['$stateParams', 'cafes', function($stateParams, cafes){
-                        return cafes.getOrders($stateParams.id);
-                    }]
-                }
-            })
-            .state('cafes', {
-                url: '/cafes/{id}',
-                templateUrl: '/template/cafes.html',
-                controller: 'CafeCtrl',
-                resolve: {
-                    cafe: ['$stateParams', 'cafes', function($stateParams, cafes){
-                        return cafes.getCafe($stateParams.id);
-                    }]
-                }
+            .state('form.profile', {
+                url: '/profile',
+                templateUrl: 'form-profile.html'
             });
-
         $urlRouterProvider.otherwise('main');
     }]);
 

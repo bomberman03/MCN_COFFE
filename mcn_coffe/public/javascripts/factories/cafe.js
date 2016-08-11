@@ -15,8 +15,9 @@ app.factory('cafes', ['$http', function($http){
         return $http.post('/cafes', cafe).success(function(data){
         });
     };
-    o.deleteCafe = function(cafe) {
+    o.deleteCafe = function(cafe, callback) {
         return $http.delete('/cafes/' + cafe._id).success(function(data){
+            callback(data);
         });
     };
     o.createMenu = function(cafe_id, menu) {

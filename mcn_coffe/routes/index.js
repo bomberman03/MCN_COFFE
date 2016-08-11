@@ -9,10 +9,22 @@ var Option = mongoose.model('Option');
 var Menu = mongoose.model('Menu');
 var Order = mongoose.model('Order');
 
+var code = require('../config/code');
+
 var app = express();
 
+var https = require('https');
 var http = require('http').createServer(app);
 var io = require('socket.io')(http);
+
+/* GET home page. */
+router.get('/', function(req, res, next) {
+    res.render('index', { title: 'MCN_COFFEE' });
+});
+
+router.get('/dashboard', function(req, res, next){
+    res.render('dashboard', { title: 'MCN_COFFEE' });
+});
 
 http.listen(8080, socket_ip);
 
@@ -25,14 +37,32 @@ io.on('connection', function (socket) {
     });
 });
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'MCN_COFFEE' });
+// naver api request delegate
+router.post('/getCoordinate', function(req, res, next){
+    var options = {
+        hostname: req.body.hostname,
+        path: req.body.path,
+        method: 'GET',
+        headers: {
+            'X-Naver-Client-Id': 'b4Ipp9TAh1DjURhv8KkP',
+            'X-Naver-Client-Secret': 't3Y4dGzHqj'
+        }
+    };
+    var myRes = res;
+    req = https.request(options, function(res){
+        res.on('data', function(d) {
+            var ret = d.toString('utf-8');
+            return myRes.json(ret);
+        });
+    });
+    req.end();
 });
 
 router.post('/register', function(req, res, next){
     if(!req.body.username || !req.body.password){
-        return res.status(400).json({message: '모든 입력을 해주세요'});
+        return res.status(400).json({
+            message: '모든 입력을 해주세요'
+        });
     }
 
     var user = new User();

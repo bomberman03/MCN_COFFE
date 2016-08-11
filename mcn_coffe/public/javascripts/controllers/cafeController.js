@@ -15,14 +15,12 @@ app.controller('CafeCtrl', [
             cost: 0
         };
         $scope.newOrder = {};
-
         $scope.populateCafe = function(){
             for(var i=0; i<cafe.menus.length; i++){
                 cafes.getMenu(cafe, cafe.menus[i]._id);
             }
         };
         $scope.populateCafe();
-
         $scope.selectMenu = function(menu){
             $scope.newOrder = {
                 menu: menu,
@@ -41,7 +39,6 @@ app.controller('CafeCtrl', [
                 }
             });
         };
-
         $scope.selectRadioOption = function(option, radio){
             if($scope.newOrder.options[option.name]) {
                 $scope.newOrder.cost -= $scope.newOrder.options[option.name].cost;
@@ -49,7 +46,6 @@ app.controller('CafeCtrl', [
             $scope.newOrder.options[option.name] = radio;
             $scope.newOrder.cost += radio.cost;
         };
-
         $scope.selectOption = function(option){
             if($scope.newOrder.options[option.name]) {
                 $scope.newOrder.options[option.name] = undefined;
@@ -60,7 +56,6 @@ app.controller('CafeCtrl', [
                 $scope.newOrder.cost += option.cost;
             }
         };
-
         $scope.requestOrder = function(){
             var options = [];
             for(var key in $scope.newOrder.options) {
@@ -71,7 +66,6 @@ app.controller('CafeCtrl', [
             $scope.newOrder.options = options;
             $scope.addOrder($scope.newOrder);
         };
-
         $scope.addOrder = function(order){
             for(var idx in $scope.orders){
                 var _order = $scope.orders[idx];
@@ -91,39 +85,34 @@ app.controller('CafeCtrl', [
             }
             $scope.createOrder(order);
         };
-
         $scope.createOrder = function(order){
             $scope.order.orders.push(order);
             $scope.order.cost += order.cost;
         };
-
         $scope.increaseOrder = function(order){
             order.count++;
             $scope.order.cost += order.cost;
         };
-
         $scope.decreaseOrder = function(order){
             order.count--;
             $scope.order.cost -= order.cost;
             if(order.count <= 0)
                 $scope.removeOrder(order);
         };
-
         $scope.removeOrder = function(order){
             var idx = $scope.orders.indexOf(order);
             if(idx >= 0)
                 $scope.orders.splice(idx, 1);
             if(order.count > 0) $scope.order.cost -= (order.cost * order.count);
         };
-
         $scope.deleteMenu = function(menu) {
             cafes.deleteMenu($scope.cafe._id, menu);
         };
-
         $scope.deleteCafe = function() {
-            cafes.deleteCafe($scope.cafe);
+            cafes.deleteCafe($scope.cafe, function(){
+                
+            });
         };
-
         $scope.postOrder = function(){
             $scope.order.user = auth.currentUser();
             cafes.postOrder($scope.cafe, $scope.order);

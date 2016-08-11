@@ -1,0 +1,145 @@
+<div class="row">
+    <div class="page-header left-full-margin right-full-margin">
+        <h1 class="NanumBrush">{{cafe.name}}</h1>
+        <small class="NanumGothic"> {{cafe.detail}}</small>
+    </div>
+    <ul class="breadcrumb bottom-full-margin">
+        <li><a href="javascript:void(0)">주문하기</a></li>
+        <li><a href="#/cafes/{{cafe._id}}/orders">주문리스트</a></li>
+        <li><a href="#/cafes/{{cafe._id}}/register/menus">메뉴추가</a></li>
+        <li><a href="javascript:void(0)">카페정보수정</a></li>
+        <li><a data-toggle="modal" data-target="#deleteCafeModal">카페삭제</a></li>
+    </ul>
+    <div class="col-sm-8">
+        <p ng-hide="cafe.menus.length" class="bg-default full-padding">등록된 메뉴가 없습니다.</p>
+        <div ng-show="cafe.menus.length" class="list-group">
+            <div ng-repeat="menu in cafe.menus">
+                <div ng-click="selectMenu(menu)" class="list-group-item" data-toggle="modal" data-target="#selectMenuModal">
+                    <div class="row-picture">
+                        <img class="circle" src='' onerror="this.src='/images/coffee_default.png'">
+                    </div>
+                    <div class="row-content">
+                        <div class="least-content">{{menu.cost}} 원</div>
+                        <div class="control">
+                            <button ng-click="$event.stopPropagation();" type="button" class="btn btn-raised btn-xs">수정</button>
+                            <button ng-click="deleteMenu(menu); $event.stopPropagation();" type="button" class="btn btn-raised btn-xs">삭제</button>
+                        </div>
+                        <h4 class="list-group-item-heading">{{menu.name}}</h4>
+                        <p class="list-group-item-text">커피에 대한 설명이 옵니다.</p>
+                    </div>
+                </div>
+                <div class="list-group-separator"></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <div class="panel panel-default">
+            <div class="panel-body">주문리스트</div>
+        </div>
+        <p ng-hide="order.orders.length" class="bg-default full-padding">주문 내역이 없습니다.</p>
+        <div ng-show="order.orders.length" class="list-group no-margin">
+            <div ng-repeat="order in order.orders">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <div class="menu-name">
+                            <span class="name">{{order.menu.name}}</span>
+                            <span ng-repeat="option in order.options" class="label label-default right-half-margin">{{option.name}}</span>
+                        </div>
+                        <div class="menu-info">
+                            <div class="col-xs-6 pull-left">
+                                <span ng-click="removeOrder(order)" class="glyphicon glyphicon-remove"></span>
+                                {{order.cost * order.count}} 원
+                            </div>
+                            <div class="col-xs-6 pull-right">
+                                <span ng-click="decreaseOrder(order)" class="glyphicon glyphicon-minus"></span>
+                                <span class="menu-count">{{order.count}}</span>
+                                <span ng-click="increaseOrder(order)" class="glyphicon glyphicon-plus"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <p class="pull-right">{{ order.cost }} 원</p>
+                <p>합계</p>
+            </div>
+        </div>
+        <button ng-click="postOrder()" type="button" class="btn btn-raised btn-primary btn-block pull-center">주문하기</button>
+    </div>
+</div>
+<!-- Modal -->
+<div id="deleteCafeModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                삭제하시겠습니까?
+            </div>
+            <div class="modal-body">
+                한번 삭제한 카페는 복구될 수 없습니다.
+            </div>
+            <div class="modal-footer">
+                <button ng-click="deleteCafe()" class="btn btn-primary">네 삭제합니다.</button><button class="btn btn-primary" data-dismiss="modal">아니오 다시 생각해보겠습니다.</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal -->
+<div id="selectMenuModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">{{newOrder.menu.name}}</h4>
+            </div>
+            <div class="modal-body">
+                <div class="option-block">
+                    <h4>기본</h4>
+                    <div class="checkbox disabled">
+                        <label class="left-half-margin">
+                            <input type="checkbox" checked disabled>
+                            <span class="checkbox-material right-half-margin"><span class="check"></span></span>
+                            {{ newOrder.menu.name }}
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div ng-repeat="option in newOrder.menu.options">
+                        <div class="option-block">
+                            <h4>{{option.name}}</h4>
+                            <div ng-show="option.options.length">
+                                <div ng-repeat="radio in option.options" class="radio">
+                                    <div class="radio">
+                                        <label>
+                                            <input ng-click="selectRadioOption(option, radio)" type="radio" name="{{option.name}}"><span class="circle"></span><span class="check"></span>
+                                            {{radio.name}}
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div ng-hide="option.options.length">
+                                <div class="checkbox">
+                                    <label class="left-half-margin">
+                                        <input ng-click="selectOption(option)" name="{{option.name}}" type="checkbox">
+                                        <span class="checkbox-material right-half-margin"><span class="check"></span></span>
+                                        {{ option.name }}
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <p class="right-full-margin">{{newOrder.cost}} 원</p>
+                <div class="pull-center">
+                    <button ng-click="requestOrder()" type="button" class="btn btn-raised btn-primary" data-dismiss="modal">메뉴 추가하기</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

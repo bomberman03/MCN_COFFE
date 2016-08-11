@@ -1,0 +1,63 @@
+<div class="container col-md-offset-2 col-md-8">
+    <div class="well top-full-margin">
+        <h2>카페 등록</h2>
+        <p class="bottom-full-margin">자신의 카페를 동록하세요!</p>
+    </div>
+    <div class="well bs-component">
+        <form class="form-horizontal">
+            <fieldset>
+                <div class="form-group is-empty">
+                    <div class="col-md-offset-2 col-md-9">
+                        <div id="tMap" style="width:100%;height:400px;" class="bottom-full-margin"></div>
+                    </div>
+                </div>
+                <div class="form-group is-empty">
+                    <label for="inputCafeName" class="col-md-2 control-label">카페 주소</label>
+                    <div class="col-md-9">
+                        <input type="text" name="" class="form-control postcodify_address" value="" placeholder="도로명 주소"/>
+                        <input type="text" name="" class="form-control postcodify_details" value="" placeholder="상세 주소"/>
+                    </div>
+                    <span class="material-input"></span>
+                </div>
+                <div class="form-group is-empty">
+                    <label for="inputCafeName" class="col-md-2 control-label">카페 이름</label>
+                    <div class="col-md-9">
+                        <input ng-model="name" type="text" class="form-control" id="inputCafeName" placeholder="이름을 입력해주세요.">
+                    </div>
+                    <span class="material-input"></span>
+                </div>
+                <div class="form-group is-empty">
+                    <label for="inputCafeDetail" class="col-md-2 control-label">카페 소개</label>
+                    <div class="col-md-9">
+                        <input ng-model="detail" type="text" class="form-control" id="inputCafeDetail" placeholder="간략한 소개 부탁드려요.">
+                    </div>
+                    <span class="material-input"></span>
+                </div>
+                <div class="form-group is-empty">
+                    <label for="inputCafePhone" class="col-md-2 control-label">전화 번호</label>
+                    <div class="col-md-9">
+                        <input ng-model="phone" type="text" class="form-control" id="inputCafePhone" placeholder="전화번호를 입력하세요">
+                    </div>
+                    <span class="material-input"></span>
+                </div>
+                <div class="form-group is-empty">
+                    <label for="inputCafeAddress" class="col-md-2 control-label">카페 주소</label>
+                    <div class="col-md-9">
+                        <input ng-model="address" type="text" class="form-control" id="inputCafeAddress" placeholder="주소를 입력하세요.">
+                    </div>
+                    <span class="material-input"></span>
+                </div>
+                <div class="form-group">
+                    <label for="inputFile" class="col-md-2 control-label">카페 이미지</label>
+                    <div class="col-md-9">
+                        <input type="text" readonly="" class="form-control" placeholder="클릭해서 등록하세요">
+                        <input type="file" file-model="myFile">
+                    </div>
+                </div>
+                <div class="form-group is-empty pull-center">
+                    <button ng-click="createCafe()" class="btn btn-raised btn-primary">등록하기</button>
+                </div>
+            </fieldset>
+        </form>
+    </div>
+</div>
