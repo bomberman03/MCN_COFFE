@@ -4,13 +4,91 @@
 
 app.controller('CreateCafeCtrl', [
     '$scope',
-    'cafes',
+    'terms',
     'openApi',
-    function($scope, cafes, openApi){
+    function($scope, terms, openApi){
+        $scope.terms = terms.terms;
+        $scope.currentPage = 0;
+        $scope.cafe  = {
+            agree: [],
+            name: '',
+            detail: '',
+            phone: ''
+        };
+        $scope.error = {
+            agree: [],
+            name: '',
+            detail: '',
+            phone: ''
+        };
+        var validationCheck = [
+            function(){
+                initAgree(-1);
+                var ret = true;
+                for(var idx in $scope.cafe.agree) {
+                    $scope.error.agree[idx] = !$scope.cafe.agree[idx];
+                    ret &= $scope.cafe.agree[idx];
+                }
+                $scope.$apply();
+                return ret;
+            },
+            function(){
+                var ret = true;
+                if($scope.cafe.name.trim().length == 0) { // 카페 이름 검사
+                    $scope.error.name = "카페의 이름을 반드시 입력하세요";
+                    ret = false;
+                }
+                if($scope.cafe.detail.trim().length == 0) { // 카페 설명 검사
+                    $scope.error.detail = "카페에 대한 설명을 반드시 입력하세요";
+                    ret = false;
+                }
+                if($scope.cafe.phone.trim().length == 0) { // 카페 전화번호 검사
+                    $scope.error.phone = "카페 전화번호를 반드시 입력하세요";
+                    ret = false
+                }
+                $scope.$apply();
+                return ret;
+            },
+            function(){
+
+            }
+        ];
+
         $(document).ready(function() {
             $.material.init();
             initializeWizard();
         });
+
+        function initAgree(index) {
+            var agree = $(".agree");
+            if($scope.cafe.agree.length == agree.length)
+                return;
+            $scope.cafe.agree.length = agree.length;
+            $scope.cafe.agree.fill(false);
+            if(index >= 0)
+                $scope.cafe.agree[index] = true;
+        }
+
+        $scope.agreeAction = function(index){
+            initAgree(index);
+            $scope.error.agree[index] = false;
+        };
+
+        $scope.initForm = function(index) {
+            console.log($scope.cafe[index]);
+            if($scope.error[index])
+                $scope.cafe[index] = $scope.error[index] = '';
+        };
+
+        $scope.createCafe = function() {
+            if($scope.name == '' || $scope.detail == '') return;
+            cafes.createCafe({
+                name: $scope.name,
+                detail: $scope.detail
+            });
+            $scope.name = '';
+            $scope.detail = '';
+        };
 
         function initializeWizard() {
             //jQuery time
@@ -21,6 +99,10 @@ app.controller('CreateCafeCtrl', [
             $(".next").click(function(){
                 if(animating) return false;
                 animating = true;
+
+                if(!validationCheck[$scope.currentPage]())
+                    return animating = false;
+                $scope.currentPage++;
 
                 current_fs = $(this).parent();
                 next_fs = $(this).parent().next();
@@ -59,6 +141,8 @@ app.controller('CreateCafeCtrl', [
             $(".previous").click(function(){
                 if(animating) return false;
                 animating = true;
+
+                $scope.currentPage--;
 
                 current_fs = $(this).parent();
                 previous_fs = $(this).parent().prev();
@@ -174,16 +258,6 @@ app.controller('CreateCafeCtrl', [
                 }
             });
         }
-
-        $scope.createCafe = function() {
-            if($scope.name == '' || $scope.detail == '') return;
-            cafes.createCafe({
-                name: $scope.name,
-                detail: $scope.detail
-            });
-            $scope.name = '';
-            $scope.detail = '';
-        };
 
         function initializeGoogleMap() {
             // google Map

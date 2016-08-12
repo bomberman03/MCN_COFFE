@@ -11,18 +11,35 @@
     <fieldset>
         <h2 class="fs-title">STEP 1</h2>
         <h3 class="fs-subtitle">아래 약관을 읽고 동의해주세요</h3>
-        <div class="terms">
+        <div ng-repeat="term in terms track by $index">
+            <div class="terms">
+                <div class="content" ng-bind-html="term">
+                </div>
+                <div class="agree">
+                    <div class="checkbox">
+                        <label class="left-half-margin ng-binding">
+                            위 내용을 모두 읽었으며, 내용에 동의합니다.
+                            <input ng-click="agreeAction($index)" ng-model="cafe.agree[$index]" type="checkbox">
+                            <span class="checkbox-material right-half-margin"><span class="check"></span></span>
+                        </label>
+                    </div>
+                </div>
+                <div ng-show='error.agree[$index]' class="error pull-center"> 동의가 필요합니다. </div>
+            </div>
         </div>
         <input type="button" name="next" class="next action-button" value="Next" />
     </fieldset>
     <fieldset>
         <h2 class="fs-title">STEP 2</h2>
         <h3 class="fs-subtitle">카페에 대한 기본 정보를 입력해주세요</h3>
-        <input type="text" name="twitter" placeholder="Twitter" />
-        <input type="text" name="facebook" placeholder="Facebook" />
-        <input type="text" name="gplus" placeholder="Google Plus" />
+        <div ng-show="error.name" class="error pull-left">{{ error.name }}</div>
+        <input type="text" ng-click='initForm("name")' ng-model="cafe.name" placeholder="카페 이름" />
+        <div ng-show='error.detail' class="error pull-left">{{ error.detail }}</div>
+        <input type="text" ng-click='initForm("detail")' ng-model="cafe.detail" placeholder="카페 설명" />
+        <div ng-show='error.phone' class="error pull-left">{{ error.phone }}</div>
+        <input type="text" ng-click='initForm("phone")' ng-model="cafe.phone" placeholder="전화 번호" />
         <input type="button" name="previous" class="previous action-button" value="Previous" />
-        <input type="button" name="next" class="next action-button" value="Next" />
+        <input ng-click="proceed()" type="button" name="next" class="next action-button" value="Next" />
     </fieldset>
     <fieldset>
         <h2 class="fs-title">STEP 3</h2>

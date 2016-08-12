@@ -1,7 +1,7 @@
 /**
  * Created by pathfinder on 16. 4. 6.
  */
-var app = angular.module('mcnCoffee', ['ui.router']);
+var app = angular.module('mcnCoffee', ['ui.router', 'ngSanitize']);
 
 app.config([
     '$stateProvider',
@@ -15,12 +15,7 @@ app.config([
             .state('cafe', {
                 url: '/create/cafe',
                 templateUrl: '/template/create/cafe.html',
-                controller: 'CreateCafeCtrl',
-                resolve: {
-                    postPromise: ['cafes', function(cafes){
-                        return cafes.getAll();
-                    }]
-                }
+                controller: 'CreateCafeCtrl'
             })
             .state('login', {
                 url: '/login',

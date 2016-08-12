@@ -199,3 +199,32 @@
     background-position-y: center;
     margin-bottom: 15px;
 }
+
+.terms {
+    height:230px;
+    margin-bottom: 30px;
+}
+
+.terms .content {
+    height: 200px;
+    overflow-x:auto;
+    overflow-y:scroll;
+    text-align: left;
+}
+
+.terms .content .el{
+    padding-left:20px;
+}
+
+.terms .content .el .number {
+    margin-left:-20px;
+}
+
+.terms .agree{
+    height:30px;
+}
+
+.error {
+    font-size: 10px;
+    color:#aa0000;
+}
