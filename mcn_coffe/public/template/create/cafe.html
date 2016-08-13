@@ -39,15 +39,22 @@
         <div ng-show='error.phone' class="error pull-left">{{ error.phone }}</div>
         <input type="text" ng-click='initForm("phone")' ng-model="cafe.phone" placeholder="전화 번호" />
         <input type="button" name="previous" class="previous action-button" value="Previous" />
-        <input ng-click="proceed()" type="button" name="next" class="next action-button" value="Next" />
+        <input type="button" name="next" class="next action-button" value="Next" />
     </fieldset>
     <fieldset>
         <h2 class="fs-title">STEP 3</h2>
         <h3 class="fs-subtitle">카페의 위치를 정확하게 입력해주세요</h3>
-        <input type="text" name="fname" placeholder="First Name" />
-        <input type="text" name="lname" placeholder="Last Name" />
-        <input type="text" name="phone" placeholder="Phone" />
-        <textarea name="address" placeholder="Address"></textarea>
+        <div id="tMap"></div>
+        <input type="text" ng-model="cafe.address" class="postcodify_address top-full-margin" placeholder="도로명 주소를 검색"/>
+        <input type="text" ng-model="cafe.detailAddress" class="detail-address" placeholder="상세 주소를 기입 해주세요"/>
+        <div>
+            <div class="checkbox">
+                <label class="left-half-margin ng-binding">
+                    지도에 표시된 위치가 정확한가요?
+                    <input ng-model="cafe.locationConfirm" type="checkbox">
+                </label>
+            </div>
+        </div>
         <input type="button" name="previous" class="previous action-button" value="Previous" />
         <input type="button" name="next" class="next action-button" value="Next" />
     </fieldset>

@@ -11,18 +11,24 @@ app.controller('OrderCtrl', [
         $scope.orders = cafes.orders;
         $scope.mappedOrders = [];
         $scope.selectedOrders = [];
+        var $grid, socket;
 
         $(document).ready(function(){
             // activate tooltip on right coner
             $('[data-toggle="tooltip"]').tooltip();
+            initializeMasonry();
+            initializeSocket();
+        });
 
+        function initializeMasonry() {
             $grid = $("#order_list").masonry({
                 itemSelector: '.grid-item',
                 columnWidth: 100
             });
-
+        }
+        function initializeSocket() {
             // localhost로 연결한다.
-            var socket = io.connect('http://210.118.64.165:8080', {query: 'id=' + $scope.cafe._id});
+            socket = io.connect('http://210.118.64.165:8080', {query: 'id=' + $scope.cafe._id});
             // 서버에서 news 이벤트가 일어날 때 데이터를 받는다.
             socket.on($scope.cafe._id, function (data) {
                 switch(data.method) {
@@ -37,7 +43,8 @@ app.controller('OrderCtrl', [
                         break;
                 }
             });
-        });
+        }
+
         $scope.getSelectionClass = function(order_id){
             if($scope.selectedIndex(order_id) == -1){
                 return "panel panel-primary";
@@ -79,22 +86,17 @@ app.controller('OrderCtrl', [
             return ret;
         };
         $scope.selectedIndex = function(order_id){
-            function findById(order){
+            function findById(order) {
                 return order._id == order_id;
             }
             return $scope.selectedOrders.findIndex(findById);
         };
         $scope.selectOrder = function(order_id) {
-            function findById(order){
-                return order._id == order_id;
-            }
-            var order = $scope.orders.find(findById);
             var selected_idx = $scope.selectedIndex(order_id);
-            if( selected_idx != -1) {
+            if( selected_idx != -1)
                 $scope.selectedOrders.splice(selected_idx, 1);
-            } else{
-                $scope.selectedOrders.push(order);
-            }
+            else
+                $scope.selectedOrders.push($scope.mappedOrders[order_id]);
         };
         $scope.generateOrderItem = function(order, i){
             var order_id = "'" + order._id + "'";
@@ -143,14 +145,14 @@ app.controller('OrderCtrl', [
         };
         $scope.appendOrder = function(order, i){
             var $items = $scope.generateOrderItem(order, i);
-            $grid.append($items).masonry( 'appended', $items );
+            $grid.append($items).masonry( 'prepended', $items );
             $grid.masonry('layout');
         };
-        $scope.getOrders();
         $scope.removeOrder = function(order_id){
-            var order_div = $("div[id=" + order_id + "]");
+            var order_div = $("div[id=" + order_id + "]").parent();
             if(order_div != undefined) {
                 $grid.masonry('remove', order_div);
+                $grid.masonry('layout');
             }
             if($scope.mappedOrders[order_id] != undefined)
                 delete $scope.mappedOrders[order_id];
@@ -166,16 +168,18 @@ app.controller('OrderCtrl', [
             }
         };
         $scope.deleteOrder = function(){
-            for(var i=0; i<$scope.selectedOrders.length; i++) {
+            for(var i=0; i<$scope.selectedOrders.length; i++)
                 cafes.deleteOrder($scope.selectedOrders[i], $scope.removeOrder);
-            }
             $scope.selectedOrders = [];
         };
         $scope.completeOrder = function(){
             for(var i=0; i<$scope.selectedOrders.length; i++){
-                if($scope.selectedOrders[i].status == 0) cafes.completeOrder($scope.selectedOrders[i], $scope.updateOrder);
+                if($scope.selectedOrders[i].status == 0)
+                    cafes.completeOrder($scope.selectedOrders[i], $scope.updateOrder);
             }
             $scope.selectedOrders = [];
         };
+
+        $scope.getOrders();
     }
 ]);

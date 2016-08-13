@@ -39,6 +39,12 @@
     color: #2C3E50;
     font-size: 13px;
 }
+#msform div[class='divide'] {
+    text-align: left;
+}
+#msform div[class='divide'] input[type='text'] {
+    width: calc(100% - 115px);
+}
 /*buttons*/
 #msform .action-button {
     width: 100px;

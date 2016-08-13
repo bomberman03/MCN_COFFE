@@ -8,19 +8,28 @@ app.controller('CreateCafeCtrl', [
     'openApi',
     function($scope, terms, openApi){
         $scope.terms = terms.terms;
-        $scope.currentPage = 0;
         $scope.cafe  = {
             agree: [],
             name: '',
             detail: '',
-            phone: ''
+            phone: '',
+            address: '',
+            detailAddress: '',
+            locationConfirm: false
         };
         $scope.error = {
             agree: [],
             name: '',
             detail: '',
-            phone: ''
+            phone: '',
+            address: '',
+            detailAddress: '',
+            locationConfirm: false
         };
+        var currentPage = 0;
+        var tMap;
+        var markerLayer;
+        var marker;
         var validationCheck = [
             function(){
                 initAgree(-1);
@@ -57,6 +66,8 @@ app.controller('CreateCafeCtrl', [
         $(document).ready(function() {
             $.material.init();
             initializeWizard();
+            initializeTMap();
+            initializePostCodify();
         });
 
         function initAgree(index) {
@@ -75,7 +86,6 @@ app.controller('CreateCafeCtrl', [
         };
 
         $scope.initForm = function(index) {
-            console.log($scope.cafe[index]);
             if($scope.error[index])
                 $scope.cafe[index] = $scope.error[index] = '';
         };
@@ -100,9 +110,9 @@ app.controller('CreateCafeCtrl', [
                 if(animating) return false;
                 animating = true;
 
-                if(!validationCheck[$scope.currentPage]())
+                if(!validationCheck[currentPage]())
                     return animating = false;
-                $scope.currentPage++;
+                currentPage++;
 
                 current_fs = $(this).parent();
                 next_fs = $(this).parent().next();
@@ -132,6 +142,7 @@ app.controller('CreateCafeCtrl', [
                     complete: function(){
                         current_fs.hide();
                         animating = false;
+                        tMap.updateSize();
                     },
                     //this comes from the custom easing plugin
                     easing: 'easeInOutBack'
@@ -142,7 +153,7 @@ app.controller('CreateCafeCtrl', [
                 if(animating) return false;
                 animating = true;
 
-                $scope.currentPage--;
+                currentPage--;
 
                 current_fs = $(this).parent();
                 previous_fs = $(this).parent().prev();
@@ -169,6 +180,7 @@ app.controller('CreateCafeCtrl', [
                     complete: function(){
                         current_fs.hide();
                         animating = false;
+                        tMap.updateSize();
                     },
                     //this comes from the custom easing plugin
                     easing: 'easeInOutBack'
@@ -181,154 +193,108 @@ app.controller('CreateCafeCtrl', [
         }
 
         function initializeTMap() {
-            // T map
-            var tMap = new Tmap.Map({
+            tMap = new Tmap.Map({
                 div:'tMap',
                 width:'100%',
                 height:'400px',
                 transitionEffect:"resize",
                 animation:true
             });
-            //경로 정보 로드
-            function searchRoute(start, end){
-                var routeFormat = new Tmap.Format.KML({extractStyles:true, extractAttributes:true});
-                var urlStr = "https://apis.skplanetx.com/tmap/routes?version=1&format=xml";
-                urlStr += "&startX=" + start.x;
-                urlStr += "&startY="+ start.y;
-                urlStr += "&endX="+ end.x;
-                urlStr += "&endY="+ end.y;
-                urlStr += "&appKey=b7224677-d5a3-3c7e-9a1c-33db6ad8e19e";
-                console.log(urlStr);
-                var prtcl = new Tmap.Protocol.HTTP({
-                    url: urlStr,
-                    format:routeFormat
-                });
-                var routeLayer = new Tmap.Layer.Vector("route", {protocol:prtcl, strategies:[new Tmap.Strategy.Fixed()]});
-                routeLayer.events.register("featuresadded", routeLayer, onDrawnFeatures);
-                tMap.addLayer(routeLayer);
+            markerLayer = new Tmap.Layer.Markers();
+            tMap.addLayer(markerLayer);
+            tMap.events.register("click", tMap, onClickMap);
+            function calculateOffset(){
+                var sb_margin_left = $("#page-wrapper").css("margin-left");
+                var sb_padding_left = $("#page-wrapper").css("padding-left");
+                var margin_left = $('#tMap').parent().css('margin-left');
+                var padding_left = $('#tMap').parent().css('padding-left');
+                sb_margin_left = sb_margin_left.substr(0, sb_margin_left.length - 2) * 1;
+                sb_padding_left = sb_padding_left.substr(0, sb_padding_left.length -2) * 1;
+                margin_left = margin_left.substr(0, margin_left.length - 2) * 1;
+                padding_left = padding_left.substr(0, padding_left.length - 2) * 1;
+                var xOffset = sb_margin_left + sb_padding_left + margin_left + padding_left;
+                var yOffset = 249;
+                if(sb_margin_left == 0) {
+                    var sb_height = $(".sidebar").height();
+                    yOffset += (sb_height + 50);
+                }
+                return {
+                    x: xOffset,
+                    y: yOffset
+                };
             }
-            //경로 그리기 후 해당영역으로 줌
-            function onDrawnFeatures(e){
-                tMap.zoomToExtent(this.getDataExtent());
+            function onClickMap(evt){
+                var offset = calculateOffset();
+                var pixel = new Tmap.Pixel(evt.clientX - offset.x , evt.clientY - offset.y);
+                var location = tMap.getLonLatFromPixel(pixel);
+                moveMarker(location);
+                location = {
+                    latitude: location.lat,
+                    longitude: location.lon
+                };
+                var method = {
+                    from: 'EPSG3857',
+                    to: 'WGS84GEO'
+                };
+                openApi.convertCoordinate(location, method, function(data){
+                    var location = {
+                        latitude: data.coordinate.lat,
+                        longitude: data.coordinate.lon
+                    };
+                    openApi.getAddressByCoordinate(location, function(data) {
+                        var jsonData = JSON.parse(data);
+                        var result = jsonData.result;
+                        if(result.total > 0) {
+                            var items = result.items;
+                            for (var idx in items){
+                                if(items[idx].isRoadAddress) {
+                                    $(".postcodify_address").val(items[idx].address);
+                                    break;
+                                }
+                            }
+                        }
+                    });
+                });
             }
         }
 
+        function moveMarker(location) {
+            var size = new Tmap.Size(24,38);
+            var offset = new Tmap.Pixel(-(size.w/2), -(size.h));
+            var icon = new Tmap.Icon('https://developers.skplanetx.com/upload/tmap/marker/pin_b_m_a.png', size, offset);
+            markerLayer.removeMarker(marker);
+            marker = new Tmap.Marker(location, icon);
+            markerLayer.addMarker(marker);
+        }
+
         function initializePostCodify(){
-            var start = {x:0, y:0};
-            var end = {x:0, y:0};
             $(".postcodify_address").postcodifyPopUp({
                 insertAddress: '.postcodify_address',
                 beforeSelect: function(e){
                     var address = e.context.innerText;
+                    address = address.substr(0, address.indexOf('('));
+                    // address = address.substring(address.indexOf('(') + 1, address.indexOf(')'));
                     openApi.getCoordinateByAddress(address, function(data){
                         var jsonData = JSON.parse(data);
                         var point  = jsonData.result.items[0].point;
-                        openApi.convertCoordinate(point.x, point.y, function(data){
-                            start.x = data.coordinate.lon;
-                            start.y = data.coordinate.lat;
-                            if($('.postcodify_details').val().length > 0)
-                                searchRoute(start, end);
-                            else {
-                                var tLocation = new Tmap.LonLat(data.coordinate.lon, data.coordinate.lat);
-                                tMap.setCenter(tLocation);
-                            }
-                        });
-                    });
-                }
-            });
-            $(".postcodify_details").postcodifyPopUp({
-                insertAddress: '.postcodify_details',
-                beforeSelect: function(e){
-                    var address = e.context.innerText;
-                    openApi.getCoordinateByAddress(address, function(data){
-                        var jsonData = JSON.parse(data);
-                        var point  = jsonData.result.items[0].point;
-                        openApi.convertCoordinate(point.x, point.y, function(data){
-                            end.x = data.coordinate.lon;
-                            end.y = data.coordinate.lat;
-                            if($('.postcodify_address').val().length > 0) {
-                                searchRoute(start, end);
-                            }
-                            else {
-                                var tLocation = new Tmap.LonLat(data.coordinate.lon, data.coordinate.lat);
-                                tMap.setCenter(tLocation);
-                            }
+                        var location  = {
+                            latitude: point.y,
+                            longitude: point.x
+                        };
+                        var method = {
+                            from: 'WGS84GEO',
+                            to: 'EPSG3857'
+                        };
+                        openApi.convertCoordinate(location, method, function(data){
+                            var tLocation = new Tmap.LonLat(data.coordinate.lon, data.coordinate.lat);
+                            tMap.setCenter(tLocation);
+                            moveMarker(tLocation);
+                            $scope.cafe.address  = address;
                         });
                     });
                 }
             });
         }
-
-        function initializeGoogleMap() {
-            // google Map
-            var directionsDisplay = new google.maps.DirectionsRenderer();
-            var directionsService = new google.maps.DirectionsService();
-
-            var mapProp = {
-                center: new google.maps.LatLng(36.6144268, 127.4740712),
-                zoom: 15,
-                mapTypeId: google.maps.MapTypeId.ROADMAP
-            };
-            var googleMap = new google.maps.Map(document.getElementById("googleMap"),mapProp);
-            directionsDisplay.setMap(googleMap);
-
-            var start = new google.maps.LatLng(36.6144268, 127.4740712);
-            var end  = new google.maps.LatLng(36.3518898, 127.3782516);
-
-            var request = {
-                origin: start,
-                destination: end,
-                travelMode: google.maps.TravelMode.TRANSIT
-            };
-
-            directionsService.route(request, function(result, status) {
-                if (status == google.maps.DirectionsStatus.OK) {
-                    directionsDisplay.setDirections(result);
-                }
-            });
-        }
-
-        function initializeNaverMap() {
-            // naver Map
-            var mapOptions = {
-                mapTypeControl: true,
-                mapTypeControlOptions: {
-                    style: naver.maps.MapTypeControlStyle.BUTTON,
-                    position: naver.maps.Position.TOP_RIGHT
-                },
-                zoomControl: true,
-                zoomControlOptions: {
-                    style: naver.maps.ZoomControlStyle.SMALL,
-                    position: naver.maps.Position.RIGHT_CENTER
-                },
-                scaleControl: true,
-                scaleControlOptions: {
-                    position: naver.maps.Position.BOTTOM_RIGHT
-                },
-                logoControl: true,
-                logoControlOptions: {
-                    position: naver.maps.Position.TOP_LEFT
-                },
-                mapDataControl: true,
-                mapDataControlOptions: {
-                    position: naver.maps.Position.BOTTOM_LEFT
-                },
-                center: new naver.maps.LatLng(40.577280, 77.544221),
-                zoom: 10
-            };
-
-            var map = new naver.maps.Map('map', mapOptions);
-
-            var marker = new naver.maps.Marker({
-                position: new naver.maps.LatLng(37.3595704, 127.105399),
-                map: map
-            });
-
-            naver.maps.Event.addListener(map, 'click', function(e) {
-                marker.setPosition(e.latlng);
-            });
-        }
-
     }
 ]);
 
