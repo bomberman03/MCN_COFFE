@@ -6,8 +6,17 @@ var router = express.Router();
 
 var mongoose = require('mongoose');
 
-var Cafe = mongoose.model('Cafe');
 var Menu = mongoose.model('Menu');
+
+router.param('menu', function(req, res, next, id) {
+    var query = Menu.findById(id);
+    query.exec(function (err, menu){
+        if (err) { return next(err); }
+        if (!menu) { return next(new Error('can\'t find Menu')); }
+        req.menu = menu;
+        return next();
+    });
+});
 
 /* menu related API */
 router.get('/', function(req, res, next){
@@ -43,16 +52,6 @@ router.delete('/:menu', function(req, res, next){
                 id: menu_id
             });
         });
-    });
-});
-
-router.param('menu', function(req, res, next, id) {
-    var query = Menu.findById(id);
-    query.exec(function (err, menu){
-        if (err) { return next(err); }
-        if (!menu) { return next(new Error('can\'t find Menu')); }
-        req.menu = menu;
-        return next();
     });
 });
 

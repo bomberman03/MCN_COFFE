@@ -22,7 +22,7 @@ router.param('option', function(req, res, next, id) {
 router.get('/', function(req, res, next){
     Option.find(function(err, options){
         if(err){ return next(err); }
-        res.json(options);
+        return res.json(options);
     });
 });
 

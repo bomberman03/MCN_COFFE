@@ -8,9 +8,11 @@ var mongoose = require('mongoose');
 
 var Cafe = mongoose.model('Cafe');
 var cafeMenu = require('./cafeMenu');
+var cafeOption = require('./cafeOption');
 var cafeOrder = require('./cafeOrder');
 
 router.use('/:cafe/menus', cafeMenu);
+router.use('/:cafe/options', cafeOption);
 router.use('/:cafe/orders', cafeOrder);
 
 router.param('cafe', function(req, res, next, id) {
@@ -34,13 +36,14 @@ router.get('/', function(req, res, next){
 router.post('/', function(req, res, next) {
     var cafe = new Cafe(req.body);
     cafe.save(function(err, cafe){
-        if(err){ return next(err); }
+        if(err)
+            return next(err);
         res.json(cafe);
     });
 });
 
 router.get('/:cafe', function(req, res) {
-    req.cafe.populate('menus', function(err, cafe){
+    req.cafe.populate('menus', function(err, cafe) {
         res.json(cafe);
     });
 });

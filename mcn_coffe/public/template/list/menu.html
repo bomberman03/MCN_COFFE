@@ -1,0 +1,41 @@
+<div id="search_form">
+    <fieldset>
+        <div class="input-group">
+            <div class="input-group-btn search-panel">
+                <button type="button" class="btn btn-default btn-raised dropdown-toggle" data-toggle="dropdown">
+                    <span id="search_concept">{{category_filter}}</span> <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                    <li ng-repeat="category in categories">
+                        <a ng-click="selectFilter(category)">{{category}}</a>
+                    </li>
+                </ul>
+            </div>
+            <input id="search_term" ng-keyup="makeQuery()" type="text" class="form-control" placeholder="검색할 메뉴를 입력하세요">
+        </div>
+    </fieldset>
+    <fieldset>
+        <p ng-hide="menus.length" class="bg-default full-padding">등록된 메뉴가 없습니다.</p>
+        <div ng-show="menus.length">
+            <div ng-repeat="menu in menus">
+                <div><span class="label label-primary">{{menu.category}}</span></div>
+                <div class="panel panel-default">
+                    <div class="menu-item">
+                        <img src='' onerror="this.src='/images/coffee_default.png'">
+                        <div class="menu-info">
+                            <div class="name">{{menu.name}}</div>
+                            <div class="detail">{{menu.detail}}</div>
+                        </div>
+                        <div class="menu-cost">{{menu.cost}} 원</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </fieldset>
+</div>
+<a href="#/create/cafes/{{cafe._id}}/menus"
+   data-toggle="tooltip" data-placement="top" title="" data-original-title="새로운 메뉴를 등록합니다."
+   style="position:fixed;" class="btn btn-primary btn-fab right-conner-1">
+    <i class="material-icons">add</i>
+    <div class="ripple-container"></div>
+</a>

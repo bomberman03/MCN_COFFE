@@ -11,8 +11,14 @@ app.factory('cafes', ['$http', function($http){
             angular.copy(data, o.cafes);
         });
     };
+    o.getCafeOption = function(cafe_id) {
+        return $http.get('/cafes/' + cafe_id + '/options').success(function(data) {
+            return data.data;
+        });
+    };
     o.createCafe = function(cafe) {
         return $http.post('/cafes', cafe).success(function(data){
+            console.log(data);
         });
     };
     o.deleteCafe = function(cafe, callback) {
@@ -89,17 +95,6 @@ app.factory('cafes', ['$http', function($http){
         return $http.put('/orders/' + order._id + '/complete/').success(function(data){
             next(data);
         });
-    };
-    o.postImage = function(file, uploadUrl){
-        var fd = new FormData();
-        fd.append('type', 'image');
-        fd.append('avatar', file);
-        $http.post(uploadUrl, fd, {
-            transformRequest: angular.identity,
-            headers: {'Content-Type': undefined}
-        }).success(function(data){
-            console.log(data);
-        })
     };
     return o;
 }]);

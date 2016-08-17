@@ -17,6 +17,26 @@ app.config([
                 templateUrl: '/template/create/cafe.html',
                 controller: 'CreateCafeCtrl'
             })
+            .state('menu', {
+                url: '/list/cafes/{id}/menu',
+                templateUrl: '/template/list/menu.html',
+                controller: 'ListMenuCtrl',
+                resolve: {
+                    cafe: ['$stateParams', 'cafes', function($stateParams, cafes){
+                        return cafes.getCafe($stateParams.id);
+                    }]
+                }
+            })
+            .state('option', {
+                url: '/list/cafes/{id}/option',
+                templateUrl: '/template/list/option.html',
+                controller: 'ListOptionCtrl',
+                resolve: {
+                    options: ['$stateParams', 'cafes', function($stateParams, cafes){
+                        return cafes.getCafeOption($stateParams.id);
+                    }]
+                }
+            })
             .state('login', {
                 url: '/login',
                 templateUrl: '/template/login.html',

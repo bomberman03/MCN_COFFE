@@ -5,8 +5,12 @@
 var mongoose = require('mongoose');
 
 var MenuSchema = new mongoose.Schema({
-    name: String,
-    cost: {type: Number, default: 0},
+    cafe: {type: mongoose.Schema.Types.ObjectId, ref: 'Cafe'},
+    category: { type:String, default:'', required:true },
+    name: { type: String, default: '', required: true },
+    detail: { type: String, default: '' },
+    cost: { type: Number, default: 0, required: true },
+    image: { type: String, default: 'blank' },
     options : [{type: mongoose.Schema.Types.ObjectId, ref: 'Option'}]
 });
 

@@ -5,9 +5,16 @@
 var mongoose = require('mongoose');
 
 var OptionSchema = new mongoose.Schema({
-    name: String,
-    cost: {type: Number, default: 0},
-    options : [{type: mongoose.Schema.Types.ObjectId, ref: 'Option'}]
+    cafe: { type: mongoose.Schema.Types.ObjectId, ref: 'Cafe', required: true },
+    menu: { type: mongoose.Schema.Types.ObjectId, ref: 'Menu', required: true },
+    name: { type: String, default: '', required: true },
+    option: { type: mongoose.Schema.Types.ObjectId, ref: 'Option'},
+    cost: { type: Number, default: 0, required: true },
+    hasChild: { type: Boolean, default:false },
+    options : [{
+        name: { type: String, default: '', required: true },
+        cost: { type: Number, default: 0, required: true }
+    }]
 });
 
 mongoose.model('Option', OptionSchema);
