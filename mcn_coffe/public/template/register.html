@@ -1,31 +1,73 @@
-<div class="container col-md-offset-2 col-md-8">
-    <div ng-show="error" class="alert alert-danger row">
-        <span>{{ error.message }}</span>
-    </div>
-    <div class="well bs-component">
-        <form class="form-horizontal">
-            <fieldset>
-                <legend>
-                    회원 가입
-                </legend>
-                <div class="form-group is-empty">
-                    <label for="inputName" class="col-md-2 control-label">이름</label>
-                    <div class="col-md-10">
-                        <input id="inputName" type="text" class="form-control" placeholder="이름" ng-model="user.username"/>
+<!-- multistep form -->
+<form id="msform">
+    <!-- progressbar -->
+    <ul id="progressbar">
+        <li class="active">약관 동의</li>
+        <li>회원 정보</li>
+        <li>개인 정보</li>
+        <li>메일 인증</li>
+    </ul>
+    <!-- fieldsets -->
+    <fieldset>
+        <h2 class="fs-title">STEP 1</h2>
+        <h3 class="fs-subtitle">아래 약관을 읽고 동의해주세요</h3>
+        <div ng-repeat="term in terms track by $index">
+            <div class="terms bottom-full-margin">
+                <div class="content" ng-bind-html="term">
+                </div>
+                <div class="agree">
+                    <div class="checkbox">
+                        <label class="left-half-margin ng-binding">
+                            위 내용을 모두 읽었으며, 내용에 동의합니다.
+                            <input ng-click="agreeAction($index)" ng-model="user.agree[$index]" type="checkbox">
+                            <span class="checkbox-material right-half-margin"><span class="check"></span></span>
+                        </label>
                     </div>
-                    <span class="material-input"></span>
                 </div>
-                <div class="form-group is-empty">
-                    <label for="inputPassword" class="col-md-2 control-label">비밀번호</label>
-                    <div class="col-md-10">
-                        <input id=inputPassword" type="password" class="form-control" placeholder="비밀번호" ng-model="user.password"/>
-                    </div>
-                    <span class="material-input"></span>
-                </div>
-                <div class="form-group is-empty pull-center">
-                    <button ng-click="register()" class="btn btn-raised btn-primary">등록하기</button>
-                </div>
-            </fieldset>
-        </form>
-    </div>
-</div>
+                <div ng-show='error.agree[$index]' class="error pull-center"> 동의가 필요합니다. </div>
+            </div>
+        </div>
+        <input type="button" name="next" class="next action-button" value="Next" />
+    </fieldset>
+    <fieldset>
+        <h2 class="fs-title">STEP 2</h2>
+        <h3 class="fs-subtitle">회원 정보</h3>
+        <div class="pull-left">아이디 <span ng-show="error.username" class="error">{{ error.username }}</span></div>
+        <input type="text" ng-click='initForm("username")' ng-model="user.username" placeholder="아이디를 입력하세요" />
+        <div class="pull-left">비밀번호 <span ng-show='error.password' class="error">{{ error.password }}</span></div>
+        <input type="password" ng-click='initForm("password")' ng-model="user.password" placeholder="비밀번호를 입력하세요" />
+        <div class="pull-left">비밀번호 확인 <span ng-show='error.passwordCheck' class="error">{{ error.passwordCheck }}</span></div>
+        <input type="password" ng-click='initForm("passwordCheck")' ng-model="user.passwordCheck" placeholder="비밀번호를 입력하세요" />
+        <input type="button" name="previous" class="previous action-button" value="Previous" />
+        <input type="button" name="next" class="next action-button" value="Next" />
+    </fieldset>
+    <fieldset>
+        <h2 class="fs-title">STEP 3</h2>
+        <h3 class="fs-subtitle">개인 정보</h3>
+        <div class="pull-left">이름 <span ng-show="error.name" class="error">{{ error.name }}</span></div>
+        <input type="text" ng-click='initForm("name")' ng-model="user.name" placeholder="예) 홍 길동" />
+        <div class="pull-left">이메일 <span ng-show='error.email' class="error">{{ error.email }}</span></div>
+        <input type="email" ng-keyup="print()" ng-click='initForm("email")' ng-model="user.email" placeholder="예) aaa@bbb.ccc" />
+        <div class="pull-left">전화번호 <span ng-show='error.phone' class="error">{{ error.phone }}</span></div>
+        <input type="text" ng-click='initForm("phone")' ng-model="user.phone" placeholder="예) 010-1234-5678" />
+        <input type="button" name="previous" class="previous action-button" value="Previous" />
+        <input type="button" name="next" class="next action-button" value="Next" />
+    </fieldset>
+    <fieldset>
+        <h2 class="fs-title">STEP 4</h2>
+        <h3 class="fs-subtitle">메일 인증</h3>
+        <div class="bottom-full-margin">
+            반갑습니다. {{user.username}}!
+        </div>
+        <div class="bottom-full-margin">
+            {{ user.email }}로 인증 메일이 발송되었습니다.
+        </div>
+        <div class="bottom-full-margin">
+            메일인증을 완료하면 서비스를 이용할 수 있습니다.
+        </div>
+        <div>
+            혹시 메일을 받지 못하셨나요?
+        </div>
+        <input type="submit" name="submit" class="submit action-button" value="재 전송" />
+    </fieldset>
+</form>

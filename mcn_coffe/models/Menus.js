@@ -11,7 +11,16 @@ var MenuSchema = new mongoose.Schema({
     detail: { type: String, default: '' },
     cost: { type: Number, default: 0, required: true },
     image: { type: String, default: 'blank' },
-    options : [{type: mongoose.Schema.Types.ObjectId, ref: 'Option'}]
+    options : [{
+        order: {type: Number, default: 0, required: true },
+        name: { type: String, default: '', required: true },
+        cost: { type: Number, default: 0, required: true },
+        options : [{
+            order: {type: Number, default: 0, required: true },
+            name: { type: String, default: '', required: true },
+            cost: { type: Number, default: 0, required: true }
+        }]
+    }]
 });
 
 mongoose.model('Menu', MenuSchema);

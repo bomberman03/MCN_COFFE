@@ -42,6 +42,8 @@
     <script src="/javascripts/factories/openApi.js"></script>
 
     <script src="/javascripts/controllers/authController.js"></script>
+    <script src="/javascripts/controllers/auth/loginController.js"></script>
+    <script src="/javascripts/controllers/auth/registerController.js"></script>
     <script src="/javascripts/controllers/create/createCafeController.js"></script>
     <script src="/javascripts/controllers/list/listMenuController.js"></script>
     <script src="/javascripts/controllers/list/listOptionController.js"></script>
@@ -64,14 +66,18 @@
         <ul class="nav navbar-top-links navbar-right">
             <li class="dropdown">
                 <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                    <i class="white fa fa-user fa-fw white"></i>
-                    <i class="fa fa-caret-down white"></i>
+                    <i style="color:white" class="white fa fa-user fa-fw white"></i>
+                    <i style="color:white" class="fa fa-caret-down white"></i>
                 </a>
-                <ul class="dropdown-menu dropdown-messages">
-                    <li><a href="#"><i class="fa fa-user fa-fw"></i> 내 정보</a></li>
-                    <li><a href="#"><i class="fa fa-gear fa-fw"></i> 설정</a></li>
+                <ul ng-show="!isLoggedIn()" class="dropdown-menu dropdown-messages">
+                    <li><a href="#/login"> 로그인</a></li>
+                    <li><a href="#/register"> 회원가입</a></li>
+                </ul>
+                <ul ng-show="isLoggedIn()" class="dropdown-menu dropdown-messages">
+                    <li><a href="#"> 내 정보</a></li>
+                    <li><a href="#"> 설정</a></li>
                     <li class="divider"></li>
-                    <li><a href="#"><i class="fa fa-sign-out fa-fw"></i> 로그아웃</a></li>
+                    <li><a href="#"> 로그아웃</a></li>
                 </ul>
             </li>
         </ul>

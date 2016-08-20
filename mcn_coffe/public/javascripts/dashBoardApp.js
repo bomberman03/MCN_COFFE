@@ -10,17 +10,32 @@ app.config([
         $stateProvider
             .state('main', {
                 url: '/main',
-                templateUrl: '/template/admin.html'
+                templateUrl: '/template/admin.html',
+                onEnter: ['$state', 'auth', function($state, auth) {
+                    if( !auth.isLoggedIn()) {
+                        $state.go('login');
+                    }
+                }]
             })
             .state('cafe', {
                 url: '/create/cafe',
                 templateUrl: '/template/create/cafe.html',
-                controller: 'CreateCafeCtrl'
+                controller: 'CreateCafeCtrl',
+                onEnter: ['$state', 'auth', function($state, auth) {
+                    if( !auth.isLoggedIn()) {
+                        $state.go('login');
+                    }
+                }]
             })
             .state('menu', {
                 url: '/list/cafes/{id}/menu',
                 templateUrl: '/template/list/menu.html',
                 controller: 'ListMenuCtrl',
+                onEnter: ['$state', 'auth', function($state, auth) {
+                    if( !auth.isLoggedIn()) {
+                        $state.go('login');
+                    }
+                }],
                 resolve: {
                     cafe: ['$stateParams', 'cafes', function($stateParams, cafes){
                         return cafes.getCafe($stateParams.id);
@@ -40,7 +55,7 @@ app.config([
             .state('login', {
                 url: '/login',
                 templateUrl: '/template/login.html',
-                controller: 'AuthCtrl',
+                controller: 'LoginCtrl',
                 onEnter: ['$state', 'auth', function($state, auth) {
                     if( auth.isLoggedIn()) {
                         $state.go('main');
@@ -50,16 +65,12 @@ app.config([
             .state('register', {
                 url: '/register',
                 templateUrl: '/template/register.html',
-                controller: 'AuthCtrl',
+                controller: 'RegisterCtrl',
                 onEnter: ['$state', 'auth', function($state, auth) {
                     if( auth.isLoggedIn()) {
                         $state.go('main');
                     }
                 }]
-            })
-            .state('form.profile', {
-                url: '/profile',
-                templateUrl: 'form-profile.html'
             });
         $urlRouterProvider.otherwise('main');
     }]);
