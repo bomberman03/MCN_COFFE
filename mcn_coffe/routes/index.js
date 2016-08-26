@@ -1,6 +1,9 @@
 var express = require('express');
 var router = express.Router();
 var passport = require('passport');
+var mongoose = require('mongoose');
+
+var User = mongoose.model('User');
 
 var code = require('../config/code');
 
@@ -10,8 +13,6 @@ var cafe = require('./cafe');
 router.use('/cafes', cafe);
 var menu = require('./menu');
 router.use('/menus', menu);
-var option = require('./option');
-router.use('/options', option);
 var order = require('./order');
 router.use('/orders', order);
 

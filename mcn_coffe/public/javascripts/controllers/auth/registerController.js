@@ -33,13 +33,6 @@ app.controller('RegisterCtrl', [
                 $scope.user[index] = $scope.error[index] = '';
             }
         };
-        $scope.register = function(){
-            auth.register($scope.user).error(function(error){
-                $scope.error = error.message;
-            }).then(function(){
-                $state.go('main');
-            });
-        };
         $scope.agreeAction = function(index){
             initAgree(index);
             $scope.error.agree[index] = false;
@@ -51,7 +44,7 @@ app.controller('RegisterCtrl', [
         });
         var currentPage = 0;
         var validationCheck = [
-            function(){
+            function(src, err, cb){
                 initAgree(-1);
                 var ret = true;
                 for(var idx in $scope.user.agree) {
@@ -59,9 +52,11 @@ app.controller('RegisterCtrl', [
                     ret &= $scope.user.agree[idx];
                 }
                 $scope.$apply();
+                if(!ret) err(src);
+                else cb(src);
                 return ret;
             },
-            function(){
+            function(src, err, cb){
                 var ret = true;
                 if($scope.user.username.trim().length == 0) {
                     $scope.error.username = "아이디를 반드시 입력하세요";
@@ -76,9 +71,11 @@ app.controller('RegisterCtrl', [
                     ret = false;
                 }
                 $scope.$apply();
+                if(!ret) err(src);
+                else cb(src);
                 return ret;
             },
-            function() {
+            function(src, err, cb) {
                 var ret = true;
                 if($scope.user.name.trim().length == 0) {
                     $scope.error.name = "이름을 반드시 입력하세요";
@@ -96,10 +93,9 @@ app.controller('RegisterCtrl', [
                     $scope.error.phone = "전화번호 양식이 맞지 않습니다.";
                     ret = false;
                 }
-                if(ret) {
-                    register();
-                }
                 $scope.$apply();
+                if(!ret) err(src);
+                else cb(src);
                 return ret;
             }
         ];
@@ -120,17 +116,14 @@ app.controller('RegisterCtrl', [
             var current_fs, next_fs, previous_fs;
             var left, opacity, scale;
             var animating;
-
-            $(".next").click(function(){
+            function toNextPage (src) {
                 if(animating) return false;
                 animating = true;
 
-                if(!validationCheck[currentPage]())
-                    return animating = false;
                 currentPage++;
 
-                current_fs = $(this).parent();
-                next_fs = $(this).parent().next();
+                current_fs = $(src).parent();
+                next_fs = $(src).parent().next();
 
                 $("#progressbar li").eq($("fieldset").index(next_fs)).addClass("active");
 
@@ -153,39 +146,61 @@ app.controller('RegisterCtrl', [
                     },
                     easing: 'easeInOutBack'
                 });
-            });
-
-            $(".previous").click(function(){
+            }
+            function toPrevPage (src) {
                 if(animating) return false;
                 animating = true;
 
                 currentPage--;
 
-                current_fs = $(this).parent();
-                previous_fs = $(this).parent().prev();
+                current_fs = $(src).parent();
+                previous_fs = $(src).parent().prev();
 
                 $("#progressbar li").eq($("fieldset").index(current_fs)).removeClass("active");
 
                 previous_fs.show();
                 current_fs.animate({opacity: 0}, {
-                    step: function(now, mx) {
+                    step: function (now, mx) {
                         scale = 0.8 + (1 - now) * 0.2;
-                        left = ((1-now) * 50)+"%";
+                        left = ((1 - now) * 50) + "%";
                         opacity = 1 - now;
                         current_fs.css({'left': left});
-                        previous_fs.css({'transform': 'scale('+scale+')', 'opacity': opacity});
+                        previous_fs.css({'transform': 'scale(' + scale + ')', 'opacity': opacity});
                     },
                     duration: 800,
-                    complete: function(){
+                    complete: function () {
                         current_fs.hide();
                         animating = false;
                     },
                     easing: 'easeInOutBack'
                 });
+            }
+            function register (src, err, cb) {
+                auth.register($scope.user).error(err).then(function(){
+                    cb(src);
+                });
+            }
+            $(".next").click(function(){
+                if(currentPage < 2) {
+                    validationCheck[currentPage](this, function () {
+                        console.log("validation error!");
+                    }, toNextPage)
+                }
+                else {
+                    validationCheck[currentPage](this, function () {
+                        console.log("validation error!");
+                    }, function(src) {
+                        register(src, function() {
+                            console.log("register error!");
+                        }, toNextPage);
+                    });
+                }
             });
-
+            $(".previous").click(function() {
+                toPrevPage(this);
+            });
             $(".submit").click(function(){
-
+                $state.go('main');
             });
         }
     }

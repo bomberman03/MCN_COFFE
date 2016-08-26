@@ -1,6 +1,10 @@
 @import url(http://fonts.googleapis.com/earlyaccess/nanumgothic.css);
 @import url(http://fonts.googleapis.com/earlyaccess/nanumbrushscript.css);
 
+a{
+    text-decoration: none !important;
+}
+
 .NanumGothic{
     font-family: 'Nanum Gothic Coding', serif;
 }
@@ -130,11 +134,25 @@
 .right-conner-1{
     bottom:5%;
     right:5%;
+    -webkit-transition: bottom 300ms ease;
+    -moz-transition: bottom 300ms ease;
+    -o-transition: bottom 300ms ease;
+    -ms-transition: bottom 300ms ease;
+    transition: bottom 300ms ease;
 }
 
 .right-conner-2{
     bottom:calc(5% + 65px);
     right:5%;
+}
+
+.right-conner-3{
+    bottom:calc(5% + 130px);
+    right:5%;
+}
+
+.ground {
+    bottom: -10%;
 }
 
 @media screen and (min-width: 300px) and (max-width: 900px){
@@ -271,10 +289,195 @@
 
 .menu-item .menu-info .name {
     font-size:20px;
+    color:#000;
+}
+
+.menu-item .menu-info .detail {
+    font-size:14px;
+    color:#000;
 }
 
 .menu-cost {
     position: absolute;
     top:25px;
     right:10px;
+    font-size:16px;
+    color:#000;
+}
+
+.option-group {
+    margin-top: 15px;
+    margin-bottom: 7px;
+}
+
+.option-group:hover {
+    color: #009688;
+    -webkit-transition: background-color 300ms linear;
+    -moz-transition: background-color 300ms linear;
+    -o-transition: background-color 300ms linear;
+    -ms-transition: background-color 300ms linear;
+    transition: background-color 300ms linear;
+}
+
+.option-item {
+    cursor: pointer;
+    padding: 7px;
+    margin-bottom: 7px;
+    margin-right: 7px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    box-sizing: border-box;
+}
+
+.option-item:hover {
+    background-color: #009688;
+    color: #fff;
+    -webkit-transition: background-color 300ms linear;
+    -moz-transition: background-color 300ms linear;
+    -o-transition: background-color 300ms linear;
+    -ms-transition: background-color 300ms linear;
+    transition: background-color 300ms linear;
+}
+
+.menu-form {
+    background-color: #f8f8f8;
+    border: 1px solid #e7e7e7;
+    border-radius: 3px;
+    box-sizing: border-box;
+    bottom: 0;
+    display: none;
+    position: fixed;
+}
+
+@media (min-width: 768px) {
+    .menu-form {
+        width:calc(100% - 250px);
+        left:250px;
+    }
+}
+
+@media (max-width: 768px) {
+    .menu-form {
+        width:100%;
+        left:0;
+    }
+}
+
+@media (max-width: 992px) {
+    .menu-form {
+        height: 650px;
+    }
+}
+@media (min-width: 992px) {
+    .menu-form {
+        height: 400px;
+    }
+}
+
+.menu-form .close-form {
+    cursor: pointer;
+    color:#000;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1;
+    text-shadow: 0 1px 0 #fff;
+    filter: alpha(opacity=20);
+    opacity: .2;
+    margin-top:7px;
+}
+
+.menu-form .close-form:hover {
+    color:#000;
+    text-decoration: none;
+    filter: alpha(opacity=50);
+    opacity: .5;
+}
+
+.menu-form .input-form {
+    margin:auto;
+    width:550px;
+}
+
+.menu-form input[type=file]{
+    display: none;
+}
+
+.menu-form .touch {
+    cursor: pointer;
+    border: 1px solid #ccc;
+    border-radius: 100%;
+    width: 100px;
+    height: 100px;
+}
+
+.menu-form .touch:hover {
+    opacity: 0.5;
+    filter: alpha(opacity=50);
+}
+
+.text-left{
+    text-align: left;
+}
+
+.text-right{
+    text-align: right;
+}
+
+.text-center{
+    text-align: center;
+}
+
+.hover-message {
+    position:relative;
+    bottom: 50px;
+    height:0;
+}
+
+.select-form {
+    background-color: #f8f8f8;
+    border: 1px solid #e7e7e7;
+    border-radius: 3px;
+    box-sizing: border-box;
+    bottom: 0;
+    display: none;
+    position: fixed;
+}
+
+.select-form .header{
+    cursor: pointer;
+    color:#000;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1;
+    text-shadow: 0 1px 0 #fff;
+    filter: alpha(opacity=70);
+    opacity: .7;
+    margin-top:10px;
+}
+
+@media (min-width: 768px) {
+    .select-form {
+        width:calc(100% - 250px);
+        left:250px;
+    }
+}
+
+@media (max-width: 768px) {
+    .select-form {
+        width:100%;
+        left:0;
+    }
+}
+
+@media (max-width: 992px) {
+    .select-form {
+        height: 40px;
+    }
+}
+@media (min-width: 992px) {
+    .select-form {
+        height: 40px;
+    }
 }

@@ -9,9 +9,6 @@ var mongoose = require('mongoose');
 var Cafe = mongoose.model('Cafe');
 var Menu = mongoose.model('Menu');
 
-var option = require('./menuOption');
-router.use('/:menu/options', option);
-
 router.get('/', function(req, res, next){
     Menu.find(function(err, menus){
         if(err){ return next(err); }
@@ -20,9 +17,7 @@ router.get('/', function(req, res, next){
 });
 
 router.get('/:menu', function(req, res) {
-    req.menu.populate('options', function(err, menu){
-        res.json(menu);
-    });
+    res.json(req.menu);
 });
 
 router.param('menu', function(req, res, next, id) {

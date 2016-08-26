@@ -42,16 +42,6 @@ app.config([
                     }]
                 }
             })
-            .state('option', {
-                url: '/list/cafes/{id}/option',
-                templateUrl: '/template/list/option.html',
-                controller: 'ListOptionCtrl',
-                resolve: {
-                    options: ['$stateParams', 'cafes', function($stateParams, cafes){
-                        return cafes.getCafeOption($stateParams.id);
-                    }]
-                }
-            })
             .state('login', {
                 url: '/login',
                 templateUrl: '/template/login.html',

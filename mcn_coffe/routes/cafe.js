@@ -8,11 +8,9 @@ var mongoose = require('mongoose');
 
 var Cafe = mongoose.model('Cafe');
 var cafeMenu = require('./cafeMenu');
-var cafeOption = require('./cafeOption');
 var cafeOrder = require('./cafeOrder');
 
 router.use('/:cafe/menus', cafeMenu);
-router.use('/:cafe/options', cafeOption);
 router.use('/:cafe/orders', cafeOrder);
 
 router.param('cafe', function(req, res, next, id) {
