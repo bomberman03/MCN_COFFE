@@ -1,0 +1,483 @@
+@import url(http://fonts.googleapis.com/earlyaccess/nanumgothic.css);
+@import url(http://fonts.googleapis.com/earlyaccess/nanumbrushscript.css);
+
+a{
+    text-decoration: none !important;
+}
+
+.NanumGothic{
+    font-family: 'Nanum Gothic Coding', serif;
+}
+
+.NanumBrush{
+    font-family: 'Nanum Brush Script', serif;
+}
+
+.row {
+  margin-top:15px;
+  margin-left:15px;
+  margin-right:15px;
+}
+
+.no-margin{
+  margin:0;
+}
+
+.top-half-margin{
+    margin-top:7px;
+}
+
+.top-full-margin{
+    margin-top:15px;
+}
+
+.bottom-half-margin{
+    margin-bottom:7px;
+}
+
+.bottom-full-margin{
+    margin-bottom: 15px;
+}
+
+.left-full-margin{
+  margin-left:15px;
+}
+
+.left-half-margin{
+  margin-left:7px;
+}
+
+.right-full-margin{
+  margin-right:15px;
+}
+
+.right-half-margin{
+  margin-right:7px;
+}
+
+.left{
+  float:left;
+}
+
+.right{
+  float:right;
+}
+
+.block {
+  display:block;
+}
+
+.full-padding{
+  padding:15px;
+}
+
+.menu-name{
+  margin-left:15px;
+  margin-bottom: 15px;
+}
+
+.menu-name .name{
+  margin-right:7px;
+}
+
+.menu-count{
+  margin-left:7px;
+  margin-right:7px;
+}
+
+.list-group-item .row-content .control{
+    position:absolute;
+    right:14px;
+    bottom:0;
+}
+
+.pull-left{
+  text-align: left;
+}
+
+.pull-right{
+  text-align: right;
+}
+
+.pull-center{
+  text-align: center;
+}
+
+.thumbnail img {
+  width:250px;
+  height:250px;
+}
+
+.thumbnail .caption h3{
+  text-align: center;
+}
+
+.bs-example {
+  margin-bottom: 20px;
+}
+
+.carousel-caption {
+  top: calc(50% - 20px);
+  bottom:auto;
+  padding: 0;
+  font-size:40px;
+}
+
+.option-block{
+  margin-bottom: 30px;
+}
+
+.fix{
+    position:fixed;
+}
+
+.right-conner-1{
+    bottom:5%;
+    right:5%;
+    -webkit-transition: bottom 300ms ease;
+    -moz-transition: bottom 300ms ease;
+    -o-transition: bottom 300ms ease;
+    -ms-transition: bottom 300ms ease;
+    transition: bottom 300ms ease;
+}
+
+.right-conner-2{
+    bottom:calc(5% + 65px);
+    right:5%;
+}
+
+.right-conner-3{
+    bottom:calc(5% + 130px);
+    right:5%;
+}
+
+.ground {
+    bottom: -10%;
+}
+
+@media screen and (min-width: 300px) and (max-width: 900px){
+    .cafe_list{
+        padding-left:calc((100% - 300px)/2);
+        padding-right:calc((100% - 300px)/2);
+    }
+    .cafe_item{
+        float:left;
+        width:100%;
+    }
+}
+
+.cafe_item {
+    padding-left:7px;
+    padding-right:7px;
+    float:left;
+}
+.nav-top-fixed-body{
+    padding-top:50px;
+}
+@media screen and (min-width: 600px) and (max-width: 900px){
+    .cafe_list{
+        padding-left:calc((100% - 600px)/2);
+        padding-right:calc((100% - 600px)/2);
+    }
+    .cafe_item{
+        width:50%;
+    }
+}
+@media screen and (min-width:900px) and (max-width: 1200px){
+    .cafe_list{
+        padding-left:calc((100% - 900px)/2);
+        padding-right:calc((100% - 900px)/2);
+    }
+    .cafe_item{
+        width: 33.33333333%
+    }
+}
+@media screen and (min-width:1200px) and (max-width: 9999px){
+    .cafe_list{
+        padding-left:calc((100% - 1200px)/2);
+        padding-right:calc((100% - 1200px)/2);
+    }
+    .cafe_item{
+        width:25%;
+    }
+    .nav-top-fixed-body{
+        padding-top:60px;
+    }
+}
+
+.search_background{
+    width:100%;
+    height:200px;
+    background-image: url('http://127.0.0.1:3000/images/search_background.jpg');
+    background-size:cover;
+    background-position-x: center;
+    background-position-y: center;
+    margin-bottom: 15px;
+}
+
+.terms {
+    height:230px;
+    margin-bottom: 60px;
+}
+
+.terms .content {
+    height: 200px;
+    overflow-x:auto;
+    overflow-y:scroll;
+    text-align: left;
+}
+
+.terms .content .el{
+    padding-left:20px;
+}
+
+.terms .content .el .number {
+    margin-left:-20px;
+}
+
+.terms .agree{
+    margin-top: 20px;
+    height:30px;
+}
+
+.error {
+    font-size: 10px;
+    color:#aa0000;
+}
+
+#search_form fieldset {
+    background: white;
+    border: 0 none;
+    padding: 20px 30px;
+    box-sizing: border-box;
+    width: 80%;
+    margin: 0 10%;
+    /*stacking fieldsets above each other*/
+    position: relative;
+}
+
+#search_form input, #search_form textarea {
+    padding: 15px;
+    border-radius: 3px;
+    margin-bottom: 10px;
+    width: 100%;
+    box-sizing: border-box;
+    font-family: montserrat;
+    color: #2C3E50;
+    font-size: 13px;
+}
+
+.menu-item {
+    position:relative;
+    padding:10px;
+    height:70px;
+}
+
+.menu-item img{
+    position: absolute;
+    border: 1px solid #ccc;
+    border-radius: 100%;
+    width:50px;
+    height:50px;
+}
+
+.menu-item .menu-info {
+    overflow: hidden;
+    width:400px;
+    margin-left:70px;
+}
+
+.menu-item .menu-info .name {
+    font-size:20px;
+    color:#000;
+}
+
+.menu-item .menu-info .detail {
+    font-size:14px;
+    color:#000;
+}
+
+.menu-cost {
+    position: absolute;
+    top:25px;
+    right:10px;
+    font-size:16px;
+    color:#000;
+}
+
+.option-group {
+    margin-top: 15px;
+    margin-bottom: 7px;
+}
+
+.option-group:hover {
+    color: #009688;
+    -webkit-transition: background-color 300ms linear;
+    -moz-transition: background-color 300ms linear;
+    -o-transition: background-color 300ms linear;
+    -ms-transition: background-color 300ms linear;
+    transition: background-color 300ms linear;
+}
+
+.option-item {
+    cursor: pointer;
+    padding: 7px;
+    margin-bottom: 7px;
+    margin-right: 7px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    box-sizing: border-box;
+}
+
+.option-item:hover {
+    background-color: #009688;
+    color: #fff;
+    -webkit-transition: background-color 300ms linear;
+    -moz-transition: background-color 300ms linear;
+    -o-transition: background-color 300ms linear;
+    -ms-transition: background-color 300ms linear;
+    transition: background-color 300ms linear;
+}
+
+.menu-form {
+    background-color: #f8f8f8;
+    border: 1px solid #e7e7e7;
+    border-radius: 3px;
+    box-sizing: border-box;
+    bottom: 0;
+    display: none;
+    position: fixed;
+}
+
+@media (min-width: 768px) {
+    .menu-form {
+        width:calc(100% - 250px);
+        left:250px;
+    }
+}
+
+@media (max-width: 768px) {
+    .menu-form {
+        width:100%;
+        left:0;
+    }
+}
+
+@media (max-width: 992px) {
+    .menu-form {
+        height: 650px;
+    }
+}
+@media (min-width: 992px) {
+    .menu-form {
+        height: 400px;
+    }
+}
+
+.menu-form .close-form {
+    cursor: pointer;
+    color:#000;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1;
+    text-shadow: 0 1px 0 #fff;
+    filter: alpha(opacity=20);
+    opacity: .2;
+    margin-top:7px;
+}
+
+.menu-form .close-form:hover {
+    color:#000;
+    text-decoration: none;
+    filter: alpha(opacity=50);
+    opacity: .5;
+}
+
+.menu-form .input-form {
+    margin:auto;
+    width:550px;
+}
+
+.menu-form input[type=file]{
+    display: none;
+}
+
+.menu-form .touch {
+    cursor: pointer;
+    border: 1px solid #ccc;
+    border-radius: 100%;
+    width: 100px;
+    height: 100px;
+}
+
+.menu-form .touch:hover {
+    opacity: 0.5;
+    filter: alpha(opacity=50);
+}
+
+.text-left{
+    text-align: left;
+}
+
+.text-right{
+    text-align: right;
+}
+
+.text-center{
+    text-align: center;
+}
+
+.hover-message {
+    position:relative;
+    bottom: 50px;
+    height:0;
+}
+
+.select-form {
+    background-color: #f8f8f8;
+    border: 1px solid #e7e7e7;
+    border-radius: 3px;
+    box-sizing: border-box;
+    bottom: 0;
+    display: none;
+    position: fixed;
+}
+
+.select-form .header{
+    cursor: pointer;
+    color:#000;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1;
+    text-shadow: 0 1px 0 #fff;
+    filter: alpha(opacity=70);
+    opacity: .7;
+    margin-top:10px;
+}
+
+@media (min-width: 768px) {
+    .select-form {
+        width:calc(100% - 250px);
+        left:250px;
+    }
+}
+
+@media (max-width: 768px) {
+    .select-form {
+        width:100%;
+        left:0;
+    }
+}
+
+@media (max-width: 992px) {
+    .select-form {
+        height: 40px;
+    }
+}
+@media (min-width: 992px) {
+    .select-form {
+        height: 40px;
+    }
+}

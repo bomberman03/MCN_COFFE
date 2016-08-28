@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title><%= title %></title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+
+    <link rel="stylesheet" href="stylesheets/bootstrap-material-design.css">
+    <link rel="stylesheet" href="stylesheets/ripples.css">
+
+    <link rel="stylesheet" type="text/css" href="stylesheets/style.css">
+
+    <!-- Material Design fonts -->
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Roboto:300,400,500,700">
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/icon?family=Material+Icons">
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.3.10/angular.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.10/angular-ui-router.js"></script>
+
+    <script src="/javascripts/libraries/ripples.js"></script>
+    <script src="/javascripts/libraries/material.js"></script>
+    <script src="/javascripts/libraries/masonry.pkgd.min.js"></script>
+    <script src="/javascripts/libraries/search.min.js"></script>
+
+    <script src="/javascripts/angularApp.js"></script>
+
+    <script src="/javascripts/factories/auth.js"></script>
+    <script src="/javascripts/factories/cafe.js"></script>
+    <script src="/javascripts/factories/openApi.js"></script>
+
+    <script src="/javascripts/controllers/authController.js"></script>
+    <script src="/javascripts/controllers/cafeController.js"></script>
+    <script src="/javascripts/controllers/mainController.js"></script>
+    <script src="/javascripts/controllers/orderController.js"></script>
+    <script src="/javascripts/controllers/registerCafeController.js"></script>
+    <script src="/javascripts/controllers/registerMenuController.js"></script>
+
+    <script src="/socket.io/socket.io.js"></script>
+
+    <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?clientId=b4Ipp9TAh1DjURhv8KkP"></script>
+    <script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyCGBHTopCVNOItnZW9JoGM217HyBx3XbPE"></script>
+    <script src="https://apis.skplanetx.com/tmap/js?version=1&format=javascript&appKey=b7224677-d5a3-3c7e-9a1c-33db6ad8e19e"></script>
+</head>
+<body class="nav-top-fixed-body" ng-app="mcnCoffee" ng-controller="NavCtrl">
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#/home">MCN COFFEE</a>
+        </div>
+        <div class="collapse navbar-collapse navbar-ex1-collapse">
+            <ul class="nav navbar-nav navbar-right right-half-margin">
+                <li ng-show="isLoggedIn()"><a> 안녕하세요! {{ currentUser().username }} 님</a></li>
+                <li ng-show="isLoggedIn()"><a href="" ng-click="logOut()">로그아웃</a></li>
+                <li ng-hide="isLoggedIn()"><a href="/#/login">로그인</a></li>
+                <li ng-hide="isLoggedIn()"><a href="/#/register">회원가입</a></li>
+            </ul>
+        </div>
+    </nav>
+    <ui-view></ui-view>
+</body>
+</html>

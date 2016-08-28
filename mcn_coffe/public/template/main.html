@@ -1,0 +1,31 @@
+<div class="search_background">
+</div>
+<div class="row cafe_list">
+    <div ng-repeat="cafe in cafes">
+        <div class="cafe_item ">
+            <a href="#/cafes/{{cafe._id}}">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <div class="thumbnail no-margin">
+                            <img src='{{cafe.thumbnail}}' onerror="this.src='/images/cafe_default.png'">
+                        </div>
+                    </div>
+                    <div class="panel-footer">
+                        <div class="row no-margin">
+                            {{ cafe.name }}
+                            <div class="right">
+                                <a href="javascript:void(0)" class="btn btn-xs no-margin">like</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+<a ng-show="isLoggedIn()" href="#/register/cafes"
+   data-toggle="tooltip" data-placement="top" title="" data-original-title="새로운 마켓을 등록합니다."
+   style="position:fixed;" class="btn btn-primary btn-fab right-conner-1">
+    <i class="material-icons">add</i>
+    <div class="ripple-container"></div>
+</a>

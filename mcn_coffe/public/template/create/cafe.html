@@ -1,0 +1,106 @@
+<!-- multistep form -->
+<form id="msform">
+    <!-- progressbar -->
+    <ul id="progressbar">
+        <li class="active">약관 동의</li>
+        <li>기본 정보</li>
+        <li>위치 정보</li>
+        <li>이미지 등록</li>
+        <li>확인</li>
+    </ul>
+    <!-- fieldsets -->
+    <fieldset>
+        <h2 class="fs-title">STEP 1</h2>
+        <h3 class="fs-subtitle">아래 약관을 읽고 동의해주세요</h3>
+        <div ng-repeat="term in terms track by $index">
+            <div class="terms bottom-full-margin">
+                <div class="content" ng-bind-html="term">
+                </div>
+                <div class="agree">
+                    <div class="checkbox">
+                        <label class="left-half-margin ng-binding">
+                            위 내용을 모두 읽었으며, 내용에 동의합니다.
+                            <input ng-click="agreeAction($index)" ng-model="cafe.agree[$index]" type="checkbox">
+                            <span class="checkbox-material right-half-margin"><span class="check"></span></span>
+                        </label>
+                    </div>
+                </div>
+                <div ng-show='error.agree[$index]' class="error pull-center"> 동의가 필요합니다. </div>
+            </div>
+        </div>
+        <input type="button" name="next" class="next action-button" value="Next" />
+    </fieldset>
+    <fieldset>
+        <h2 class="fs-title">STEP 2</h2>
+        <h3 class="fs-subtitle">카페에 대한 기본 정보를 입력해주세요</h3>
+        <div class="pull-left">카페 이름 <span ng-show="error.name" class="error">{{ error.name }}</span></div>
+        <input type="text" ng-click='initForm("name")' ng-model="cafe.name" placeholder="예) 모두의 카페" />
+        <div class="pull-left">카페 설명 <span ng-show='error.detail' class="error">{{ error.detail }}</span></div>
+        <input type="text" ng-click='initForm("detail")' ng-model="cafe.detail" placeholder="예) 모두가 좋아하는 커피를 팔고 있습니다." />
+        <div class="pull-left">전화 번호 <span ng-show='error.phone' class="error">{{ error.phone }}</span></div>
+        <input type="text" ng-click='initForm("phone")' ng-model="cafe.phone" placeholder="예) 010-1234-5678" />
+        <input type="button" name="previous" class="previous action-button" value="Previous" />
+        <input type="button" name="next" class="next action-button" value="Next" />
+    </fieldset>
+    <fieldset>
+        <h2 class="fs-title">STEP 3</h2>
+        <h3 class="fs-subtitle">카페의 위치를 정확하게 입력해주세요</h3>
+        <div class="bottom-full-margin">
+            <div id="tMap"></div>
+        </div>
+        <div class="pull-left">카페 주소<span ng-show='error.address' class="error"> {{ error.address }} </span></div>
+        <input type="text" ng-click='initForm("address")' ng-model="cafe.address" class="postcodify_address" placeholder="예) OO시 OO구 OO동"/>
+        <div class="pull-left">상세 주소 <span ng-show='error.detailAddress' class="error"> {{ error.detailAddress }} </span></div>
+        <input type="text" ng-click='initForm("detailAddress")' ng-model="cafe.detailAddress" class="detail-address" placeholder="예) OO빌딩 O층 O호"/>
+        <div>
+            <div class="checkbox">
+                <label class="left-half-margin ng-binding">
+                    지도에 표시된 위치가 정확한가요?
+                    <input ng-click='initForm("locationConfirm")' ng-model="cafe.locationConfirm" type="checkbox">
+                </label>
+            </div>
+            <div ng-show='error.locationConfirm' class="error pull-center"> {{ error.locationConfirm }} </div>
+        </div>
+        <input type="button" name="previous" class="previous action-button" value="Previous" />
+        <input type="button" name="next" class="next action-button" value="Next" />
+    </fieldset>
+    <fieldset>
+        <h2 class="fs-title">STEP 4</h2>
+        <h3 class="fs-subtitle">카페를 소개하는 이미지를 등록하세요</h3>
+        <div id="dropzone" class="dropzone">
+            <form action="/upload" class="dropzone needsclick dz-clickable" id="demo-upload">
+                <div class="dz-message needsclick">
+                    Drag & Drop 혹은 Click 으로 사진을 업로드 하세요<br>
+                    <span class="note needsclick">(사진은 1개 이상 반드시 업로드 하셔야 합니다.)</span>
+                </div>
+        </div>
+        <div ng-show='error.images' class="error pull-center"> {{ error.images }} </div>
+        <input type="button" name="previous" class="previous action-button" value="Previous" />
+        <input type="button" name="next" class="next action-button" value="Next" />
+    </fieldset>
+    <fieldset>
+        <h2 class="fs-title">STEP 5</h2>
+        <h3 class="fs-subtitle">입력한 내용을 확인하세요</h3>
+        <div class="pull-left">카페 이름</div>
+        <input type="text" ng-model="cafe.name" placeholder="카페 이름" disabled/>
+        <div class="pull-left">카페 설명</div>
+        <input type="text" ng-model="cafe.detail" placeholder="카페 설명" disabled/>
+        <div class="pull-left">전화 번호</div>
+        <input type="text" ng-model="cafe.phone" placeholder="전화 번호" disabled/>
+        <div class="bottom-full-margin">
+            <div id="rMap"></div>
+        </div>
+        <div class="pull-left">카페 주소</div>
+        <input type="text" ng-model="cafe.address" placeholder="주소를 검색" disabled/>
+        <div class="pull-left">상세 주소</div>
+        <input type="text" ng-model="cafe.detailAddress" placeholder="상세 주소를 기입 해주세요" disabled/>
+        <div id="rDropzone" class="dropzone needsclick dz-clickable">
+            <div class="dz-message needsclick">
+                Drag & Drop 혹은 Click 으로 사진을 업로드 하세요<br>
+                <span class="note needsclick">(이 화면이 보이면 안되는데)</span>
+            </div>
+        </div>
+        <input type="button" name="previous" class="previous action-button" value="Previous" />
+        <input type="submit" name="submit" class="submit action-button" value="Submit" />
+    </fieldset>
+</form>

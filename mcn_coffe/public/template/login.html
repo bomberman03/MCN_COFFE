@@ -1,0 +1,28 @@
+<!-- multistep form -->
+<form  style="width:500px;margin:auto;" id="msform">
+    <!-- fieldsets -->
+    <fieldset>
+        <h2 class="fs-title">Login</h2>
+        <h3 class="fs-subtitle">로그인을 위한 아이디와 비밀번호를 입력하세요</h3>
+        <div ng-show="response">{{response}}</div>
+        <div class="pull-left">아이디 <span ng-show="error.username" class="error">{{ error.username }}</span></div>
+        <input type="text" ng-click='initForm("username")' ng-model="user.username" placeholder="아이디를 입력하세요" />
+        <div class="pull-left">비밀번호 <span ng-show='error.password' class="error">{{ error.password }}</span></div>
+        <input type="password" ng-click='initForm("password")' ng-model="user.password" placeholder="비밀번호를 입력하세요" />
+        <a href="#/register"><input type="button" name="next" class="next action-button" value="Register" /></a>
+        <input type="button" ng-click="logIn()" name="next" class="next action-button" value="Login" />
+    </fieldset>
+    <fieldset>
+        <h3 class="fs-subtitle">메일 인증</h3>
+        <div class="bottom-full-margin">
+            반갑습니다. {{user.username}}!
+        </div>
+        <div class="bottom-full-margin">
+            메일인증을 완료하면 서비스를 이용할 수 있습니다.
+        </div>
+        <div>
+            혹시 메일을 받지 못하셨나요?
+        </div>
+        <input type="submit" name="submit" class="submit action-button" value="재 전송" />
+    </fieldset>
+</form>

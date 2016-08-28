@@ -1,0 +1,121 @@
+<div id="search_form">
+    <fieldset>
+        <div class="input-group">
+            <div class="input-group-btn search-panel">
+                <button type="button" class="btn btn-default btn-raised dropdown-toggle" data-toggle="dropdown">
+                    <span id="search_concept">{{category_filter}}</span> <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                    <li ng-repeat="category in categories">
+                        <a ng-click="selectFilter(category)">{{category}}</a>
+                    </li>
+                </ul>
+            </div>
+            <input id="search_term" ng-keyup="makeQuery()" type="text" class="form-control" placeholder="검색할 메뉴를 입력하세요">
+        </div>
+    </fieldset>
+    <fieldset>
+        <p ng-hide="menus.length" class="bg-default full-padding">등록된 메뉴가 없습니다.</p>
+        <div ng-show="menus.length">
+            <div ng-repeat="menu in menus track by $index">
+                <ul class="cd-accordion-menu animated">
+                    <div><span class="label label-primary">{{menu.category}}</span></div>
+                    <li ng-click="selectMenu($index)" class="has-children">
+                        <input type="checkbox" name ="{{menu._id}}" id="{{menu._id}}">
+                        <label for="{{menu._id}}">
+                            <div class="menu-item">
+                                <img src="{{menu.image}}" onerror="this.src='/images/coffee_default.png'">
+                                <div class="menu-info">
+                                    <div class="name">{{menu.name}}</div>
+                                    <div class="detail">{{menu.detail}}</div>
+                                </div>
+                                <div class="menu-cost">{{menu.cost}} 원</div>
+                            </div>
+                        </label>
+                        <ul ng-repeat="option in menu.options track by $index">
+                            <li ng-click="selectOption($index)" ng-hide="option.options.length"><a><div class="option-item">{{option.name}}</div></a></li>
+                            <li ng-click="selectOption($index)" ng-show="option.options.length"  class="has-children">
+                                <input type="checkbox" name ="{{menu._id}}-{{$index}}" id="{{menu._id}}-{{$index}}">
+                                <label class="option-group" for="{{menu._id}}-{{$index}}">{{option.name}}</label>
+                                <ul>
+                                    <li ng-repeat="option in option.options track by $index"><a ng-click="selectSubOption($index)"><div class="option-item">{{option.name}}</div></a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </fieldset>
+</div>
+<div class="menu-form">
+    <input id="menu_img" type="file"/>
+    <div class="close-form" ng-click="toggleMenuForm()"><i class="material-icons">keyboard_arrow_down</i></div>
+    <div class="input-form">
+        <fieldset>
+        <div class="form-group is-empty pull-center">
+            <img id="menu_img_preview" class="touch" src="/images/coffee_default.png" onerror="this.src='/images/coffee_default.png'"/>
+            <div class="hover-message">클릭해서 이미지를 등록하세요</div>
+        </div>
+        <div class="form-group is-empty">
+            <label for="category" class="col-md-2 control-label">카테고리</label>
+            <div class="col-md-10">
+                <input ng-model="name" type="text" class="form-control" id="category" placeholder="카테고리를 입력하세요">
+            </div>
+            <span class="material-input"></span>
+        </div>
+        <div class="form-group is-empty">
+            <label for="name" class="col-md-2 control-label">이름</label>
+            <div class="col-md-10">
+                <input ng-model="name" type="text" class="form-control" id="name" placeholder="이름을 입력하세요">
+            </div>
+            <span class="material-input"></span>
+        </div>
+        <div class="form-group is-empty">
+            <label for="detail" class="col-md-2 control-label">설명</label>
+            <div class="col-md-10">
+                <input ng-model="name" type="text" class="form-control" id="detail" placeholder="설명을 입력하세요">
+            </div>
+            <span class="material-input"></span>
+        </div>
+        <div class="form-group is-empty">
+            <label for="cost" class="col-md-2 control-label">가격</label>
+            <div class="col-md-10">
+                <input ng-model="name" type="text" class="form-control" id="cost" placeholder="가격을 입력하세요">
+            </div>
+            <span class="material-input"></span>
+        </div>
+        </fieldset>
+    </div>
+</div>
+<div class="select-form">
+    <div class="header">
+        <span class="label label-primary">아메리카노</span>
+        >> <span class="label label-primary">HOT/ICE</span>
+        >> <span class="label label-primary">HOT</span>
+    </div>
+</div>
+<div id="create" ng-click="toggleMenuForm()"
+   data-toggle="tooltip" data-placement="top" title="" data-original-title="새로운 메뉴를 등록합니다."
+   style="position:fixed;" class="btn btn-primary btn-fab right-conner-1">
+    <i class="material-icons">add</i>
+    <div class="ripple-container"></div>
+</div>
+<div id="update" ng-click="createMenu()"
+     data-toggle="tooltip" data-placement="top" title="" data-original-title="서버에 내용을 전송합니다."
+     style="position:fixed;" class="btn btn-primary btn-fab right-conner-1 ground">
+    <i class="material-icons">check</i>
+    <div class="ripple-container"></div>
+</div>
+<div id="up"
+     data-toggle="tooltip" data-placement="top" title="" data-original-title="순서를 위로 변경합니다."
+     style="position:fixed;" class="btn btn-primary btn-fab right-conner-2 ground">
+    <i class="material-icons">keyboard_arrow_up</i>
+    <div class="ripple-container"></div>
+</div>
+<div id="down"
+     data-toggle="tooltip" data-placement="top" title="" data-original-title="순서를 아래로 변경합니다."
+     style="position:fixed;" class="btn btn-primary btn-fab right-conner-1 ground">
+    <i class="material-icons">keyboard_arrow_down</i>
+    <div class="ripple-container"></div>
+</div>

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title><%= title %></title>
+    <link rel="stylesheet" href="stylesheets/bootstrap.css">
+    <link rel="stylesheet" href="stylesheets/bootstrap-material-design.css">
+    <link rel="stylesheet" type="text/css" href="stylesheets/sb-admin-2.css">
+    <link rel="stylesheet" href="stylesheets/ripples.css">
+
+    <link rel="stylesheet" type="text/css" href="stylesheets/metisMenu.min.css">
+    <link rel="stylesheet" type="text/css" href="stylesheets/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="stylesheets/wizard.css">
+    <link rel="stylesheet" type="text/css" href="stylesheets/dropzone.css">
+    <link rel="stylesheet" type="text/css" href="stylesheets/accordion.css">
+    <link rel="stylesheet" type="text/css" href="stylesheets/style.css">
+
+    <!-- Material Design fonts -->
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Roboto:300,400,500,700">
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/icon?family=Material+Icons">
+
+    <script src="/javascripts/libraries/jquery.min.js"></script>
+    <script src="/javascripts/libraries/jquery.easing.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.3.10/angular.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.10/angular-ui-router.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular-animate.min.js"></script>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.10/angular-sanitize.js"></script>
+
+    <script src="/javascripts/libraries/ripples.js"></script>
+    <script src="/javascripts/libraries/material.js"></script>
+    <script src="/javascripts/libraries/masonry.pkgd.min.js"></script>
+    <script src="/javascripts/libraries/search.min.js"></script>
+    <script src="/javascripts/libraries/metisMenu.min.js"></script>
+    <script src="/javascripts/libraries/sb-admin-2.js"></script>
+    <script src="/javascripts/libraries/dropzone.js"></script>
+
+    <script src="/javascripts/dashBoardApp.js"></script>
+
+    <script src="/javascripts/factories/auth.js"></script>
+    <script src="/javascripts/factories/term.js"></script>
+    <script src="/javascripts/factories/cafe.js"></script>
+    <script src="/javascripts/factories/openApi.js"></script>
+
+    <script src="/javascripts/controllers/authController.js"></script>
+    <script src="/javascripts/controllers/auth/loginController.js"></script>
+    <script src="/javascripts/controllers/auth/registerController.js"></script>
+    <script src="/javascripts/controllers/create/createCafeController.js"></script>
+    <script src="/javascripts/controllers/list/listMenuController.js"></script>
+
+    <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?clientId=b4Ipp9TAh1DjURhv8KkP"></script>
+    <script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyCGBHTopCVNOItnZW9JoGM217HyBx3XbPE"></script>
+    <script src="https://apis.skplanetx.com/tmap/js?version=1&format=javascript&appKey=b7224677-d5a3-3c7e-9a1c-33db6ad8e19e"></script>
+</head>
+<body ng-app="mcnCoffee" ng-controller="NavCtrl">
+    <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#"><%= title %></a>
+        </div>
+        <ul class="nav navbar-top-links navbar-right">
+            <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                    <i style="color:white" class="white fa fa-user fa-fw white"></i>
+                    <i style="color:white" class="fa fa-caret-down white"></i>
+                </a>
+                <ul ng-show="!isLoggedIn()" class="dropdown-menu dropdown-messages">
+                    <li><a href="#/login"> 로그인</a></li>
+                    <li><a href="#/register"> 회원가입</a></li>
+                </ul>
+                <ul ng-show="isLoggedIn()" class="dropdown-menu dropdown-messages">
+                    <li><a href="#"> 내 정보</a></li>
+                    <li><a href="#"> 설정</a></li>
+                    <li class="divider"></li>
+                    <li><a href="#"> 로그아웃</a></li>
+                </ul>
+            </li>
+        </ul>
+    </nav>
+    <div class="navbar-default sidebar" role="navigation">
+        <div class="sidebar-nav navbar-collapse">
+            <ul class="nav in" id="side-menu">
+                <li>
+                    <a href="#"><i class="fa fa-dashboard fa-fw"></i> 홈 화면</a>
+                </li>
+                <li>
+                    <a href="#/create/cafe"><i class="fa fa-dashboard fa-fw"></i> 새 카페 등록하기</a>
+                </li>
+                <li>
+                    <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> 커피 방울<span class="fa arrow"></span></a>
+                    <ul class="nav nav-second-level collapse" aria-expanded="false" style="height: 0px;">
+                        <li><a href="#/list/cafes/573b0c28de7d34146dc0d6a2/menu">메뉴 관리</a></li>
+                        <li><a href="#">이벤트 관리</a></li>
+                        <li><a href="#">주문 현황</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> 카페 베네<span class="fa arrow"></span></a>
+                    <ul class="nav nav-second-level collapse" aria-expanded="false" style="height: 0px;">
+                        <li><a href="#">메뉴 관리</a></li>
+                        <li><a href="#">이벤트 관리</a></li>
+                        <li><a href="#">주문 현황</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> mcn 카페<span class="fa arrow"></span></a>
+                    <ul class="nav nav-second-level collapse" aria-expanded="false" style="height: 0px;">
+                        <li><a href="#">메뉴 관리</a></li>
+                        <li><a href="#">이벤트 관리</a></li>
+                        <li><a href="#">주문 현황</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div id="page-wrapper">
+        <ui-view></ui-view>
+    </div>
+</body>
