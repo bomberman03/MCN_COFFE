@@ -27,6 +27,15 @@ router.get('/', function(req, res, next){
     });
 });
 
+router.post('/status', function(req, res, next){
+    Order.find({ _id: { $in: req.body.orders }}, function(err, orders){
+        if(err) { return next(err); }
+        res.json({
+            orders: orders
+        });
+    });
+});
+
 router.get('/:order', function(req, res, next){
     res.json(req.order);
 });
@@ -47,7 +56,7 @@ router.delete('/:order', function(req, res, next){
         io.emit(cafe, {
             method:'delete',
             name:'order',
-            id:order_id
+            id: order_id
         });
         return res.status(200).json({
             message: '삭제가 정상적으로 처리되었습니다.',
@@ -83,7 +92,16 @@ router.put('/:order/receive', function(req, res, next){
 });
 
 router.put(':order/cancel', function(req, res, next){
-
+    req.order.cancel(function(err, order){
+        if(err) { next(err); }
+        io.emit(order.cafe, {
+            method: 'put',
+            name: 'order',
+            id: order._id,
+            data: order
+        });
+        res.json(order);
+    });
 });
 
 module.exports = router;

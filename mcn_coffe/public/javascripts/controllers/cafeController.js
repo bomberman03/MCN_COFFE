@@ -100,22 +100,16 @@ app.controller('CafeCtrl', [
                 $scope.removeOrder(order);
         };
         $scope.removeOrder = function(order){
-            var idx = $scope.orders.indexOf(order);
+            var idx = $scope.order.orders.indexOf(order);
             if(idx >= 0)
-                $scope.orders.splice(idx, 1);
+                $scope.order.orders.splice(idx, 1);
             if(order.count > 0) $scope.order.cost -= (order.cost * order.count);
         };
-        $scope.deleteMenu = function(menu) {
-            cafes.deleteMenu($scope.cafe._id, menu);
-        };
-        $scope.deleteCafe = function() {
-            cafes.deleteCafe($scope.cafe, function(){
-                
-            });
-        };
         $scope.postOrder = function(){
-            $scope.order.user = auth.currentUser();
-            cafes.postOrder($scope.cafe, $scope.order);
+            if($scope.order.orders.length > 0) {
+                $scope.order.user = auth.currentUser();
+                cafes.postOrder($scope.cafe, $scope.order);
+            }
         };
     }
 ]);

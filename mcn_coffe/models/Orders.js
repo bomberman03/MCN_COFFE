@@ -1,6 +1,10 @@
 /**
  * Created by pathfinder on 16. 5. 20.
  */
+const WAIT = 0;
+const COMPLETE = 1;
+const CANCEL   = 2;
+const RECEIVE  = 4;
 
 var mongoose = require('mongoose');
 
@@ -24,17 +28,17 @@ var OrderSchema = new mongoose.Schema({
 });
 
 OrderSchema.methods.complete = function(cb){
-    this.status = 1;
+    this.status = COMPLETE;
     this.save(cb);
 };
 
 OrderSchema.methods.cancel = function(cb){
-    this.status = 2;
+    this.status = CANCEL;
     this.save(cb);
 };
 
 OrderSchema.methods.receive = function(cb){
-    this.status = 3;
+    this.status = RECEIVE;
     this.save(cb);
 };
 

@@ -28,7 +28,7 @@ app.controller('OrderCtrl', [
         }
         function initializeSocket() {
             // localhost로 연결한다.
-            socket = io.connect('http://210.118.64.165:8080', {query: 'id=' + $scope.cafe._id});
+            socket = io.connect('http://192.168.0.58:8080', {query: 'id=' + $scope.cafe._id});
             // 서버에서 news 이벤트가 일어날 때 데이터를 받는다.
             socket.on($scope.cafe._id, function (data) {
                 switch(data.method) {

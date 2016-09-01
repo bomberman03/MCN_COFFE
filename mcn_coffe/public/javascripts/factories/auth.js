@@ -5,6 +5,8 @@ app.factory('auth', ['$http', '$window', function($http, $window){
 
     var auth = {};
 
+    auth.requestUrl = '';
+
     auth.saveToken = function(token){
         $window.localStorage['mcn-coffee-token'] = token;
     };

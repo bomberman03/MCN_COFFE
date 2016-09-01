@@ -29,7 +29,13 @@ app.controller('LoginCtrl', [
             auth.logIn($scope.user).error(function(error){
                 $scope.response = error.message;
             }).then(function(){
-                $state.go('main');
+                if(auth.requestUrl.trim().length == 0)
+                    $state.go('main');
+                else {
+                    var tmp = auth.requestUrl;
+                    auth.requestUrl = '';
+                    location.href = tmp;
+                }
             });
         };
         $(document).ready(function() {
