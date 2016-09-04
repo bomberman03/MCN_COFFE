@@ -336,7 +336,9 @@ a{
     transition: background-color 300ms linear;
 }
 
-.menu-form {
+.menu-form,
+.option-form,
+.sub-option-form{
     background-color: #f8f8f8;
     border: 1px solid #e7e7e7;
     border-radius: 3px;
@@ -347,14 +349,18 @@ a{
 }
 
 @media (min-width: 768px) {
-    .menu-form {
+    .menu-form,
+    .option-form,
+    .sub-option-form{
         width:calc(100% - 250px);
         left:250px;
     }
 }
 
 @media (max-width: 768px) {
-    .menu-form {
+    .menu-form,
+    .option-form,
+    .sub-option-form{
         width:100%;
         left:0;
     }
@@ -364,14 +370,22 @@ a{
     .menu-form {
         height: 650px;
     }
+    .option-form,
+    .sub-option-form{
+        height: 400px;
+    }
 }
 @media (min-width: 992px) {
     .menu-form {
         height: 400px;
     }
+    .option-form,
+    .sub-option-form{
+        height: 100px;
+    }
 }
 
-.menu-form .close-form {
+.close-form {
     cursor: pointer;
     color:#000;
     text-align: center;
@@ -384,7 +398,7 @@ a{
     margin-top:7px;
 }
 
-.menu-form .close-form:hover {
+.close-form:hover {
     color:#000;
     text-decoration: none;
     filter: alpha(opacity=50);

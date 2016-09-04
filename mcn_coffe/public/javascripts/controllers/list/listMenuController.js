@@ -59,31 +59,30 @@ app.controller('ListMenuCtrl', [
         };
 
         $scope.openSelectForm = function() {
-            var container = $(".select-form");
-            if (!container.is( ":visible" )){
-                container.slideDown( 300 ,function(){
-                });
-            } else {
-                console.log("already open");
-            }
+            showForm($(".select-form"));
         };
 
         $scope.closeSelectForm = function() {
-            var container = $(".select-form");
-            if (container.is( ":visible" )){
-                container.slideUp( 300 ,function(){
-                });
-            } else {
-                console.log("already closed");
-            }
+            closeForm($(".select-form"));
         };
 
         $scope.selectMenu = function(index) {
-            if($scope.selectedMenu == $scope.menus[index])
-                return;
-            $scope.selectedMenu = $scope.menus[index];
-            console.log($scope.selectedMenu);
+            if(index != undefined) {
+                $scope.selectedMenu = $scope.menus[index];
+            }
+            else {
+                $scope.selectedMenu = {
+                    id: undefined,
+                    category: "",
+                    name: "",
+                    detail: "",
+                    cost: 0,
+                    image: "",
+                    options: []
+                };
+            }
             $scope.selectedOption = $scope.selectedSubOption = undefined;
+            $scope.toggleMenuForm();
         };
 
         $scope.selectOption = function(index) {
@@ -92,7 +91,6 @@ app.controller('ListMenuCtrl', [
             if($scope.selectedOption == $scope.selectedMenu.options[index])
                 return;
             $scope.selectedOption = $scope.selectedMenu.options[index];
-            console.log($scope.selectedOption);
             $scope.selectedSubOption = undefined;
         };
 
@@ -104,7 +102,27 @@ app.controller('ListMenuCtrl', [
             if($scope.selectedSubOption == $scope.selectedOption.options[index])
                 return;
             $scope.selectedSubOption = $scope.selectedOption.options[index];
-            console.log($scope.selectedSubOption);
+        };
+
+        var forms = {
+            selectNone: [],
+            selectMenu: [$(".select-form")],
+            modifyMenu: [$(".menu-form")],
+            appendOption: [$(".option-form")],
+            selectOption: [$(".select-form")],
+            modifyOption: []
+        };
+
+        var buttons = {
+            selectNone: [$("#create")],
+            selectMenu : [$("#modify_menu"), $("#append_option")],
+            modifyMenu: [$("#request")],
+            appendOption: [$("#request")],
+            selectOption: [$("#modify_option"), $("#append_sub_option")],
+            modifyOption: [$("#request")],
+            appendSubOption: [$("#request")],
+            selectSubOption: [$("#modify_sub_option")],
+            modifySubOption: [$("#request")]
         };
 
         $(document).ready(function(e){
@@ -114,6 +132,28 @@ app.controller('ListMenuCtrl', [
             initializeInputForm();
             setTimeout(initializeAccordion, 100);
         });
+
+        function showForm(container)
+        {
+            if (!container.is( ":visible" )){
+                container.slideDown( 300 ,function(){
+
+                });
+            } else {
+                console.log("already open");
+            }
+        }
+
+        function closeForm(container)
+        {
+            if (container.is( ":visible" )){
+                container.slideUp( 300 ,function(){
+
+                });
+            } else {
+                console.log("already closed");
+            }
+        }
 
         function initialize() {
             for(var idx in $scope.cafe.menus) {
