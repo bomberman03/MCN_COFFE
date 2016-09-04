@@ -25,6 +25,8 @@ var OrderSchema = new mongoose.Schema({
         count: {type: Number, default:0}
     }],
     status: {type:Number, default:0}
+},{
+    timestamps: true
 });
 
 OrderSchema.methods.complete = function(cb){

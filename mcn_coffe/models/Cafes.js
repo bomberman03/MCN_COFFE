@@ -28,6 +28,8 @@ var CafeSchema = new mongoose.Schema({
     likes: { type: Number, default: 0 },
     menus: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Menu' }],
     owner: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }]
+},{
+    timestamps: true
 });
 
 mongoose.model('Cafe', CafeSchema);

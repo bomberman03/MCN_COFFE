@@ -21,6 +21,8 @@ var MenuSchema = new mongoose.Schema({
             cost: { type: Number, default: 0, required: true }
         }]
     }]
+},{
+    timestamps: true
 });
 
 mongoose.model('Menu', MenuSchema);

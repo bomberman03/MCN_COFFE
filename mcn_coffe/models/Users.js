@@ -14,6 +14,8 @@ var UserSchema = new mongoose.Schema({
     email: {type: String, default: ''},
     phone: {type: String, default: ''},
     image: {type: String, default: 'blank'}
+},{
+    timestamps: true
 });
 
 UserSchema.methods.setPassword = function(password) {

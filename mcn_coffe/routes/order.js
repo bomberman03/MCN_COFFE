@@ -36,7 +36,16 @@ router.post('/status', function(req, res, next){
     });
 });
 
-router.get('/:order', function(req, res, next){
+router.post('/users', function(req, res, next){
+    Order.find({ user: req.body.user }, function(err, orders){
+        if(err) { return next(err); }
+        res.json({
+            orders: orders
+        });
+    });
+});
+
+router.get('/:order', function(req, res){
     res.json(req.order);
 });
 
