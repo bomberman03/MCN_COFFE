@@ -37,38 +37,32 @@ app.controller('ListMenuCtrl', [
             initializeAccordion();
         };
 
-        $scope.toggleMenuForm = function() {
-            var container = $(".menu-form");
-            var create =  $("#create");
-            var update = $("#update");
-            if (container.is( ":visible" )){
-                if(!update.hasClass("ground"))
-                    update.addClass("ground");
-                container.slideUp( 500 ,function(){
-                    if(create.hasClass("ground"))
-                        create.removeClass("ground");
+        $scope.changeState = function(state)
+        {
+            if(curState == state)
+                return;
+            for(var i=0; i<buttons[curState].length; i++)
+                hideButton(buttons[curState][i]);
+            hideForm(forms[curState][0], function() {
+                curState = state;
+                showForm(forms[curState][0], function() {
+                    for(var i=0; i<buttons[curState].length; i++)
+                        showButton(buttons[curState][i]);
                 });
-            } else {
-                if(!create.hasClass("ground"))
-                    create.addClass("ground");
-                container.slideDown( 500 ,function(){
-                    if(update.hasClass("ground"))
-                        update.removeClass("ground");
-                });
-            }
-        };
-
-        $scope.openSelectForm = function() {
-            showForm($(".select-form"));
-        };
-
-        $scope.closeSelectForm = function() {
-            closeForm($(".select-form"));
+            });
         };
 
         $scope.selectMenu = function(index) {
+            $scope.selectedOption = $scope.selectedSubOption = undefined;
             if(index != undefined) {
-                $scope.selectedMenu = $scope.menus[index];
+                if($scope.selectedMenu == $scope.menus[index]) {
+                    $scope.selectedMenu = undefined;
+                    $scope.changeState("selectNone");
+                }
+                else {
+                    $scope.selectedMenu = $scope.menus[index];
+                    $scope.changeState("selectMenu");
+                }
             }
             else {
                 $scope.selectedMenu = {
@@ -80,9 +74,8 @@ app.controller('ListMenuCtrl', [
                     image: "",
                     options: []
                 };
+                $scope.changeState("modifyMenu");
             }
-            $scope.selectedOption = $scope.selectedSubOption = undefined;
-            $scope.toggleMenuForm();
         };
 
         $scope.selectOption = function(index) {
@@ -92,6 +85,7 @@ app.controller('ListMenuCtrl', [
                 return;
             $scope.selectedOption = $scope.selectedMenu.options[index];
             $scope.selectedSubOption = undefined;
+            $scope.changeState("selectOption");
         };
 
         $scope.selectSubOption = function(index) {
@@ -102,7 +96,22 @@ app.controller('ListMenuCtrl', [
             if($scope.selectedSubOption == $scope.selectedOption.options[index])
                 return;
             $scope.selectedSubOption = $scope.selectedOption.options[index];
+            $scope.changeState("selectSubOption");
         };
+
+        var states = [
+            "selectNone",
+            "selectMenu",
+            "modifyMenu",
+            "appendOption",
+            "selectOption",
+            "modifyOption",
+            "appendSubOption",
+            "selectSubOption",
+            "modifySubOption"
+        ];
+
+        var curState = states[0];
 
         var forms = {
             selectNone: [],
@@ -110,7 +119,10 @@ app.controller('ListMenuCtrl', [
             modifyMenu: [$(".menu-form")],
             appendOption: [$(".option-form")],
             selectOption: [$(".select-form")],
-            modifyOption: []
+            modifyOption: [$(".option-form")],
+            appendSubOption: [$(".sub-option-form")],
+            selectSubOption: [$(".select-form")],
+            modifySubOption: [$(".sub-option-form")]
         };
 
         var buttons = {
@@ -133,25 +145,47 @@ app.controller('ListMenuCtrl', [
             setTimeout(initializeAccordion, 100);
         });
 
-        function showForm(container)
+        function showButton(button)
         {
-            if (!container.is( ":visible" )){
-                container.slideDown( 300 ,function(){
+            console.log("showButton");
+            console.log(button);
+            if(button == undefined) return;
+            if(button.hasClass("ground"))
+                button.removeClass("ground");
+        }
 
-                });
-            } else {
-                console.log("already open");
+        function hideButton(button)
+        {
+            console.log("hideButton");
+            console.log(button);
+            if(button == undefined) return;
+            if(!button.hasClass("ground"))
+                button.addClass("ground");
+        }
+
+        function showForm(container, cb)
+        {
+            console.log("showForm");
+            console.log(container);
+            if(container == undefined) {
+                cb();
+                return;
+            }
+            if (!container.is( ":visible" )){
+                container.slideDown( 300 , cb);
             }
         }
 
-        function closeForm(container)
+        function hideForm(container, cb)
         {
+            console.log("hideForm");
+            console.log(container);
+            if(container == undefined) {
+                cb();
+                return;
+            }
             if (container.is( ":visible" )){
-                container.slideUp( 300 ,function(){
-
-                });
-            } else {
-                console.log("already closed");
+                container.slideUp( 300 , cb);
             }
         }
 
