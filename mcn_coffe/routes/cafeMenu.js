@@ -27,14 +27,14 @@ router.get('/', function(req, res, next){
 });
 
 router.post('/', function(req, res, next){
-    req.body.options = [];
+    req.body.cafe = req.cafe;
     var menu = new Menu(req.body);
     menu.save(function(err, menu){
         if(err){ return next(err); }
         req.cafe.menus.push(menu);
         req.cafe.save(function(err, cafe){
             if(err){ return next(err); }
-            res.json(menu);
+            return res.json(menu);
         });
     });
 });

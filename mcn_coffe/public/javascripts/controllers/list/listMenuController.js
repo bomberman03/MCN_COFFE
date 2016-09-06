@@ -9,7 +9,8 @@ app.controller('ListMenuCtrl', [
     'cafes',
     'cafe',
     '$scope',
-    function(cafes, cafe, $scope){
+    '$timeout',
+    function(cafes, cafe, $scope, $timeout){
         $scope.cafe = cafe;
         $scope.menus = [];
         $scope.categories = ['전체'];
@@ -18,6 +19,7 @@ app.controller('ListMenuCtrl', [
         $scope.selectedMenu = undefined;
         $scope.selectedOption = undefined;
         $scope.selectedSubOption = undefined;
+        $scope.serverResponse = undefined;
 
         $scope.selectFilter = function(category){
             $scope.category_filter = category;
@@ -41,18 +43,37 @@ app.controller('ListMenuCtrl', [
         {
             if(curState == state)
                 return;
-            for(var i=0; i<buttons[curState].length; i++)
-                hideButton(buttons[curState][i]);
-            hideForm(forms[curState][0], function() {
-                curState = state;
+            if(curState != "waitResponse" && curState != "serverResponse") {
+                prevState.push(curState);
+            }
+            var prev = curState;
+            curState = state;
+            for(var i=0; i<buttons[prev].length; i++)
+                hideButton(buttons[prev][i]);
+            hideForm(forms[prev][0], function() {
                 showForm(forms[curState][0], function() {
-                    for(var i=0; i<buttons[curState].length; i++)
+                    for(var i=0; i<buttons[curState].length; i++) {
                         showButton(buttons[curState][i]);
+                    }
                 });
             });
         };
 
+        $scope.prevState = function()
+        {
+            if(isNetworking) return;
+            if(prevState.length == 0)
+                return;
+            var state = prevState.pop();
+            if(state == "selectOption")
+                $scope.selectedSubOption = undefined;
+            if(state == "selectMenu")
+                $scope.selectedOption = undefined;
+            $scope.changeState(state);
+        };
+
         $scope.selectMenu = function(index) {
+            if(isNetworking) return;
             $scope.selectedOption = $scope.selectedSubOption = undefined;
             if(index != undefined) {
                 if($scope.selectedMenu == $scope.menus[index]) {
@@ -63,8 +84,7 @@ app.controller('ListMenuCtrl', [
                     $scope.selectedMenu = $scope.menus[index];
                     $scope.changeState("selectMenu");
                 }
-            }
-            else {
+            } else {
                 $scope.selectedMenu = {
                     id: undefined,
                     category: "",
@@ -79,25 +99,121 @@ app.controller('ListMenuCtrl', [
         };
 
         $scope.selectOption = function(index) {
-            if($scope.selectedMenu == undefined)
-                return;
-            if($scope.selectedOption == $scope.selectedMenu.options[index])
-                return;
-            $scope.selectedOption = $scope.selectedMenu.options[index];
+            if(isNetworking) return;
             $scope.selectedSubOption = undefined;
-            $scope.changeState("selectOption");
+            if(index != undefined) {
+                $scope.selectedMenu = this.$parent.menu;
+                if ($scope.selectedOption == $scope.selectedMenu.options[index]) {
+                    $scope.selectedOption = undefined;
+                    $scope.changeState("selectMenu");
+                }
+                else {
+                    $scope.selectedOption = $scope.selectedMenu.options[index];
+                    $scope.changeState("selectOption");
+                }
+            } else {
+                $scope.selectedOption = {
+                    name: "",
+                    detail: "",
+                    cost: 0,
+                    options: []
+                };
+                $scope.changeState("modifyOption");
+            }
         };
 
         $scope.selectSubOption = function(index) {
-            if($scope.selectedMenu == undefined)
-                return;
-            if($scope.selectedOption == undefined)
-                return;
-            if($scope.selectedSubOption == $scope.selectedOption.options[index])
-                return;
-            $scope.selectedSubOption = $scope.selectedOption.options[index];
-            $scope.changeState("selectSubOption");
+            if(isNetworking) return;
+            if(index != undefined) {
+                $scope.selectedMenu = this.$parent.$parent.menu;
+                $scope.selectedOption = this.$parent.option;
+                if ($scope.selectedSubOption == $scope.selectedOption.options[index]) {
+                    $scope.selectedSubOption = undefined;
+                    $scope.changeState("selectOption");
+                } else {
+                    $scope.selectedSubOption = $scope.selectedOption.options[index];
+                    $scope.changeState("selectSubOption");
+                }
+            } else {
+                $scope.selectedSubOption = {
+                    name: "",
+                    detail: "",
+                    cost:0
+                };
+                $scope.changeState("modifySubOption");
+            }
         };
+
+        $scope.requestPost = function(){
+            if(isNetworking) return;
+            isNetworking = true;
+            if(curState == "modifyMenu") {
+                if($scope.selectedMenu.id == undefined)
+                    createMenu(function(data){
+                        $timeout(function() {
+                            // anything you want can go here and will safely be run on the next digest.
+                            $scope.serverResponse = "요청이 정상적으로 처리되었습니다.";
+                        });
+                        isNetworking = false;
+                        $("input").prop("disabled",false);
+                        $scope.changeState("serverResponse");
+                    }, function(data){
+                        $timeout(function() {
+                            // anything you want can go here and will safely be run on the next digest.
+                            $scope.serverResponse = "예상치 못한 오류가 발생했습니다.";
+                        });
+                        isNetworking = false;
+                        $("input").prop("disabled",false);
+                        $scope.changeState("serverResponse");
+                    });
+                else
+                    updateMenu(function(data){
+                        $timeout(function() {
+                            // anything you want can go here and will safely be run on the next digest.
+                            $scope.serverResponse = "요청이 정상적으로 처리되었습니다.";
+                        });
+                        isNetworking = false;
+                        $("input").prop("disabled",false);
+                        $scope.changeState("serverResponse");
+                    }, function(data) {
+                        $timeout(function() {
+                            // anything you want can go here and will safely be run on the next digest.
+                            $scope.serverResponse = "예상치 못한 오류가 발생했습니다.";
+                        });
+                        isNetworking = false;
+                        $("input").prop("disabled",false);
+                        $scope.changeState("serverResponse");
+                    });
+            }
+            $("input").prop("disabled",true);
+            $scope.changeState("waitResponse");
+        };
+
+        function createMenu(cb, err){
+            cafes.createMenu(cafe._id, $scope.selectedMenu, cb, err);
+        }
+
+        function updateMenu() {
+
+        }
+
+        function appendOption() {
+
+        }
+
+        function updateOption() {
+
+        }
+
+        function appendSubOption() {
+
+        }
+
+        function updateSubOption() {
+
+        }
+
+        var isNetworking = false;
 
         var states = [
             "selectNone",
@@ -108,9 +224,12 @@ app.controller('ListMenuCtrl', [
             "modifyOption",
             "appendSubOption",
             "selectSubOption",
-            "modifySubOption"
+            "modifySubOption",
+            "waitResponse",
+            "serverResponse"
         ];
 
+        var prevState = [];
         var curState = states[0];
 
         var forms = {
@@ -122,19 +241,23 @@ app.controller('ListMenuCtrl', [
             modifyOption: [$(".option-form")],
             appendSubOption: [$(".sub-option-form")],
             selectSubOption: [$(".select-form")],
-            modifySubOption: [$(".sub-option-form")]
+            modifySubOption: [$(".sub-option-form")],
+            waitResponse: [$(".loading-form")],
+            serverResponse: [$(".response-form")]
         };
 
         var buttons = {
             selectNone: [$("#create")],
             selectMenu : [$("#modify_menu"), $("#append_option")],
-            modifyMenu: [$("#request")],
-            appendOption: [$("#request")],
+            modifyMenu: [$("#request"), $("#delete")],
+            appendOption: [$("#request"), $("#delete")],
             selectOption: [$("#modify_option"), $("#append_sub_option")],
-            modifyOption: [$("#request")],
-            appendSubOption: [$("#request")],
+            modifyOption: [$("#request"), $("#delete")],
+            appendSubOption: [$("#request"), $("#delete")],
             selectSubOption: [$("#modify_sub_option")],
-            modifySubOption: [$("#request")]
+            modifySubOption: [$("#request"), $("#delete")],
+            waitResponse: [],
+            serverResponse: [$("#confirm")]
         };
 
         $(document).ready(function(e){
@@ -147,8 +270,6 @@ app.controller('ListMenuCtrl', [
 
         function showButton(button)
         {
-            console.log("showButton");
-            console.log(button);
             if(button == undefined) return;
             if(button.hasClass("ground"))
                 button.removeClass("ground");
@@ -156,8 +277,6 @@ app.controller('ListMenuCtrl', [
 
         function hideButton(button)
         {
-            console.log("hideButton");
-            console.log(button);
             if(button == undefined) return;
             if(!button.hasClass("ground"))
                 button.addClass("ground");
@@ -165,21 +284,17 @@ app.controller('ListMenuCtrl', [
 
         function showForm(container, cb)
         {
-            console.log("showForm");
-            console.log(container);
             if(container == undefined) {
                 cb();
                 return;
             }
             if (!container.is( ":visible" )){
                 container.slideDown( 300 , cb);
-            }
+            } 
         }
 
         function hideForm(container, cb)
         {
-            console.log("hideForm");
-            console.log(container);
             if(container == undefined) {
                 cb();
                 return;

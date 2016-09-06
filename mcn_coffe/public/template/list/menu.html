@@ -51,7 +51,7 @@
 </div>
 <div class="menu-form">
     <input id="menu_img" type="file"/>
-    <div class="close-form" ng-click="toggleMenuForm()"><i class="material-icons">keyboard_arrow_down</i></div>
+    <div class="close-form" ng-click="prevState()"><i class="material-icons">keyboard_arrow_down</i></div>
     <div class="input-form">
         <fieldset>
         <div class="form-group is-empty pull-center">
@@ -90,7 +90,7 @@
     </div>
 </div>
 <div class="option-form">
-    <div class="close-form" ng-click="toggleOptionForm()"><i class="material-icons">keyboard_arrow_down</i></div>
+    <div class="close-form" ng-click="prevState()"><i class="material-icons">keyboard_arrow_down</i></div>
     <div class="input-form">
         <fieldset>
             <div class="form-group is-empty">
@@ -118,27 +118,27 @@
     </div>
 </div>
 <div class="sub-option-form">
-    <div class="close-form" ng-click="toggleSubOptionForm()"><i class="material-icons">keyboard_arrow_down</i></div>
+    <div class="close-form" ng-click="prevState()"><i class="material-icons">keyboard_arrow_down</i></div>
     <div class="input-form">
         <fieldset>
             <div class="form-group is-empty">
                 <label for="sub_option_name" class="col-md-2 control-label">이름</label>
                 <div class="col-md-10">
-                    <input ng-model="selectedOption.name" type="text" class="form-control" id="sub_option_name" placeholder="이름을 입력하세요">
+                    <input ng-model="selectedSubOption.name" type="text" class="form-control" id="sub_option_name" placeholder="이름을 입력하세요">
                 </div>
                 <span class="material-input"></span>
             </div>
             <div class="form-group is-empty">
                 <label for="sub_option_detail" class="col-md-2 control-label">설명</label>
                 <div class="col-md-10">
-                    <input ng-model="selectedOption.detail" type="text" class="form-control" id="sub_option_detail" placeholder="설명을 입력하세요">
+                    <input ng-model="selectedSubOption.detail" type="text" class="form-control" id="sub_option_detail" placeholder="설명을 입력하세요">
                 </div>
                 <span class="material-input"></span>
             </div>
             <div class="form-group is-empty">
                 <label for="sub_option_cost" class="col-md-2 control-label">가격</label>
                 <div class="col-md-10">
-                    <input ng-model="selectedOption.cost" type="text" class="form-control" id="sub_option_cost" placeholder="가격을 입력하세요">
+                    <input ng-model="selectedSubOption.cost" type="text" class="form-control" id="sub_option_cost" placeholder="가격을 입력하세요">
                 </div>
                 <span class="material-input"></span>
             </div>
@@ -147,9 +147,19 @@
 </div>
 <div class="select-form">
     <div class="header">
-        <span class="label label-primary">아메리카노</span>
-        >> <span class="label label-primary">HOT/ICE</span>
-        >> <span class="label label-primary">HOT</span>
+        <span ng-show="selectedMenu" class="label label-primary">{{selectedMenu.name}}</span>
+        <span ng-show="selectedOption"> >> <span class="label label-primary">{{selectedOption.name}}</span></span>
+        <span ng-show="selectedSubOption"> >> <span class="label label-primary">{{selectedSubOption.name}}</span></span>
+    </div>
+</div>
+<div class="loading-form">
+    <div class="input-form">
+        <div class="loader"></div>
+    </div>
+</div>
+<div class="response-form">
+    <div class="input-form">
+        <div class="response">{{ serverResponse }}</div>
     </div>
 </div>
 <div id="create" ng-click="selectMenu()"
@@ -158,38 +168,50 @@
     <i class="material-icons">add</i>
     <div class="ripple-container"></div>
 </div>
-<div id="request" ng-click="request()"
+<div id="request" ng-click="requestPost()"
      data-toggle="tooltip" data-placement="top" title="" data-original-title="서버에 내용을 전송합니다."
      style="position:fixed;" class="btn btn-primary btn-fab right-conner-1 ground">
     <i class="material-icons">check</i>
     <div class="ripple-container"></div>
 </div>
-<div id="modify_menu" ng-click="changeState('modifyMenu')"
-     data-toggle="tooltip" data-placement="top" title="" data-original-title="메뉴를 수정합니다."
-     style="position:fixed;" class="btn btn-primary btn-fab right-conner-2 ground">
-    <i class="material-icons">check</i>
+<div id="delete" ng-click="requestDelete()"
+     data-toggle="tooltip" data-placement="top" title="" data-original-title="삭제합니다."
+     style="position:fixed;" class="btn btn-warning btn-fab right-conner-2 ground">
+    <i class="material-icons">delete</i>
     <div class="ripple-container"></div>
 </div>
-<div id="append_option" ng-click="changeState('appendOption')"
+<div id="modify_menu" ng-click="changeState('modifyMenu')"
+     data-toggle="tooltip" data-placement="top" title="" data-original-title="메뉴를 수정합니다."
+     style="position:fixed;" class="btn btn-success btn-fab right-conner-2 ground">
+    <i class="material-icons">mode_edit</i>
+    <div class="ripple-container"></div>
+</div>
+<div id="append_option" ng-click="selectOption()"
      data-toggle="tooltip" data-placement="top" title="" data-original-title="옵션을 추가합니다."
      style="position:fixed;" class="btn btn-primary btn-fab right-conner-1 ground">
-    <i class="material-icons">check</i>
+    <i class="material-icons">add</i>
     <div class="ripple-container"></div>
 </div>
 <div id="modify_option" ng-click="changeState('modifyOption')"
      data-toggle="tooltip" data-placement="top" title="" data-original-title="옵션을 수정합니다."
-     style="position:fixed;" class="btn btn-primary btn-fab right-conner-2 ground">
-    <i class="material-icons">check</i>
+     style="position:fixed;" class="btn btn-success btn-fab right-conner-2 ground">
+    <i class="material-icons">mode_edit</i>
     <div class="ripple-container"></div>
 </div>
-<div id="append_sub_option" ng-click="changeState('appendSubOption')";
+<div id="append_sub_option" ng-click="selectSubOption()"
      data-toggle="tooltip" data-placement="top" title="" data-original-title="하위 옵션을 추가합니다."
      style="position:fixed;" class="btn btn-primary btn-fab right-conner-1 ground">
-    <i class="material-icons">check</i>
+    <i class="material-icons">add</i>
     <div class="ripple-container"></div>
 </div>
 <div id="modify_sub_option" ng-click="changeState('modifySubOption')"
      data-toggle="tooltip" data-placement="top" title="" data-original-title="하위 옵션을 수정합니다."
+     style="position:fixed;" class="btn btn-success btn-fab right-conner-1 ground">
+    <i class="material-icons">mode_edit</i>
+    <div class="ripple-container"></div>
+</div>
+<div id="confirm" ng-click="prevState()"
+     data-toggle="tooltip" data-placement="top" title="" data-original-title="뒤로 돌아갑니다."
      style="position:fixed;" class="btn btn-primary btn-fab right-conner-1 ground">
     <i class="material-icons">check</i>
     <div class="ripple-container"></div>

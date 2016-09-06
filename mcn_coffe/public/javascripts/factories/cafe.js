@@ -13,7 +13,6 @@ app.factory('cafes', ['$http', function($http){
     };
     o.createCafe = function(cafe) {
         return $http.post('/cafes', cafe).success(function(data){
-            console.log(data);
         });
     };
     o.deleteCafe = function(cafe, callback) {
@@ -21,11 +20,11 @@ app.factory('cafes', ['$http', function($http){
             callback(data);
         });
     };
-    o.createMenu = function(cafe_id, menu) {
-        return $http.post('/cafes/' + cafe_id + '/menus', menu).success(function(data){
-            for(var i=0; i<menu.options.length; i++){
-                o.createMenuOption(data._id, menu.options[i]);
-            }
+    o.createMenu = function(cafe_id, menu, cb, err) {
+        return $http.post('/cafes/' + cafe_id + '/menus', menu).then(function(data){
+            cb(data);
+        }, function(data){
+            err(data);
         });
     };
     o.deleteMenu = function(cafe_id, menu){
