@@ -7,7 +7,8 @@
                 <div class="panel panel-default">
                     <div class="panel-body">
                         <div class="thumbnail no-margin">
-                            <img src='{{cafe.thumbnail}}' onerror="this.src='/images/cafe_default.png'">
+                            <img ng-hide="cafe.images.length" src="/images/cafe_default.png">
+                            <img ng-show="cafe.images.length" src='/image/cafe/{{cafe.images[0]}}'>
                         </div>
                     </div>
                     <div class="panel-footer">

@@ -6,6 +6,7 @@
     width: 100%;
     margin: 50px auto;
     margin-top:0;
+    margin-bottom:0;
     padding-top:50px;
     text-align: center;
     position: relative;
@@ -28,6 +29,7 @@
     display: none;
 }
 /*inputs*/
+#info_form input,
 #msform input, #msform textarea, .terms {
     padding: 15px;
     border: 1px solid #ccc;
@@ -46,6 +48,7 @@
     width: calc(100% - 115px);
 }
 /*buttons*/
+#info_form .action-button,
 #msform .action-button {
     width: 100px;
     background: #27AE60;
@@ -57,6 +60,18 @@
     padding: 10px 5px;
     margin: 10px 5px;
 }
+#msform .warning-button {
+    width: 100px;
+    background: #ff5722;
+    font-weight: bold;
+    color: white;
+    border: 0 none;
+    border-radius: 1px;
+    cursor: pointer;
+    padding: 10px 5px;
+    margin: 10px 5px;
+}
+#info_form .action-button:hover, #info_form .action-button:focus,
 #msform .action-button:hover, #msform .action-button:focus {
     box-shadow: 0 0 0 2px white, 0 0 0 3px #27AE60;
 }

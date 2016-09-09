@@ -27,7 +27,7 @@ var CafeSchema = new mongoose.Schema({
     images: [{ type: String, default: 'blank' }],
     likes: { type: Number, default: 0 },
     menus: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Menu' }],
-    owner: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }]
+    owner: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required:true }
 },{
     timestamps: true
 });

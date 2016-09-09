@@ -4,10 +4,11 @@
 
 app.controller('CreateCafeCtrl', [
     '$scope',
+    'auth',
     'cafes',
     'terms',
     'openApi',
-    function($scope, cafes, terms, openApi){
+    function($scope, auth, cafes, terms, openApi){
         $scope.terms = terms.terms;
         $scope.cafe  = {
             agree: [],
@@ -44,25 +45,15 @@ app.controller('CreateCafeCtrl', [
                     $scope.cafe[index] = true;
             }
         };
-        $scope.createCafe = function() {
-            if($scope.name == '' || $scope.detail == '') return;
-            cafes.createCafe({
-                name: $scope.name,
-                detail: $scope.detail
-            });
-            $scope.name = '';
-            $scope.detail = '';
-        };
 
         var currentPage = 0;
-
         var tMap, tMarkerLayer, tMarker;
         var rMap, rMarkerLayer, rMarker;
         var dropzone, rDropzone;
         var thumbs = [];
 
         var validationCheck = [
-            function(){
+            function(src, cb, err){
                 initAgree(-1);
                 var ret = true;
                 for(var idx in $scope.cafe.agree) {
@@ -70,9 +61,11 @@ app.controller('CreateCafeCtrl', [
                     ret &= $scope.cafe.agree[idx];
                 }
                 $scope.$apply();
+                if(!ret) err(src);
+                else cb(src);
                 return ret;
             },
-            function(){
+            function(src, cb, err){
                 var ret = true;
                 if($scope.cafe.name.trim().length == 0) { // 카페 이름 검사
                     $scope.error.name = "카페의 이름을 반드시 입력하세요";
@@ -91,9 +84,11 @@ app.controller('CreateCafeCtrl', [
                     ret = false;
                 }
                 $scope.$apply();
+                if(!ret) err(src);
+                else cb(src);
                 return ret;
             },
-            function() {
+            function(src, cb, err) {
                 var ret = true;
                 if($scope.cafe.address.trim().length == 0) {
                     $scope.error.address = "카페의 주소를 반드시 입력하세요";
@@ -104,9 +99,11 @@ app.controller('CreateCafeCtrl', [
                     ret = false;
                 }
                 $scope.$apply();
+                if(!ret) err(src);
+                else cb(src);
                 return ret;
             },
-            function() {
+            function(src, cb, err) {
                 var ret = true;
                 var files = dropzone.files;
                 if(files.length <= 0) {
@@ -114,18 +111,33 @@ app.controller('CreateCafeCtrl', [
                     ret = false;
                 }
                 $scope.$apply();
+                if(!ret) err(src);
+                else cb(src);
                 return ret;
+            },
+            function(src, cb){
+                cb(src);
+                return true;
+            },
+            function(src, cb) {
+                cb(src);
+                return true;
             }
         ];
 
         $(document).ready(function() {
             $.material.init();
+            initialize();
             initializeWizard();
             initializeTMap();
             initializePostCodify();
             initializeDropzone();
         });
 
+        function initialize(){
+            var lies = $("ul#progressbar li");
+            lies.css("width", (100 / lies.length) + "%");
+        }
         function initializeRDropzone() {
             Dropzone.autoDiscover = false;
             if(rDropzone ==  undefined) {
@@ -143,7 +155,6 @@ app.controller('CreateCafeCtrl', [
                 thumbs.length--;
             }
             for(var idx in files){
-                //var file  = JSON.parse(JSON.stringify(files[idx]));
                 var file = $.extend({}, files[idx]);
                 thumbs.push(file);
                 rDropzone.emit('addedfile', file);
@@ -174,16 +185,15 @@ app.controller('CreateCafeCtrl', [
             var left, opacity, scale;
             var animating;
 
-            $(".next").click(function(){
+            function toNextPage (src) {
+
                 if(animating) return false;
                 animating = true;
 
-                if(!validationCheck[currentPage]())
-                     return animating = false;
                 currentPage++;
 
-                current_fs = $(this).parent();
-                next_fs = $(this).parent().next();
+                current_fs = $(src).parent();
+                next_fs = $(src).parent().next();
 
                 $("#progressbar li").eq($("fieldset").index(next_fs)).addClass("active");
 
@@ -212,33 +222,40 @@ app.controller('CreateCafeCtrl', [
                             moveRMarker(location);
                             initializeRDropzone();
                         }
+                        if(currentPage == 5) {
+                            createCafe(function(data){
+                                $scope.cafe = data.data;
+                                toNextPage(next_fs.children()[0]);
+                            }, function(data){
+                                toPrevPage(next_fs.children()[0]);
+                            });
+                        }
                     },
                     easing: 'easeInOutBack'
                 });
-            });
-
-            $(".previous").click(function(){
+            }
+            function toPrevPage (src) {
                 if(animating) return false;
                 animating = true;
 
                 currentPage--;
 
-                current_fs = $(this).parent();
-                previous_fs = $(this).parent().prev();
+                current_fs = $(src).parent();
+                previous_fs = $(src).parent().prev();
 
                 $("#progressbar li").eq($("fieldset").index(current_fs)).removeClass("active");
 
                 previous_fs.show();
                 current_fs.animate({opacity: 0}, {
-                    step: function(now, mx) {
+                    step: function (now, mx) {
                         scale = 0.8 + (1 - now) * 0.2;
-                        left = ((1-now) * 50)+"%";
+                        left = ((1 - now) * 50) + "%";
                         opacity = 1 - now;
                         current_fs.css({'left': left});
-                        previous_fs.css({'transform': 'scale('+scale+')', 'opacity': opacity});
+                        previous_fs.css({'transform': 'scale(' + scale + ')', 'opacity': opacity});
                     },
                     duration: 800,
-                    complete: function(){
+                    complete: function () {
                         current_fs.hide();
                         animating = false;
                         tMap.updateSize();
@@ -253,17 +270,35 @@ app.controller('CreateCafeCtrl', [
                     },
                     easing: 'easeInOutBack'
                 });
-            });
+            }
 
+            $(".next").click(function(){
+                validationCheck[currentPage](this, toNextPage, function () {
+                    console.log("validation error!");
+                });
+            });
+            $(".previous").click(function(){
+                toPrevPage(this);
+            });
             $(".submit").click(function(){
-                $scope.cafe.images.length = 0;
-                var files = dropzone.files;
-                for(var idx in files) {
-                    var file = files[idx];
-                    var response = JSON.parse(file.xhr.responseText);
-                    $scope.cafe.images.push(response.filename);
-                }
-                cafes.createCafe($scope.cafe);
+                if($scope.cafe._id == undefined) return;
+                location.href = "/#/cafes/" + $scope.cafe._id;
+            });
+        }
+
+        function createCafe(cb, err) {
+            $scope.cafe.images.length = 0;
+            var files = dropzone.files;
+            for(var idx in files) {
+                var file = files[idx];
+                var response = JSON.parse(file.xhr.responseText);
+                $scope.cafe.images.push(response.filename);
+            }
+            $scope.cafe.owner = auth.currentUser();
+            cafes.createCafe($scope.cafe, function(data){
+                cb(data);
+            }, function(data) {
+                err(data);
             });
         }
 

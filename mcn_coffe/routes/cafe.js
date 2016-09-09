@@ -25,7 +25,10 @@ router.param('cafe', function(req, res, next, id) {
 
 /* cafe related API */
 router.get('/', function(req, res, next){
-    Cafe.find(function(err, cafes){
+    var option = {};
+    if(req.query.user != undefined)
+        option = { owner: req.query.user };
+    Cafe.find(option, function(err, cafes){
         if(err){ return next(err); }
         res.json(cafes);
     });
@@ -34,9 +37,10 @@ router.get('/', function(req, res, next){
 router.post('/', function(req, res, next) {
     var cafe = new Cafe(req.body);
     cafe.save(function(err, cafe){
-        if(err)
+        if(err) {
             return next(err);
-        res.json(cafe);
+        }
+        return res.json(cafe);
     });
 });
 
@@ -46,8 +50,23 @@ router.get('/:cafe', function(req, res) {
     });
 });
 
+router.put('/:cafe', function(req, res){
+    var data = req.body;
+    var query = {$set: data};
+    Cafe.update({_id: req.cafe._id}, query, function(err, cafes){
+        if(err) { return next(err); }
+        return res.json(cafes);
+    });
+});
+
 router.delete('/:cafe', function(req, res){
+    var confirm  = req.body.confirm;
+    console.log(req.body);
     var cafe_id = req.cafe._id;
+    if(req.cafe.name != confirm)
+        return res.status(400).json({
+            message: '확인 메시지 없음'
+        });
     Cafe.remove({_id: req.cafe._id}, function(err){
         if(err) { return next(err); }
         return res.status(200).json({

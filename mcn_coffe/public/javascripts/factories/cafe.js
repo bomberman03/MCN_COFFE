@@ -11,13 +11,32 @@ app.factory('cafes', ['$http', function($http){
             angular.copy(data, o.cafes);
         });
     };
-    o.createCafe = function(cafe) {
-        return $http.post('/cafes', cafe).success(function(data){
+    o.getUserCafe = function(user_id, cb, err){
+        return $http.get('/cafes?user=' + user_id).then(function(data){
+            cb(data);
+        }, function(data) {
+            err(data.data);
         });
     };
-    o.deleteCafe = function(cafe, callback) {
-        return $http.delete('/cafes/' + cafe._id).success(function(data){
-            callback(data);
+    o.createCafe = function(cafe, cb, err) {
+        return $http.post('/cafes', cafe).then(function(data){
+            cb(data);
+        }, function(data){
+            err(data);
+        });
+    };
+    o.updateCafe = function(cafe_id, data, cb, err){
+        return $http.put('/cafes/' + cafe_id, data).then(function(data){
+            cb(data);
+        }, function(data){
+            err(data);
+        });
+    };
+    o.deleteCafe = function(cafe, data, cb, err) {
+        return $http({method: 'DELETE', url: '/cafes/' + cafe._id, data: data, headers: {"Content-Type": "application/json;charset=utf-8"}}).then(function(data){
+            cb(data);
+        }, function(data){
+            err(data);
         });
     };
     o.createMenu = function(cafe_id, menu, cb, err) {

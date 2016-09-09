@@ -1,0 +1,65 @@
+
+        <div id="msform">
+            <fieldset>
+                <div class="top-full-margin bottom-full-margin text-left">
+                    <span class="label label-primary">1. 기본 정보</span>
+                    <span>{{baseResponse}}</span>
+                </div>
+                <div class="pull-left">카페 이름</div>
+                <input type="text" ng-model="cafe.name" placeholder="카페 이름" />
+                <div class="pull-left">카페 설명</div>
+                <input type="text" ng-model="cafe.detail" placeholder="카페 설명" />
+                <div class="pull-left">전화 번호</div>
+                <input type="text" ng-model="cafe.phone" placeholder="전화 번호" />
+                <div ng-show="isNetworking" class="text-center"><div class="loader"></div></div>
+                <div ng-hide="isNetworking" ng-click="updateCafeBase()" class="text-center"><input type="button" name="next" class="next action-button" value="수정하기" /></div>
+            </fieldset>
+        </div>
+        <div id="msform">
+            <fieldset>
+                <div class="top-full-margin bottom-full-margin text-left">
+                    <span class="label label-primary">2. 위치 정보</span>
+                    <span>{{geoResponse}}</span>
+                </div>
+                <div class="bottom-full-margin">
+                    <div id="tMap"></div>
+                </div>
+                <div class="pull-left">카페 주소</div>
+                <input type="text" ng-model="cafe.address" class="postcodify_address" placeholder="주소를 검색" />
+                <div class="pull-left">상세 주소</div>
+                <input type="text" ng-model="cafe.detailAddress" class="detail-address" placeholder="상세 주소를 기입 해주세요" />
+                <div ng-show="isNetworking" class="text-center"><div class="loader"></div></div>
+                <div ng-hide="isNetworking" ng-click="updateCafeGeo()" class="text-center"><input type="button" name="next" class="next action-button" value="수정하기" /></div>
+            </fieldset>
+        </div>
+        <div id="msform">
+            <fieldset>
+                <div class="top-full-margin bottom-full-margin text-left">
+                    <span class="label label-primary">3. 카페 이미지</span>
+                    <span>{{imageResponse}}</span>
+                </div>
+                <div id="image_slide">
+                </div>
+                <div class="checkbox">
+                    <label class="left-half-margin ng-binding">
+                        위 이미지를 카페 대표 이미지로 선택합니다.
+                    </label>
+                </div>
+                <div id="dropzone" class="dropzone">
+                </div>
+                <div ng-show="isNetworking" class="text-center"><div class="loader"></div></div>
+                <div ng-click="updateCafeImages()" class="text-center"><input type="button" name="next" class="next action-button" value="수정하기" /></div>
+            </fieldset>
+        </div>
+        <div id="msform">
+            <fieldset>
+        <div class="top-full-margin bottom-full-margin text-left">
+            <span class="label label-warning">3. 카페 삭제</span>
+            <span>{{deleteResponse}}</span>
+        </div>
+        <div class="pull-left">주의! 삭제된 카페는 다시 복구할 수 없습니다.</div>
+        <input ng-model="deleteConfirm" type="text" placeholder="카페 이름을 입력해주세요" />
+        <div ng-click="deleteCafe()" class="text-center"><input type="button" name="next" class="next warning-button" value="삭제하기" /></div>
+    </fieldset>
+</div>
+<div style="height:100px"></div>

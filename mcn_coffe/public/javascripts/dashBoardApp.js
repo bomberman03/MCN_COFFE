@@ -11,11 +11,27 @@ app.config([
             .state('main', {
                 url: '/main',
                 templateUrl: '/template/admin.html',
+                controller: 'DashBoardCtrl',
                 onEnter: ['$state', 'auth', function($state, auth) {
                     if( !auth.isLoggedIn()) {
                         $state.go('login');
                     }
                 }]
+            })
+            .state('cafeInfo', {
+                url: '/info/cafe/{id}',
+                templateUrl: '/template/info/cafe.html',
+                controller: 'CafeInfoCtrl',
+                onEnter: ['$state', 'auth', function($state, auth) {
+                    if( !auth.isLoggedIn()) {
+                        $state.go('login');
+                    }
+                }],
+                resolve: {
+                    cafe: ['$stateParams', 'cafes', function($stateParams, cafes){
+                        return cafes.getCafe($stateParams.id);
+                    }]
+                }
             })
             .state('cafe', {
                 url: '/create/cafe',

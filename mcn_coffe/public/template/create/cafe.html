@@ -7,6 +7,8 @@
         <li>위치 정보</li>
         <li>이미지 등록</li>
         <li>확인</li>
+        <li>등록 대기</li>
+        <li>등록 완료</li>
     </ul>
     <!-- fieldsets -->
     <fieldset>
@@ -28,7 +30,7 @@
                 <div ng-show='error.agree[$index]' class="error pull-center"> 동의가 필요합니다. </div>
             </div>
         </div>
-        <input type="button" name="next" class="next action-button" value="Next" />
+        <input type="button" name="next" class="next action-button" value="다음" />
     </fieldset>
     <fieldset>
         <h2 class="fs-title">STEP 2</h2>
@@ -39,8 +41,8 @@
         <input type="text" ng-click='initForm("detail")' ng-model="cafe.detail" placeholder="예) 모두가 좋아하는 커피를 팔고 있습니다." />
         <div class="pull-left">전화 번호 <span ng-show='error.phone' class="error">{{ error.phone }}</span></div>
         <input type="text" ng-click='initForm("phone")' ng-model="cafe.phone" placeholder="예) 010-1234-5678" />
-        <input type="button" name="previous" class="previous action-button" value="Previous" />
-        <input type="button" name="next" class="next action-button" value="Next" />
+        <input type="button" name="previous" class="previous action-button" value="이전" />
+        <input type="button" name="next" class="next action-button" value="다음" />
     </fieldset>
     <fieldset>
         <h2 class="fs-title">STEP 3</h2>
@@ -61,8 +63,8 @@
             </div>
             <div ng-show='error.locationConfirm' class="error pull-center"> {{ error.locationConfirm }} </div>
         </div>
-        <input type="button" name="previous" class="previous action-button" value="Previous" />
-        <input type="button" name="next" class="next action-button" value="Next" />
+        <input type="button" name="previous" class="previous action-button" value="이전" />
+        <input type="button" name="next" class="next action-button" value="다음" />
     </fieldset>
     <fieldset>
         <h2 class="fs-title">STEP 4</h2>
@@ -75,8 +77,8 @@
                 </div>
         </div>
         <div ng-show='error.images' class="error pull-center"> {{ error.images }} </div>
-        <input type="button" name="previous" class="previous action-button" value="Previous" />
-        <input type="button" name="next" class="next action-button" value="Next" />
+        <input type="button" name="previous" class="previous action-button" value="이전" />
+        <input type="button" name="next" class="next action-button" value="다음" />
     </fieldset>
     <fieldset>
         <h2 class="fs-title">STEP 5</h2>
@@ -100,7 +102,17 @@
                 <span class="note needsclick">(이 화면이 보이면 안되는데)</span>
             </div>
         </div>
-        <input type="button" name="previous" class="previous action-button" value="Previous" />
-        <input type="submit" name="submit" class="submit action-button" value="Submit" />
+        <input type="button" name="previous" class="previous action-button" value="이전" />
+        <input type="button" name="next" class="next action-button" value="등록" />
+    </fieldset>
+    <fieldset>
+        <h2 class="fs-title">STEP 6</h2>
+        <h3 class="fs-subtitle">카페 정보를 서버에 등록 중입니다.</h3>
+        <div class="loader"></div>
+    </fieldset>
+    <fieldset>
+        <h2 class="fs-title">STEP 7</h2>
+        <h3 class="fs-subtitle">등록이 완료되었습니다.</h3>
+        <input type="submit" name="submit" class="submit action-button" value="카페로 이동" />
     </fieldset>
 </form>

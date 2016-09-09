@@ -242,6 +242,7 @@ a{
     color:#aa0000;
 }
 
+#info_form fieldset,
 #search_form fieldset {
     background: white;
     border: 0 none;
@@ -249,10 +250,10 @@ a{
     box-sizing: border-box;
     width: 80%;
     margin: 0 10%;
-    /*stacking fieldsets above each other*/
     position: relative;
 }
 
+#info_form input, #info_form textarea,
 #search_form input, #search_form textarea {
     padding: 15px;
     border-radius: 3px;
@@ -576,4 +577,8 @@ a{
         box-shadow: 0 -2em;
         height: 5em;
     }
+}
+
+#image_slide {
+    height: 300px;
 }
