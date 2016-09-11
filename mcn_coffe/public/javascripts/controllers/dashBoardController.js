@@ -25,7 +25,7 @@ app.controller('DashBoardCtrl', [
                 '<ul class="nav nav-second-level collapse" aria-expanded="false" style="height: 0px;">' +
                 '<li><a href="#/info/cafe/' + cafe._id + '">카페 관리</a></li>' +
                 '<li><a href="#/list/cafes/' + cafe._id + '/menu">메뉴 관리</a></li>' +
-                '<li><a href="#">주문 현황</a></li>' +
+                '<li><a href="#/list/cafes/' + cafe._id + '/graph">주문 현황</a></li>' +
                 '</ul>' +
                 '</li>';
         }

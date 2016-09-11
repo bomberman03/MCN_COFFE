@@ -58,6 +58,21 @@ app.config([
                     }]
                 }
             })
+            .state('graph', {
+                url: '/list/cafes/{id}/graph',
+                templateUrl: '/template/list/graph.html',
+                controller: 'ListGraphCtrl',
+                onEnter: ['$state', 'auth', function($state, auth) {
+                    if( !auth.isLoggedIn()) {
+                        $state.go('login');
+                    }
+                }],
+                resolve: {
+                    cafe: ['$stateParams', 'cafes', function($stateParams, cafes){
+                        return cafes.getCafe($stateParams.id);
+                    }]
+                }
+            })
             .state('login', {
                 url: '/login',
                 templateUrl: '/template/auth/login.html',
