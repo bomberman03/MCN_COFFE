@@ -14,10 +14,12 @@ var MenuSchema = new mongoose.Schema({
     options : [{
         order: {type: Number, default: 0, required: true },
         name: { type: String, default: '', required: true },
+        detail: { type: String, defualt: '', required: true },
         cost: { type: Number, default: 0, required: true },
         options : [{
             order: {type: Number, default: 0, required: true },
             name: { type: String, default: '', required: true },
+            detail: { type: String, defualt: '', required: true },
             cost: { type: Number, default: 0, required: true }
         }]
     }]

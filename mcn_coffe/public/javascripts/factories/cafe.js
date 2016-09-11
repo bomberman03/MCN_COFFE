@@ -46,8 +46,60 @@ app.factory('cafes', ['$http', function($http){
             err(data);
         });
     };
-    o.deleteMenu = function(cafe_id, menu){
-        return $http.delete('/cafes/' + cafe_id + '/menus/' + menu._id).success(function(data){
+    o.updateMenu = function(menu_id, update, cb, err){
+        return $http.put('/menus/' + menu_id, update).then(function(data){
+            cb(data);
+        }, function(data){
+            err(data);
+        });
+    };
+    o.deleteMenu = function(cafe_id, menu_id, cb, err){
+        return $http.delete('/cafes/' + cafe_id + '/menus/' + menu_id).then(function(data){
+            cb(data);
+        }, function(data) {
+            err(data);
+        });
+    };
+    o.appendOption = function(menu_id, option, cb, err) {
+        return $http.post('/menus/' + menu_id, option).then(function(data){
+            cb(data);
+        }, function(data){
+            err(data);
+        });
+    };
+    o.updateOption = function(menu_id, order, update, cb, err) {
+        return $http.put('/menus/' + menu_id + '/' + order, update).then(function(data){
+            cb(data);
+        }, function(data){
+            err(data);
+        });
+    };
+    o.deleteOption = function(menu_id, order, cb, err) {
+        return $http.delete('/menus/' + menu_id + '/' + order).then(function(data){
+            cb(data);
+        }, function(data){
+            err(data);
+        });
+    };
+    o.appendSubOption = function(menu_id, order, subOption, cb, err) {
+        return $http.post('/menus/' + menu_id + '/' + order, subOption).then(function(data){
+            cb(data);
+        }, function(data){
+            err(data);
+        });
+    };
+    o.updateSubOption = function(menu_id, order, sub_order, update, cb, err) {
+        return $http.put('/menus/' + menu_id + '/' + order + '/' + sub_order, update).then(function(data){
+            cb(data);
+        }, function(data){
+            err(data);
+        });
+    };
+    o.deleteSubOption = function(menu_id, order, sub_order, cb, err){
+        return $http.delete('/menus/' + menu_id + '/' + order + '/' + sub_order).then(function(data){
+            cb(data);
+        }, function(data){
+            err(data);
         });
     };
     o.getCafe = function(cafe_id){

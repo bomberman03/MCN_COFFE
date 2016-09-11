@@ -20,7 +20,7 @@ app.config([
             })
             .state('login', {
                 url: '/login',
-                templateUrl: '/template/login.html',
+                templateUrl: '/template/auth/login.html',
                 controller: 'LoginCtrl',
                 onEnter: ['$state', 'auth', function($state, auth) {
                     if( auth.isLoggedIn()) {
@@ -30,7 +30,7 @@ app.config([
             })
             .state('register', {
                 url: '/register',
-                templateUrl: '/template/register.html',
+                templateUrl: '/template/auth/register.html',
                 controller: 'RegisterCtrl',
                 onEnter: ['$state', 'auth', function($state, auth) {
                     if( auth.isLoggedIn()) {

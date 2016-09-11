@@ -144,11 +144,105 @@ app.controller('ListMenuCtrl', [
             }
         };
 
+        $scope.requestDelete = function(){
+            if(isNetworking) return;
+            isNetworking = true;
+            if(curState == "modifyMenu") {
+                if($scope.selectedMenu._id == undefined) {
+                    isNetworking = false;
+                    $("input").prop("disabled",false);
+                    $scope.changeState("serverResponse");
+                }
+                else
+                    deleteMenu(function(data){
+                        $timeout(function() {
+                            // anything you want can go here and will safely be run on the next digest.
+                            $scope.serverResponse = "요청이 정상적으로 처리되었습니다.";
+                        });
+                        isNetworking = false;
+                        $("input").prop("disabled",false);
+                        $scope.changeState("serverResponse");
+                    }, function(data) {
+                        $timeout(function() {
+                            // anything you want can go here and will safely be run on the next digest.
+                            $scope.serverResponse = "예상치 못한 오류가 발생했습니다.";
+                        });
+                        isNetworking = false;
+                        $("input").prop("disabled",false);
+                        $scope.changeState("serverResponse");
+                    });
+            }
+            if(curState == 'modifyOption') {
+                if($scope.selectedOption.order == undefined) {
+                    isNetworking = false;
+                    $("input").prop("disabled",false);
+                    $scope.changeState("serverResponse");
+                }
+                else
+                    deleteOption(function(data){
+                        $timeout(function() {
+                            // anything you want can go here and will safely be run on the next digest.
+                            $scope.serverResponse = "요청이 정상적으로 처리되었습니다.";
+                        });
+                        isNetworking = false;
+                        $("input").prop("disabled",false);
+                        $scope.changeState("serverResponse");
+                    }, function(data){
+                        $timeout(function() {
+                            // anything you want can go here and will safely be run on the next digest.
+                            $scope.serverResponse = "예상치 못한 오류가 발생했습니다.";
+                        });
+                        isNetworking = false;
+                        $("input").prop("disabled",false);
+                        $scope.changeState("serverResponse");
+                    });
+            }
+            if(curState == 'modifySubOption') {
+                if($scope.selectedSubOption.order == undefined){
+                    isNetworking = false;
+                    $("input").prop("disabled",false);
+                    $scope.changeState("serverResponse");
+                }
+                else
+                    deleteSubOption(function(data){
+                        $timeout(function() {
+                            // anything you want can go here and will safely be run on the next digest.
+                            $scope.serverResponse = "요청이 정상적으로 처리되었습니다.";
+                        });
+                        isNetworking = false;
+                        $("input").prop("disabled",false);
+                        $scope.changeState("serverResponse");
+                    }, function(data){
+                        $timeout(function() {
+                            // anything you want can go here and will safely be run on the next digest.
+                            $scope.serverResponse = "예상치 못한 오류가 발생했습니다.";
+                        });
+                        isNetworking = false;
+                        $("input").prop("disabled",false);
+                        $scope.changeState("serverResponse");
+                    });
+            }
+            $("input").prop("disabled",true);
+            $scope.changeState("waitResponse");
+        };
+
+        function deleteMenu(cb, err) {
+            cafes.deleteMenu(cafe._id, $scope.selectedMenu._id, cb, err);
+        }
+
+        function deleteOption(cb, err) {
+            cafes.deleteOption($scope.selectedMenu._id, $scope.selectedOption.order, cb, err);
+        }
+
+        function deleteSubOption(cb, err) {
+            cafes.deleteSubOption($scope.selectedMenu._id, $scope.selectedOption.order, $scope.selectedSubOption.order, cb, err);
+        }
+
         $scope.requestPost = function(){
             if(isNetworking) return;
             isNetworking = true;
             if(curState == "modifyMenu") {
-                if($scope.selectedMenu.id == undefined)
+                if($scope.selectedMenu._id == undefined)
                     createMenu(function(data){
                         $timeout(function() {
                             // anything you want can go here and will safely be run on the next digest.
@@ -185,6 +279,82 @@ app.controller('ListMenuCtrl', [
                         $scope.changeState("serverResponse");
                     });
             }
+            if(curState == 'modifyOption') {
+                if($scope.selectedOption.order == undefined)
+                    appendOption(function(data){
+                        $timeout(function() {
+                            // anything you want can go here and will safely be run on the next digest.
+                            $scope.serverResponse = "요청이 정상적으로 처리되었습니다.";
+                        });
+                        isNetworking = false;
+                        $("input").prop("disabled",false);
+                        $scope.changeState("serverResponse");
+                    }, function(data){
+                        $timeout(function() {
+                            // anything you want can go here and will safely be run on the next digest.
+                            $scope.serverResponse = "예상치 못한 오류가 발생했습니다.";
+                        });
+                        isNetworking = false;
+                        $("input").prop("disabled",false);
+                        $scope.changeState("serverResponse");
+                    });
+                else
+                    updateOption(function(data){
+                        $timeout(function() {
+                            // anything you want can go here and will safely be run on the next digest.
+                            $scope.serverResponse = "요청이 정상적으로 처리되었습니다.";
+                        });
+                        isNetworking = false;
+                        $("input").prop("disabled",false);
+                        $scope.changeState("serverResponse");
+                    }, function(data){
+                        $timeout(function() {
+                            // anything you want can go here and will safely be run on the next digest.
+                            $scope.serverResponse = "예상치 못한 오류가 발생했습니다.";
+                        });
+                        isNetworking = false;
+                        $("input").prop("disabled",false);
+                        $scope.changeState("serverResponse");
+                    });
+            }
+            if(curState == 'modifySubOption') {
+                if($scope.selectedSubOption.order == undefined)
+                    appendSubOption(function(data){
+                        $timeout(function() {
+                            // anything you want can go here and will safely be run on the next digest.
+                            $scope.serverResponse = "요청이 정상적으로 처리되었습니다.";
+                        });
+                        isNetworking = false;
+                        $("input").prop("disabled",false);
+                        $scope.changeState("serverResponse");
+                    }, function(data){
+                        $timeout(function() {
+                            // anything you want can go here and will safely be run on the next digest.
+                            $scope.serverResponse = "예상치 못한 오류가 발생했습니다.";
+                        });
+                        isNetworking = false;
+                        $("input").prop("disabled",false);
+                        $scope.changeState("serverResponse");
+                    });
+                else
+                    updateSubOption(function(data){
+                        $timeout(function() {
+                            // anything you want can go here and will safely be run on the next digest.
+                            $scope.serverResponse = "요청이 정상적으로 처리되었습니다.";
+                        });
+                        isNetworking = false;
+                        $("input").prop("disabled",false);
+                        $scope.changeState("serverResponse");
+                    }, function(data){
+                        $timeout(function() {
+                            // anything you want can go here and will safely be run on the next digest.
+                            $scope.serverResponse = "예상치 못한 오류가 발생했습니다.";
+                        });
+                        isNetworking = false;
+                        $("input").prop("disabled",false);
+                        $scope.changeState("serverResponse");
+                    });
+            }
             $("input").prop("disabled",true);
             $scope.changeState("waitResponse");
         };
@@ -193,24 +363,24 @@ app.controller('ListMenuCtrl', [
             cafes.createMenu(cafe._id, $scope.selectedMenu, cb, err);
         }
 
-        function updateMenu() {
-
+        function updateMenu(cb, err) {
+            cafes.updateMenu($scope.selectedMenu._id, $scope.selectedMenu, cb, err);
         }
 
-        function appendOption() {
-
+        function appendOption(cb, err) {
+            cafes.appendOption($scope.selectedMenu._id, $scope.selectedOption, cb, err);
         }
 
-        function updateOption() {
-
+        function updateOption(cb, err) {
+            cafes.updateOption($scope.selectedMenu._id, $scope.selectedOption.order, $scope.selectedOption, cb, err);
         }
 
-        function appendSubOption() {
-
+        function appendSubOption(cb, err) {
+            cafes.appendSubOption($scope.selectedMenu._id, $scope.selectedOption.order, $scope.selectedSubOption, cb, err);
         }
 
-        function updateSubOption() {
-
+        function updateSubOption(cb, err) {
+            cafes.updateSubOption($scope.selectedMenu._id, $scope.selectedOption.order, $scope.selectedSubOption.order, $scope.selectedSubOption, cb, err);
         }
 
         var isNetworking = false;
