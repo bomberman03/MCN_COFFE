@@ -10,8 +10,6 @@ app.controller('ListGraphCtrl', [
         $(document).ready(function(e){
             $.material.init();
             $('[data-toggle="tooltip"]').tooltip();
-            var MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-
             var randomScalingFactor = function() {
                 return Math.round(Math.random() * 100);
                 //return 0;
@@ -78,7 +76,6 @@ app.controller('ListGraphCtrl', [
             };
             var ctx = document.getElementById("myChart").getContext("2d");
             window.myLine = new Chart(ctx, config);
-            console.log(myChart);
         });
     }
 ]);
