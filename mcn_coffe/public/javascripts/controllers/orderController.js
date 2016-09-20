@@ -16,6 +16,11 @@ app.controller('OrderCtrl', [
         var socket_ip = '192.168.0.58';
         var socket_port = 8080;
 
+        var WAIT = 0;
+        var COMPLETE = 1;
+        var CANCEL = 2;
+        var RECEIVE = 4;
+
         $(document).ready(function(){
             // activate tooltip on right coner
             initializeTooltip();
@@ -66,13 +71,13 @@ app.controller('OrderCtrl', [
             if(order == undefined) return -1;
             var ret = "신규 주문";
             switch($scope.mappedOrders[order_id].status){
-                case 1:
+                case COMPLETE:
                     ret = "수령 대기";
                     break;
-                case 2:
+                case CANCEL:
                     ret = "주문 취소";
                     break;
-                case 4:
+                case RECEIVE:
                     ret = "수령 완료";
                     break;
             }
@@ -83,13 +88,13 @@ app.controller('OrderCtrl', [
             if(order == undefined) return -1;
             var ret = "label-default";
             switch($scope.mappedOrders[order_id].status){
-                case 1:
+                case COMPLETE:
                     ret = "label-info";
                     break;
-                case 2:
+                case CANCEL:
                     ret = "label-warning";
                     break;
-                case 4:
+                case RECEIVE:
                     ret = "label-success";
                     break;
             }
@@ -159,9 +164,7 @@ app.controller('OrderCtrl', [
             $grid.masonry('layout');
         };
         $scope.removeOrder = function(order_id) {
-            console.log(order_id);
             var order_div = $("div[id=" + order_id + "]").parent();
-            console.log(order_div);
             if(order_div != undefined) {
                 $grid.masonry('remove', order_div);
                 $grid.masonry('layout');
@@ -176,6 +179,9 @@ app.controller('OrderCtrl', [
                     $timeout(function () {
                         $scope.mappedOrders[order._id] = order;
                     });
+                    if(order.status == CANCEL || order.status == RECEIVE) {
+                        removeOrder(order._id);
+                    }
                 }
             }
         };
