@@ -180,7 +180,7 @@ app.controller('OrderCtrl', [
                         $scope.mappedOrders[order._id] = order;
                     });
                     if(order.status == CANCEL || order.status == RECEIVE) {
-                        removeOrder(order._id);
+                        $scope.removeOrder(order._id);
                     }
                 }
             }
