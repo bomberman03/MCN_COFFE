@@ -9,8 +9,18 @@ const RECEIVE  = 4;
 var mongoose = require('mongoose');
 
 var OrderSchema = new mongoose.Schema({
-    cafe: {type: mongoose.Schema.Types.ObjectId, ref: 'Cafe'},
-    user: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
+    cafe: {
+        _id: String,
+        name: String,
+        detail: String
+    },
+    user: {
+        _id: String,
+        username: String,
+        name: String,
+        email: String,
+        phone: String
+    },
     cost: {type: Number, default: 0},
     orders: [{
         menu: {

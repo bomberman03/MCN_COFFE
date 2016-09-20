@@ -11,7 +11,7 @@ var Order = mongoose.model('Order');
 
 /* order related API dependant to cafe */
 router.get('/', function(req, res, next){
-    Order.find({cafe: req.cafe._id}, function(err, orders){
+    Order.find({"cafe._id": req.cafe._id}, function(err, orders){
         if(err) { return next(err); }
         res.json(orders);
     });
