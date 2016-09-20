@@ -4,21 +4,31 @@
 app.controller('OrderCtrl', [
     '$scope',
     '$compile',
+    '$timeout',
     'cafes',
     'cafe',
-    function($scope, $compile, cafes, cafe){
+    function($scope, $compile, $timeout, cafes, cafe){
         $scope.cafe = cafe;
         $scope.orders = cafes.orders;
         $scope.mappedOrders = [];
         $scope.selectedOrders = [];
         var $grid, socket;
+        var socket_ip = '192.168.0.58';
+        var socket_port = 8080;
 
         $(document).ready(function(){
             // activate tooltip on right coner
-            $('[data-toggle="tooltip"]').tooltip();
+            initializeTooltip();
             initializeMasonry();
             initializeSocket();
         });
+
+        function initializeTooltip(){
+            if($('[data-toggle="tooltip"]').length > 0)
+                $('[data-toggle="tooltip"]').tooltip();
+            else
+                setTimeout(initializeTooltip, 100);
+        }
 
         function initializeMasonry() {
             $grid = $("#order_list").masonry({
@@ -28,7 +38,7 @@ app.controller('OrderCtrl', [
         }
         function initializeSocket() {
             // localhost로 연결한다.
-            socket = io.connect('http://192.168.0.58:8080', {query: 'id=' + $scope.cafe._id});
+            socket = io.connect('http://' + socket_ip + ':' + socket_port, {query: 'id=' + $scope.cafe._id});
             // 서버에서 news 이벤트가 일어날 때 데이터를 받는다.
             socket.on($scope.cafe._id, function (data) {
                 switch(data.method) {
@@ -62,7 +72,7 @@ app.controller('OrderCtrl', [
                 case 2:
                     ret = "주문 취소";
                     break;
-                case 3:
+                case 4:
                     ret = "수령 완료";
                     break;
             }
@@ -79,7 +89,7 @@ app.controller('OrderCtrl', [
                 case 2:
                     ret = "label-warning";
                     break;
-                case 3:
+                case 4:
                     ret = "label-success";
                     break;
             }
@@ -148,8 +158,10 @@ app.controller('OrderCtrl', [
             $grid.append($items).masonry( 'prepended', $items );
             $grid.masonry('layout');
         };
-        $scope.removeOrder = function(order_id){
+        $scope.removeOrder = function(order_id) {
+            console.log(order_id);
             var order_div = $("div[id=" + order_id + "]").parent();
+            console.log(order_div);
             if(order_div != undefined) {
                 $grid.masonry('remove', order_div);
                 $grid.masonry('layout');
@@ -161,11 +173,16 @@ app.controller('OrderCtrl', [
             if($scope.mappedOrders[order._id] != undefined) {
                 // cheating just compare status changed
                 if($scope.mappedOrders[order._id].status != order.status) {
-                    $scope.$apply(function () {
+                    $timeout(function () {
                         $scope.mappedOrders[order._id] = order;
                     });
                 }
             }
+        };
+        $scope.cancelOrder = function(){
+            for(var i=0; i<$scope.selectedOrders.length; i++)
+                cafes.cancelOrder($scope.selectedOrders[i], $scope.removeOrder);
+            $scope.selectedOrders = [];
         };
         $scope.deleteOrder = function(){
             for(var i=0; i<$scope.selectedOrders.length; i++)

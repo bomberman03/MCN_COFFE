@@ -24,7 +24,7 @@ var OrderSchema = new mongoose.Schema({
         cost: {type:Number, default:0},
         count: {type: Number, default:0}
     }],
-    status: {type:Number, default:0}
+    status: {type:Number, default:WAIT}
 },{
     timestamps: true
 });

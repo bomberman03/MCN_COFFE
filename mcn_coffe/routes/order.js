@@ -100,7 +100,7 @@ router.put('/:order/receive', function(req, res, next){
     });
 });
 
-router.put(':order/cancel', function(req, res, next){
+router.put('/:order/cancel', function(req, res, next){
     req.order.cancel(function(err, order){
         if(err) { next(err); }
         io.emit(order.cafe, {

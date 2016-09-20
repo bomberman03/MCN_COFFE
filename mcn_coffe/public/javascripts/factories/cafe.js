@@ -137,5 +137,10 @@ app.factory('cafes', ['$http', function($http){
             next(data);
         });
     };
+    o.cancelOrder = function(order, next) {
+        return $http.put('/orders/' + order._id + '/cancel/').success(function(data){
+            next(data._id);
+        });
+    };
     return o;
 }]);
