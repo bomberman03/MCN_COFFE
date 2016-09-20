@@ -72,8 +72,7 @@ router.post('/register', function(req, res){
             message: '모든 입력을 해주세요'
         });
     }
-    var user = new User();
-    user.username = req.body.username;
+    var user = new User(req.body);
     user.setPassword(req.body.password);
     user.save(function (err){
         if(err) {
