@@ -77,7 +77,7 @@ router.delete('/:order', function(req, res, next){
 router.put('/:order/complete', function(req, res, next){
     req.order.complete(function(err, order){
         if(err) { next(err); }
-        io.emit(order.cafe, {
+        io.emit(order.cafe._id, {
             method: 'put',
             name: 'order',
             id: order._id,
@@ -90,7 +90,7 @@ router.put('/:order/complete', function(req, res, next){
 router.put('/:order/receive', function(req, res, next){
     req.order.receive(function(err, order){
         if(err) { next(err); }
-        io.emit(order.cafe, {
+        io.emit(order.cafe._id, {
             method: 'put',
             name: 'order',
             id: order._id,
@@ -103,7 +103,7 @@ router.put('/:order/receive', function(req, res, next){
 router.put('/:order/cancel', function(req, res, next){
     req.order.cancel(function(err, order){
         if(err) { next(err); }
-        io.emit(order.cafe, {
+        io.emit(order.cafe._id, {
             method: 'put',
             name: 'order',
             id: order._id,
