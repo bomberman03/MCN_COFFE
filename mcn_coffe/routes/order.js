@@ -37,7 +37,7 @@ router.post('/status', function(req, res, next){
 });
 
 router.post('/users', function(req, res, next){
-    Order.find({ user: req.body.user }, function(err, orders){
+    Order.find({ "user._id" : req.body.user }, function(err, orders){
         if(err) { return next(err); }
         res.json({
             orders: orders
