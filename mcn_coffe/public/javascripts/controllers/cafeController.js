@@ -3,10 +3,12 @@
  */
 app.controller('CafeCtrl', [
     '$scope',
+    '$timeout',
     'cafes',
     'auth',
     'cafe',
-    function($scope, cafes, auth, cafe){
+    function($scope, $timeout, cafes, auth, cafe){
+        $scope.isLoggedIn = auth.isLoggedIn;
         $scope.cafe = cafe;
         $scope.order = {
             cafe: $scope.cafe,
@@ -14,10 +16,52 @@ app.controller('CafeCtrl', [
             orders:[],
             cost: 0
         };
+        $scope.networkStatus = "failure";
+        $scope.networkResponse = "";
+        $scope.category_filter = "전체";
+        $scope.categories = ["전체"];
+        $scope.menus = [];
+        $scope.clearOrder = function() {
+            $scope.order.orders.length = $scope.order.cost = 0;
+        };
+        $scope.makeQuery = function() {
+            var search_term  = $("#search_term").val();
+            $scope.menus.length = 0;
+            for(var idx in $scope.cafe.menus) {
+                var menu = $scope.cafe.menus[idx];
+                if($scope.category_filter == "전체" || $scope.category_filter == menu.category) {
+                    if(menu.name.match(search_term) == null)
+                        continue;
+                    $scope.menus.push(menu);
+                }
+            }
+        };
+        $scope.selectFilter = function(category){
+            var update = ($scope.category_filter != category);
+            $scope.category_filter = category;
+            if(update) $scope.makeQuery();
+        };
         $scope.newOrder = {};
         $scope.populateCafe = function(){
+            var responseCnt = 0;
+            var length = cafe.menus.length;
             for(var i=0; i<cafe.menus.length; i++){
-                cafes.getMenu(cafe, cafe.menus[i]._id);
+                cafes.getMenu(cafe.menus[i]._id, function(data){
+                    var data = data.data;
+                    if($scope.categories.indexOf(data.category) == -1) $scope.categories.push(data.category);
+                    cafe.menus[i] = data;
+                    responseCnt++;
+                    if(responseCnt==length) {
+                        console.log("menus load complete!");
+                        $scope.makeQuery();
+                    }
+                },function(data){
+                    responseCnt++;
+                    if(responseCnt==length) {
+                        console.log("menus load complete!");
+                        $scope.makeQuery();
+                    }
+                });
             }
         };
         $scope.populateCafe();
@@ -37,6 +81,12 @@ app.controller('CafeCtrl', [
                     var default_check = $(option.find("input[type=checkbox]")[0]);
                     default_check.prop("checked",false);
                 }
+            });
+            $('#confirmMenuModal').on('shown.bs.modal', function() {
+                $timeout(function(){
+                    $scope.networkResponse = "";
+                    $scope.networkStatus = "failure";
+                });
             });
         };
         $scope.selectRadioOption = function(option, radio){
@@ -107,8 +157,16 @@ app.controller('CafeCtrl', [
         };
         $scope.postOrder = function(){
             if($scope.order.orders.length > 0) {
+                $scope.networkResponse = "";
+                $scope.networkStatus = "networking";
                 $scope.order.user = auth.currentUser();
-                cafes.postOrder($scope.cafe, $scope.order);
+                cafes.postOrder($scope.cafe, $scope.order, function(data){
+                    $scope.networkResponse = "결제가 성공적으로 처리되었습니다.";
+                    $scope.networkStatus  = "success";
+                }, function(data){
+                    $scope.networkResponse = "알수 없는 이유로 결제가 실패하였습니다.";
+                    $scope.networkStatus  = "failure";
+                });
             }
         };
     }

@@ -112,19 +112,18 @@ app.factory('cafes', ['$http', function($http){
             angular.copy(data, o.orders);
         });
     };
-    o.getMenu = function(cafe, menu_id){
+    o.getMenu = function(menu_id, cb, err){
         return $http.get('/menus/' + menu_id).then(function(data){
-            for(var i=0; i<cafe.menus.length; i++){
-                if(cafe.menus[i]._id == menu_id) {
-                    cafe.menus[i] = data.data;
-                    break;
-                }
-            }
+            cb(data);
+        }, function(data){
+            err(data);
         });
     };
-    o.postOrder = function(cafe, order){
-        return $http.post('/cafes/' + cafe._id + '/orders', order).success(function(data){
-
+    o.postOrder = function(cafe, order, cb, err){
+        return $http.post('/cafes/' + cafe._id + '/orders', order).then(function(data){
+            cb(data);
+        }, function(data){
+            err(data);
         });
     };
     o.deleteOrder = function(order, next){
