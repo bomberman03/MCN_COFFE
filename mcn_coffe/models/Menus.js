@@ -3,6 +3,7 @@
  */
 
 var mongoose = require('mongoose');
+require('mongoose-double')(mongoose);
 
 var MenuSchema = new mongoose.Schema({
     cafe: {type: mongoose.Schema.Types.ObjectId, ref: 'Cafe'},
@@ -11,16 +12,20 @@ var MenuSchema = new mongoose.Schema({
     detail: { type: String, default: '' },
     cost: { type: Number, default: 0, required: true },
     image: { type: String, default: 'blank' },
+    time: { type: Number, default: 0, required: true},
+    prob: { type: mongoose.Schema.Types.Double, default: 0.0, required: true },
     options : [{
         order: {type: Number, default: 0, required: true },
         name: { type: String, default: '', required: true },
         detail: { type: String, defualt: '', required: true },
         cost: { type: Number, default: 0, required: true },
+        prob: { type: mongoose.Schema.Types.Double, default: 0.0, required: true },
         options : [{
             order: {type: Number, default: 0, required: true },
             name: { type: String, default: '', required: true },
             detail: { type: String, defualt: '', required: true },
-            cost: { type: Number, default: 0, required: true }
+            cost: { type: Number, default: 0, required: true },
+            prob: { type: mongoose.Schema.Types.Double, default: 0.0, required: true }
         }]
     }]
 },{

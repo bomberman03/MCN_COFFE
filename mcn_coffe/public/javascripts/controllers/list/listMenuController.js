@@ -20,6 +20,20 @@ app.controller('ListMenuCtrl', [
         $scope.selectedOption = undefined;
         $scope.selectedSubOption = undefined;
         $scope.serverResponse = undefined;
+        for(var i=0; i<$scope.menus.length; i++) {
+            if($scope.menus[i]["time"] == undefined)
+                $scope.menus[i]["time"] = 0;
+            if($scope.menus[i]["prob"] == undefined)
+                $scope.menus[i]["prob"] = 0.0;
+            for(var j=0; j<$scope.menus[i].options.length; j++) {
+                if($scope.menus[i].options[j]["prob"] == undefined)
+                    $scope.menus[i].options[j]["prob"] = 0.0;
+                for(var k=0; k<$scope.menus[i].options[j].length; k++) {
+                    if($scope.menus[i].options[j].options[k]["prob"] == undefined)
+                        $scope.menus[i].options[j].options[k]["prob"] = 0.0;
+                }
+            }
+        }
 
         $scope.makeQuery = function() {
             var search_term  = $("#search_term").val();
