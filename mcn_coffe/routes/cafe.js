@@ -27,7 +27,21 @@ router.param('cafe', function(req, res, next, id) {
 router.get('/', function(req, res, next){
     var option = {};
     if(req.query.user != undefined)
-        option = { owner: req.query.user };
+        option['owner'] = req.query.user;
+    if(req.query.latitude != undefined && req.query.longitude != undefined && req.query.dist != undefined)
+    {
+        var lat = parseFloat(req.query.latitude);
+        var lon = parseFloat(req.query.longitude);
+        var dist = parseFloat(req.query.dist);
+        option['location.latitude'] = {
+            $gt: lat - dist,
+            $lt: lat + dist
+        };
+        option['location.longitude']  = {
+            $gt: lon - dist,
+            $lt: lon + dist
+        }
+    }
     Cafe.find(option, function(err, cafes){
         if(err){ return next(err); }
         res.json(cafes);
@@ -61,7 +75,6 @@ router.put('/:cafe', function(req, res){
 
 router.delete('/:cafe', function(req, res){
     var confirm  = req.body.confirm;
-    console.log(req.body);
     var cafe_id = req.cafe._id;
     if(req.cafe.name != confirm)
         return res.status(400).json({

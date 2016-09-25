@@ -9,6 +9,8 @@ const RECEIVE  = 4;
 var mongoose = require('mongoose');
 
 var OrderSchema = new mongoose.Schema({
+    createAt: { type: Date, default: Date.now },
+    updateAt: { type: Date, default: Date.now },
     cafe: {
         _id: String,
         name: String,
@@ -35,8 +37,6 @@ var OrderSchema = new mongoose.Schema({
         count: {type: Number, default:0}
     }],
     status: {type:Number, default:WAIT}
-},{
-    timestamps: true
 });
 
 OrderSchema.methods.complete = function(cb){

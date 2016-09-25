@@ -107,4 +107,55 @@ router.post('/login', function(req, res, next){
     })(req, res, next);
 });
 
+router.get('/users', function(req, res, next){
+    User.find({}, function(err, users){
+        if(err) { return next(err); }
+        return res.json(users);
+    });
+});
+
+router.param('user', function(req, res, next, id) {
+    var query = User.findById(id);
+    query.exec(function (err, user){
+        if (err) { return next(err); }
+        if (!user) { return next(new Error('can\'t find user')); }
+        req.user = user;
+        return next();
+    });
+});
+
+router.get('/users/:user', function(req, res, next){
+    if(!req.user) return res.status(404);
+    return res.json(req.user);
+});
+
+router.put('/users/:user', function(req, res, next){
+    var data = req.body;
+    var query = {$set: data};
+    for(var k in data)
+        req.user[k] = data[k];
+    User.update({_id: req.user._id}, query, function(err, users){
+        if(err) { return next(err); }
+        return res.json({
+            token: req.user.generateJWT()
+        });
+    });
+});
+
+router.delete('/users/:user', function(req, res, next){
+    var confirm  = req.body.confirm;
+    if(!req.user.validPassword(confirm))
+        return res.status(400).json({
+            message: '확인 메시지 없음'
+        });
+    var user_id = req.user._id;
+    User.remove({_id: user_id}, function(err){
+        if(err) { return next(err); }
+        return res.status(200).json({
+            message: '삭제가 정상적으로 처리되었습니다.',
+            id: user_id
+        });
+    });
+});
+
 module.exports = router;

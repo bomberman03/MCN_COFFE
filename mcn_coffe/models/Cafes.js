@@ -3,6 +3,7 @@
  */
 
 var mongoose = require('mongoose');
+require('mongoose-double')(mongoose);
 
 var CafeSchema = new mongoose.Schema({
     agree: [{ type: Boolean, default: false }],
@@ -19,8 +20,8 @@ var CafeSchema = new mongoose.Schema({
         required: [true, 'User phone number required']
     },
     location: {
-        latitude: { type: String, default: '0.0', required: true },
-        longitude: { type: String, default: '0.0', required: true }
+        latitude: { type: mongoose.Schema.Types.Double, default: 0.0, required: true },
+        longitude: { type: mongoose.Schema.Types.Double, default: 0.0, required: true }
     },
     address: { type: String, default: '', required: true},
     detailAddress: { type: String, default: '' },

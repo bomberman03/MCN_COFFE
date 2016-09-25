@@ -21,10 +21,6 @@ app.controller('ListMenuCtrl', [
         $scope.selectedSubOption = undefined;
         $scope.serverResponse = undefined;
 
-        $scope.selectFilter = function(category){
-            $scope.category_filter = category;
-        };
-
         $scope.makeQuery = function() {
             var search_term  = $("#search_term").val();
             $scope.menus.length = 0;
@@ -39,8 +35,12 @@ app.controller('ListMenuCtrl', [
             initializeAccordion();
         };
 
-        $scope.changeState = function(state)
-        {
+        $scope.selectFilter = function(category){
+            $scope.category_filter = category;
+            $scope.makeQuery();
+        };
+
+        $scope.changeState = function(state) {
             if(curState == state)
                 return;
             if(curState != "waitResponse" && curState != "serverResponse") {
@@ -59,8 +59,7 @@ app.controller('ListMenuCtrl', [
             });
         };
 
-        $scope.prevState = function()
-        {
+        $scope.prevState = function() {
             if(isNetworking) return;
             if(prevState.length == 0)
                 return;
@@ -94,7 +93,7 @@ app.controller('ListMenuCtrl', [
                     image: "",
                     options: []
                 };
-                $scope.changeState("modifyMenu");
+                $scope.changeState("createMenu");
             }
         };
 
@@ -118,7 +117,7 @@ app.controller('ListMenuCtrl', [
                     cost: 0,
                     options: []
                 };
-                $scope.changeState("modifyOption");
+                $scope.changeState("appendOption");
             }
         };
 
@@ -140,7 +139,7 @@ app.controller('ListMenuCtrl', [
                     detail: "",
                     cost:0
                 };
-                $scope.changeState("modifySubOption");
+                $scope.changeState("appendSubOption");
             }
         };
 
@@ -158,6 +157,7 @@ app.controller('ListMenuCtrl', [
                         $timeout(function() {
                             // anything you want can go here and will safely be run on the next digest.
                             $scope.serverResponse = "요청이 정상적으로 처리되었습니다.";
+                            deleteMenuView($scope.selectedMenu);
                         });
                         isNetworking = false;
                         $("input").prop("disabled",false);
@@ -183,6 +183,7 @@ app.controller('ListMenuCtrl', [
                         $timeout(function() {
                             // anything you want can go here and will safely be run on the next digest.
                             $scope.serverResponse = "요청이 정상적으로 처리되었습니다.";
+                            updateMenuView(data.data);
                         });
                         isNetworking = false;
                         $("input").prop("disabled",false);
@@ -208,6 +209,7 @@ app.controller('ListMenuCtrl', [
                         $timeout(function() {
                             // anything you want can go here and will safely be run on the next digest.
                             $scope.serverResponse = "요청이 정상적으로 처리되었습니다.";
+                            updateMenuView(data.data);
                         });
                         isNetworking = false;
                         $("input").prop("disabled",false);
@@ -226,18 +228,6 @@ app.controller('ListMenuCtrl', [
             $scope.changeState("waitResponse");
         };
 
-        function deleteMenu(cb, err) {
-            cafes.deleteMenu(cafe._id, $scope.selectedMenu._id, cb, err);
-        }
-
-        function deleteOption(cb, err) {
-            cafes.deleteOption($scope.selectedMenu._id, $scope.selectedOption.order, cb, err);
-        }
-
-        function deleteSubOption(cb, err) {
-            cafes.deleteSubOption($scope.selectedMenu._id, $scope.selectedOption.order, $scope.selectedSubOption.order, cb, err);
-        }
-
         $scope.requestPost = function(){
             if(isNetworking) return;
             isNetworking = true;
@@ -247,6 +237,9 @@ app.controller('ListMenuCtrl', [
                         $timeout(function() {
                             // anything you want can go here and will safely be run on the next digest.
                             $scope.serverResponse = "요청이 정상적으로 처리되었습니다.";
+                            var newMenu = data.data;
+                            $scope.cafe.menus.push(newMenu);
+                            $scope.menus = [newMenu].concat($scope.menus);
                         });
                         isNetworking = false;
                         $("input").prop("disabled",false);
@@ -265,6 +258,7 @@ app.controller('ListMenuCtrl', [
                         $timeout(function() {
                             // anything you want can go here and will safely be run on the next digest.
                             $scope.serverResponse = "요청이 정상적으로 처리되었습니다.";
+                            updateMenuView(data.data);
                         });
                         isNetworking = false;
                         $("input").prop("disabled",false);
@@ -285,6 +279,7 @@ app.controller('ListMenuCtrl', [
                         $timeout(function() {
                             // anything you want can go here and will safely be run on the next digest.
                             $scope.serverResponse = "요청이 정상적으로 처리되었습니다.";
+                            updateMenuView(data.data);
                         });
                         isNetworking = false;
                         $("input").prop("disabled",false);
@@ -303,6 +298,7 @@ app.controller('ListMenuCtrl', [
                         $timeout(function() {
                             // anything you want can go here and will safely be run on the next digest.
                             $scope.serverResponse = "요청이 정상적으로 처리되었습니다.";
+                            updateMenuView(data.data);
                         });
                         isNetworking = false;
                         $("input").prop("disabled",false);
@@ -323,6 +319,7 @@ app.controller('ListMenuCtrl', [
                         $timeout(function() {
                             // anything you want can go here and will safely be run on the next digest.
                             $scope.serverResponse = "요청이 정상적으로 처리되었습니다.";
+                            updateMenuView(data.data);
                         });
                         isNetworking = false;
                         $("input").prop("disabled",false);
@@ -341,6 +338,7 @@ app.controller('ListMenuCtrl', [
                         $timeout(function() {
                             // anything you want can go here and will safely be run on the next digest.
                             $scope.serverResponse = "요청이 정상적으로 처리되었습니다.";
+                            updateMenuView(data.data);
                         });
                         isNetworking = false;
                         $("input").prop("disabled",false);
@@ -358,6 +356,100 @@ app.controller('ListMenuCtrl', [
             $("input").prop("disabled",true);
             $scope.changeState("waitResponse");
         };
+
+        $(document).ready(function(e) {
+            $.material.init();
+            $('[data-toggle="tooltip"]').tooltip();
+            initialize();
+            initializeInputForm();
+            setTimeout(initializeAccordion, 100);
+        });
+
+        var isNetworking = false;
+        var states = [
+            "selectNone",
+            "selectMenu",
+            "createMenu",
+            "modifyMenu",
+            "appendOption",
+            "selectOption",
+            "modifyOption",
+            "appendSubOption",
+            "selectSubOption",
+            "modifySubOption",
+            "waitResponse",
+            "serverResponse"
+        ];
+        var prevState = [];
+        var curState = states[0];
+        var forms = {
+            selectNone: [],
+            selectMenu: [$(".select-form")],
+            createMenu: [$('.menu-form')],
+            modifyMenu: [$(".menu-form")],
+            appendOption: [$(".option-form")],
+            selectOption: [$(".select-form")],
+            modifyOption: [$(".option-form")],
+            appendSubOption: [$(".sub-option-form")],
+            selectSubOption: [$(".select-form")],
+            modifySubOption: [$(".sub-option-form")],
+            waitResponse: [$(".loading-form")],
+            serverResponse: [$(".response-form")]
+        };
+        var buttons = {
+            selectNone: [$("#create")],
+            selectMenu: [$("#modify_menu"), $("#append_option")],
+            createMenu: [$("#request")],
+            modifyMenu: [$("#request"), $("#delete")],
+            appendOption: [$("#request")],
+            selectOption: [$("#modify_option"), $("#append_sub_option")],
+            modifyOption: [$("#request"), $("#delete")],
+            appendSubOption: [$("#request")],
+            selectSubOption: [$("#modify_sub_option")],
+            modifySubOption: [$("#request"), $("#delete")],
+            waitResponse: [],
+            serverResponse: [$("#confirm")]
+        };
+
+        function deleteMenu(cb, err) {
+            cafes.deleteMenu(cafe._id, $scope.selectedMenu._id, cb, err);
+        }
+
+        function deleteOption(cb, err) {
+            cafes.deleteOption($scope.selectedMenu._id, $scope.selectedOption.order, cb, err);
+        }
+
+        function deleteSubOption(cb, err) {
+            cafes.deleteSubOption($scope.selectedMenu._id, $scope.selectedOption.order, $scope.selectedSubOption.order, cb, err);
+        }
+
+        function deleteMenuView(deletedMenu) {
+            for(var i=0; i<$scope.menus.length; i++) {
+                if(deletedMenu._id == $scope.menus[i]._id) {
+                    $scope.menus.splice(i,1);
+                    break;
+                }
+            }
+            for(var i=0; i<$scope.cafe.menus.length; i++) {
+                if(deletedMenu._id == $scope.cafe.menus[i]._id) {
+                    $scope.cafe.menus.splice(i,1);
+                }
+            }
+        }
+
+        function updateMenuView(updatedMenu) {
+            for(var i=0; i<$scope.menus.length; i++) {
+                if(updatedMenu._id == $scope.menus[i]._id) {
+                    $scope.menus[i] = updatedMenu;
+                    break;
+                }
+            }
+            for(var i=0; i<$scope.cafe.menus.length; i++) {
+                if(updatedMenu._id == $scope.cafe.menus[i]._id) {
+                    $scope.cafe.menus[i] = updatedMenu;
+                }
+            }
+        }
 
         function createMenu(cb, err){
             cafes.createMenu(cafe._id, $scope.selectedMenu, cb, err);
@@ -383,77 +475,19 @@ app.controller('ListMenuCtrl', [
             cafes.updateSubOption($scope.selectedMenu._id, $scope.selectedOption.order, $scope.selectedSubOption.order, $scope.selectedSubOption, cb, err);
         }
 
-        var isNetworking = false;
-
-        var states = [
-            "selectNone",
-            "selectMenu",
-            "modifyMenu",
-            "appendOption",
-            "selectOption",
-            "modifyOption",
-            "appendSubOption",
-            "selectSubOption",
-            "modifySubOption",
-            "waitResponse",
-            "serverResponse"
-        ];
-
-        var prevState = [];
-        var curState = states[0];
-
-        var forms = {
-            selectNone: [],
-            selectMenu: [$(".select-form")],
-            modifyMenu: [$(".menu-form")],
-            appendOption: [$(".option-form")],
-            selectOption: [$(".select-form")],
-            modifyOption: [$(".option-form")],
-            appendSubOption: [$(".sub-option-form")],
-            selectSubOption: [$(".select-form")],
-            modifySubOption: [$(".sub-option-form")],
-            waitResponse: [$(".loading-form")],
-            serverResponse: [$(".response-form")]
-        };
-
-        var buttons = {
-            selectNone: [$("#create")],
-            selectMenu : [$("#modify_menu"), $("#append_option")],
-            modifyMenu: [$("#request"), $("#delete")],
-            appendOption: [$("#request"), $("#delete")],
-            selectOption: [$("#modify_option"), $("#append_sub_option")],
-            modifyOption: [$("#request"), $("#delete")],
-            appendSubOption: [$("#request"), $("#delete")],
-            selectSubOption: [$("#modify_sub_option")],
-            modifySubOption: [$("#request"), $("#delete")],
-            waitResponse: [],
-            serverResponse: [$("#confirm")]
-        };
-
-        $(document).ready(function(e){
-            $.material.init();
-            $('[data-toggle="tooltip"]').tooltip();
-            initialize();
-            initializeInputForm();
-            setTimeout(initializeAccordion, 100);
-        });
-
-        function showButton(button)
-        {
+        function showButton(button) {
             if(button == undefined) return;
             if(button.hasClass("ground"))
                 button.removeClass("ground");
         }
 
-        function hideButton(button)
-        {
+        function hideButton(button) {
             if(button == undefined) return;
             if(!button.hasClass("ground"))
                 button.addClass("ground");
         }
 
-        function showForm(container, cb)
-        {
+        function showForm(container, cb) {
             if(container == undefined) {
                 cb();
                 return;
@@ -463,8 +497,7 @@ app.controller('ListMenuCtrl', [
             } 
         }
 
-        function hideForm(container, cb)
-        {
+        function hideForm(container, cb) {
             if(container == undefined) {
                 cb();
                 return;

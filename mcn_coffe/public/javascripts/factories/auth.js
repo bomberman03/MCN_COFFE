@@ -50,5 +50,41 @@ app.factory('auth', ['$http', '$window', function($http, $window){
         $window.localStorage.removeItem('mcn-coffee-token');
     };
 
+    auth.getUsers = function(){
+        return $http.get('/users').then(function(data){
+            return data.data;
+        },function(data){
+            return data.data;
+        })
+    };
+
+    auth.getUser = function(user_id, cb, err) {
+        return $http.get('/users/' + user_id).then(function(data){
+            if(cb!=undefined) cb(data);
+            return data.data;
+        }, function(data){
+            if(err!=undefined) err(data);
+            return data.data;
+        })
+    };
+
+    auth.updateUser = function(user_id, data, cb, err){
+        return $http.put('/users/' + user_id, data).then(function(data){
+            auth.saveToken(data.data.token);
+            cb(data);
+        }, function(data){
+            err(data);
+        });
+    };
+
+    auth.deleteUser = function(user, data, cb, err) {
+        return $http({method: 'DELETE', url: '/users/' + user._id, data: data, headers: {"Content-Type": "application/json;charset=utf-8"}}).then(function(data){
+            if(cb!=undefined) cb(data);
+            auth.logOut();
+        }, function(data){
+            if(err!=undefined) err(data);
+        });
+    };
+
     return auth;
 }]);

@@ -52,6 +52,7 @@
     <script src="/javascripts/controllers/list/listMenuController.js"></script>
     <script src="/javascripts/controllers/list/listGraphController.js"></script>
     <script src="/javascripts/controllers/info/cafeInfoController.js"></script>
+    <script src="/javascripts/controllers/info/userInfoController.js"></script>
     <script src="/javascripts/controllers/dashBoardController.js"></script>
 
     <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?clientId=b4Ipp9TAh1DjURhv8KkP"></script>
@@ -88,14 +89,27 @@
         </ul>
     </nav>
     <div class="navbar-default sidebar" role="navigation">
-        <div class="sidebar-nav navbar-collapse">
+        <div class="sidebar-nav navbar-collapse" ng-controller="SideCtrl">
             <ul class="nav in" id="side-menu">
                 <li>
-                    <a href="#"><i class="fa fa-dashboard fa-fw"></i> 홈 화면</a>
+                    <a href="#/main"> 대시 보드 홈</a>
                 </li>
                 <li>
-                    <a href="#/create/cafe"><i class="fa fa-dashboard fa-fw"></i> 새 카페 등록하기</a>
+                    <a href="#/create/cafe"> 새 카페 등록하기</a>
                 </li>
+                <li>
+                    <a href="#/info/user"> 내 정보<span class="fa arrow"></span></a>
+                    <ul class="nav nav-second-level collapse" aria-expanded="false" style="height: 0px;">
+                        <li>
+                            <a href="#/info/user">내 정보 수정</a>
+                        </li>
+                        <li>
+                            <a href="#/list/user/password">비밀번호 변경</a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+            <ul class="nav in" id="cafe_list">
             </ul>
         </div>
     </div>

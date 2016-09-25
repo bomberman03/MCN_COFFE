@@ -4,78 +4,63 @@
 app.controller('ListGraphCtrl', [
     'cafes',
     'cafe',
+    'orders',
     '$scope',
     '$timeout',
-    function(cafes, cafe, $scope, $timeout) {
+    function(cafes, cafe, orders, $scope, $timeout) {
+        $scope.cafe = cafe;
+        for(var i=0; i<orders.length; i++) orders[i]['updateStamp'] = new Date(orders[i].updateAt).getTime();
+        orders.sort(function(a, b){
+            return b.updateStamp - a.updateStamp;
+        });
+        $scope.orders = orders;
+
+        $scope.getYear = function(time) {
+            var d = new Date(time);
+            return d.getFullYear();
+        };
+        $scope.getMonth = function(time) {
+            var d = new Date(time);
+            return d.getMonth() + 1;
+        };
+        $scope.getDate = function(time) {
+            var d = new Date(time);
+            return d.getDate();
+        };
+        $scope.getHour = function(time) {
+            var d = new Date(time);
+            return d.getHours();
+        };
+        $scope.getMinute = function(time) {
+            var d = new Date(time);
+            return d.getMinutes();
+        };
+        $scope.getSecond = function(time) {
+            var d = new Date(time);
+            return d.getSeconds();
+        };
+
         $(document).ready(function(e){
             $.material.init();
             $('[data-toggle="tooltip"]').tooltip();
-            var randomScalingFactor = function() {
-                return Math.round(Math.random() * 100);
-                //return 0;
-            };
-            var randomColorFactor = function() {
-                return Math.round(Math.random() * 255);
-            };
-            var randomColor = function(opacity) {
-                return 'rgba(' + randomColorFactor() + ',' + randomColorFactor() + ',' + randomColorFactor() + ',' + (opacity || '.3') + ')';
-            };
-            var config = {
-                type: 'line',
-                data: {
-                    labels: ["January", "February", "March", "April", "May", "June", "July"],
-                    datasets: [{
-                        label: "My First dataset",
-                        data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()],
-                        fill: false,
-                        borderDash: [5, 5],
-                    }, {
-                        hidden: true,
-                        label: 'hidden dataset',
-                        data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()],
-                    }, {
-                        label: "My Second dataset",
-                        data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()],
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    title:{
-                        display:true,
-                        text:'Chart.js Line Chart'
-                    },
-                    tooltips: {
-                        mode: 'label',
-                        callbacks: {
-                        }
-                    },
-                    hover: {
-                        mode: 'dataset'
-                    },
-                    scales: {
-                        xAxes: [{
-                            display: true,
-                            scaleLabel: {
-                                display: true,
-                                labelString: 'Month'
-                            }
-                        }],
-                        yAxes: [{
-                            display: true,
-                            scaleLabel: {
-                                display: true,
-                                labelString: 'Value'
-                            },
-                            ticks: {
-                                suggestedMin: -10,
-                                suggestedMax: 250,
-                            }
-                        }]
-                    }
-                }
-            };
-            var ctx = document.getElementById("myChart").getContext("2d");
-            window.myLine = new Chart(ctx, config);
+            setInterval(function(){
+                $timeout(function(){
+                    updateOrders();
+                })
+            }, 5000)
         });
+
+        function updateOrders(){
+            cafes.getAllOrders(cafe._id, function(data){
+                var orders = data.data;
+                for(var i=0; i<orders.length; i++) orders[i]['updateStamp'] = new Date(orders[i].updateAt).getTime();
+                orders.sort(function(a, b){
+                    return b.updateStamp - a.updateStamp;
+                });
+                $scope.orders = orders;
+            }, function(data){
+                // error handling
+            });
+        }
     }
 ]);

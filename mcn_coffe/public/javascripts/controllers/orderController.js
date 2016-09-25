@@ -13,7 +13,7 @@ app.controller('OrderCtrl', [
         $scope.mappedOrders = [];
         $scope.selectedOrders = [];
         var $grid, socket;
-        var socket_ip = '192.168.0.58';
+        var socket_ip = '192.168.123.197';
         var socket_port = 8080;
 
         var WAIT = 0;

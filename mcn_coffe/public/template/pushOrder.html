@@ -4,11 +4,27 @@
         <small class="NanumGothic"> {{cafe.detail}}</small>
     </div>
     <ul class="breadcrumb bottom-full-margin">
-        <li><a href="javascript:void(0)">주문하기</a></li>
+        <li><a href="#/cafes/{{cafe._id}}">주문하기</a></li>
         <li><a href="#/cafes/{{cafe._id}}/orders">주문리스트</a></li>
-        <li><a href="#/cafes/{{cafe._id}}/pushOrder">주문 조작</a></li>
+        <li><a href="javascript:void(0)">주문 조작</a></li>
     </ul>
     <div class="col-sm-8">
+        <div class="input-group">
+            <div class="input-group-btn search-panel">
+                <button type="button" class="btn btn-default btn-raised">
+                    <span id="search_concept">주문시작</span>
+                </button>
+            </div>
+            <input ng-model="createAt" type="text" class="form-control" placeholder="예) 02-09:01:09:36">
+        </div>
+        <div class="input-group">
+            <div class="input-group-btn search-panel">
+                <button type="button" class="btn btn-default btn-raised">
+                    <span id="search_concept">주문완료</span>
+                </button>
+            </div>
+            <input ng-model="updateAt" type="text" class="form-control" placeholder="예) 02-09:01:09:36">
+        </div>
         <div id="search_form">
             <fieldset style="background-color: transparent">
                 <div class="input-group">
@@ -36,7 +52,7 @@
                     <div class="row-content">
                         <div class="least-content">{{menu.cost}} 원</div>
                         <h4 class="list-group-item-heading">{{menu.name}}</h4>
-                        <p class="list-group-item-text">{{menu.detail}}</p>
+                        <p class="list-group-item-text">커피에 대한 설명이 옵니다.</p>
                     </div>
                 </div>
                 <div class="list-group-separator"></div>
@@ -44,6 +60,29 @@
         </div>
     </div>
     <div class="col-sm-4">
+        <div class="input-group">
+            <div class="input-group-btn search-panel">
+                <button type="button" style="width:100%" class="btn btn-default btn-raised dropdown-toggle" data-toggle="dropdown">
+                    <span id="search_concept">{{order.user.username}}</span> <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                    <li ng-repeat="user in users">
+                        <a ng-click="selectUser(user)">{{user.username}}</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="input-group-btn search-panel">
+                <button type="button" style="width:100%" class="btn btn-default btn-raised dropdown-toggle" data-toggle="dropdown">
+                    <span id="search_concept">{{status}}</span> <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                    <li>
+                        <a ng-click="selectStatus(4)">수령 완료</a>
+                        <a ng-click="selectStatus(2)">주문 취소</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
         <div class="panel panel-default">
             <div class="panel-body">주문리스트</div>
         </div>
@@ -77,8 +116,7 @@
                 <p>합계</p>
             </div>
         </div>
-        <button ng-show="isLoggedIn()" data-toggle="modal" data-target="#confirmMenuModal" type="button" class="btn btn-raised btn-primary btn-block pull-center">주문하기</button>
-        <button ng-hide="isLoggedIn()" type="button" class="btn btn-raised btn-default btn-block pull-center">로그인 하고 주문하기</button>
+        <button ng-click="postOrder()" type="button" class="btn btn-raised btn-primary btn-block pull-center">주문하기</button>
     </div>
 </div>
 <!-- Modal -->
@@ -132,56 +170,6 @@
                 <p class="right-full-margin">{{newOrder.cost}} 원</p>
                 <div class="pull-center">
                     <button ng-click="requestOrder()" type="button" class="btn btn-raised btn-primary" data-dismiss="modal">메뉴 추가하기</button>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- Modal -->
-<div id="confirmMenuModal" class="modal fade" role="dialog">
-    <div class="modal-dialog">
-        <!-- Modal content-->
-        <div class="modal-content">
-            <div class="modal-header" ng-switch on="networkStatus">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <div ng-show="networkResponse" class="alert alert-dismissible alert-success" ng-switch-when="success">
-                    <div ng-show="networkResponse">{{networkResponse}}</div>
-                </div>
-                <div ng-show="networkResponse" class="alert alert-dismissible alert-danger" ng-switch-when="failure">
-                    <div >{{networkResponse}}</div>
-                </div>
-                <h4 class="modal-title">주문 확인서</h4>
-            </div>
-            <div class="modal-body">
-                <table class="table table-striped table-hover ">
-                    <thead>
-                    <tr>
-                        <th>메뉴</th>
-                        <th>옵션</th>
-                        <th>개수</th>
-                        <th>가격</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr ng-repeat="order in order.orders track by $index">
-                        <td>{{order.menu.name}}</td>
-                        <td><span ng-repeat="option in order.options track by $index">{{option.name}} </span></td>
-                        <td>{{order.count}} 개</td>
-                        <td>{{order.cost * order.count}} 원</td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="modal-footer">
-                <p class="right-full-margin">{{order.cost}} 원</p>
-                <div class="pull-center" ng-switch on="networkStatus">
-                    <div ng-switch-when="success">
-                        <button ng-click="clearOrder()" type="button" class="btn btn-raised btn-primary" data-dismiss="modal">확인</button>
-                    </div>
-                    <div ng-switch-when="networking" class="text-center"><div class="loader"></div></div>
-                    <div ng-switch-when="failure">
-                        <button ng-click="postOrder()" type="button" class="btn btn-raised btn-primary">결제하기</button>
-                    </div>
                 </div>
             </div>
         </div>

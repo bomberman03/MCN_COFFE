@@ -18,6 +18,13 @@ app.factory('cafes', ['$http', function($http){
             err(data.data);
         });
     };
+    o.getCafesByDistance = function(latitude, longitude, dist, cb, err){
+        return $http.get('/cafes?latitude='+latitude+'&longitude='+longitude+'&dist='+dist).then(function(data){
+            cb(data);
+        },function(data){
+            err(data);
+        })
+    };
     o.createCafe = function(cafe, cb, err) {
         return $http.post('/cafes', cafe).then(function(data){
             cb(data);
@@ -111,6 +118,15 @@ app.factory('cafes', ['$http', function($http){
         return $http.get('/cafes/' + cafe_id + '/orders').success(function(data){
             angular.copy(data, o.orders);
         });
+    };
+    o.getAllOrders = function(cafe_id, cb, err) {
+        return $http.get('/cafes/' + cafe_id + "/orders/all").then(function(data){
+            if(cb != undefined) cb(data);
+            return data.data;
+        }, function(data){
+            if(err != undefined) err(data);
+            return data.data;
+        })
     };
     o.getMenu = function(menu_id, cb, err){
         return $http.get('/menus/' + menu_id).then(function(data){

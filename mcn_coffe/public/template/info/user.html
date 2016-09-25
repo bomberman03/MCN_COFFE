@@ -1,5 +1,28 @@
-<div id="info-form">
+<div id="msform">
     <fieldset>
-        여기는 유저 페이지에요
+        <div class="top-full-margin bottom-full-margin text-left">
+            <span class="label label-primary">1. 개인 정보</span>
+            <span>{{baseResponse}}</span>
+        </div>
+        <div class="pull-left">이름</div>
+        <input type="text" ng-model="user.name" placeholder="이름" />
+        <div class="pull-left">이메일</div>
+        <input type="text" ng-model="user.email" placeholder="이메일" />
+        <div class="pull-left">전화번호</div>
+        <input type="text" ng-model="user.phone" placeholder="전화번호" />
+        <div ng-show="isNetworking" class="text-center"><div class="loader"></div></div>
+        <div ng-hide="isNetworking" ng-click="updateUserBase()" class="text-center"><input type="button" name="next" class="next action-button" value="수정하기" /></div>
     </fieldset>
 </div>
+<div id="msform">
+    <fieldset>
+        <div class="top-full-margin bottom-full-margin text-left">
+            <span class="label label-warning">1. 회원 탈퇴</span>
+            <span>{{deleteResponse}}</span>
+        </div>
+        <div class="pull-left">주의! 탈퇴한 계정은 다시 복구할 수 없습니다.</div>
+        <input ng-model="deleteConfirm" type="text" placeholder="비밀번호를 입력하세요" />
+        <div ng-click="deleteUser()" class="text-center"><input type="button" name="next" class="next warning-button" value="삭제하기" /></div>
+    </fieldset>
+</div>
+<div style="height:100px"></div>

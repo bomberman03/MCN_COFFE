@@ -20,6 +20,15 @@ router.get('/', function(req, res, next){
     });
 });
 
+router.get('/all', function(req, res, next){
+    Order.find({
+        "cafe._id": req.cafe._id
+    }, function(err, orders){
+        if(err) { return next(err); }
+        res.json(orders);
+    });
+});
+
 router.post('/', function(req, res, next){
     req.body.cafe = req.cafe;
     var order = new Order(req.body);

@@ -18,6 +18,16 @@ app.config([
                     }]
                 }
             })
+            .state('mainMap', {
+                url: '/main/map',
+                templateUrl: '/template/mainMap.html',
+                controller: 'MainMapCtrl',
+                resolve: {
+                    postPromise: ['cafes', function(cafes){
+                        return cafes.getAll();
+                    }]
+                }
+            })
             .state('login', {
                 url: '/login',
                 templateUrl: '/template/auth/login.html',
@@ -64,6 +74,19 @@ app.config([
                 resolve: {
                     cafe: ['$stateParams', 'cafes', function($stateParams, cafes){
                         return cafes.getCafe($stateParams.id);
+                    }]
+                }
+            })
+            .state('pushOrder', {
+                url: '/cafes/{id}/pushOrder',
+                templateUrl: '/template/pushOrder.html',
+                controller: 'PushOrderCtrl',
+                resolve: {
+                    cafe: ['$stateParams', 'cafes', function($stateParams, cafes){
+                        return cafes.getCafe($stateParams.id);
+                    }],
+                    users: ['auth', function(auth){
+                        return auth.getUsers();
                     }]
                 }
             });

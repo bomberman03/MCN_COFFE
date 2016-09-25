@@ -29,7 +29,6 @@ app.factory('openApi', ['$http', function($http){
         urlStr += "&toCoord=" + method.to;
         urlStr += "&version=1";
         urlStr += "&appKey=b7224677-d5a3-3c7e-9a1c-33db6ad8e19e";
-        console.log(urlStr);
         return $http.get(urlStr).success(function(data){
             callback(data);
         });

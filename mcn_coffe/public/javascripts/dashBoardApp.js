@@ -18,6 +18,21 @@ app.config([
                     }
                 }]
             })
+            .state('userInfo', {
+                url: '/info/user',
+                templateUrl: '/template/info/user.html',
+                controller: 'UserInfoCtrl',
+                onEnter: ['$state', 'auth', function($state, auth) {
+                    if( !auth.isLoggedIn()) {
+                        $state.go('login');
+                    }
+                }],
+                resolve: {
+                    user: ['auth', function(auth) {
+                        return auth.getUser(auth.currentUser()._id);
+                    }]
+                }
+            })
             .state('cafeInfo', {
                 url: '/info/cafe/{id}',
                 templateUrl: '/template/info/cafe.html',
@@ -70,6 +85,9 @@ app.config([
                 resolve: {
                     cafe: ['$stateParams', 'cafes', function($stateParams, cafes){
                         return cafes.getCafe($stateParams.id);
+                    }],
+                    orders: ['$stateParams', 'cafes', function($stateParams, cafes){
+                        return cafes.getAllOrders($stateParams.id);
                     }]
                 }
             })
@@ -93,7 +111,7 @@ app.config([
                     }
                 }]
             });
-        $urlRouterProvider.otherwise('main');
+        $urlRouterProvider.otherwise('login');
     }]);
 
 app.controller('NavCtrl', [
@@ -103,6 +121,43 @@ app.controller('NavCtrl', [
         $scope.isLoggedIn = auth.isLoggedIn;
         $scope.currentUser = auth.currentUser;
         $scope.logOut = auth.logOut;
+    }
+]);
+
+app.controller('SideCtrl', [
+    '$scope',
+    'cafes',
+    'auth',
+    function($scope, cafes, auth){
+
+        $(document).ready(function(){
+            $("#cafe_list").empty();
+            cafes.getUserCafe(auth.currentUser()._id, function(data){
+                $scope.cafes = data.data;
+                for(var i=0; i<$scope.cafes.length; i++)
+                    addCafeList($scope.cafes[i]);
+            }, function(data) {
+
+            });
+        });
+
+        function getCafeHtml(cafe) {
+            return  '<li>' +
+                '<a href="#/main"><i class="fa fa-bar-chart-o fa-fw"></i>' + cafe.name + '<span class="fa arrow"></span></a>' +
+                '<ul class="nav nav-second-level collapse" aria-expanded="false" style="height: 0px;">' +
+                '<li><a href="#/info/cafe/' + cafe._id + '">카페 관리</a></li>' +
+                '<li><a href="#/list/cafes/' + cafe._id + '/menu">메뉴 관리</a></li>' +
+                '<li><a href="#/list/cafes/' + cafe._id + '/graph">주문 현황</a></li>' +
+                '</ul>' +
+                '</li>';
+        }
+
+        function addCafeList(cafe){
+            var html = getCafeHtml(cafe);
+            var cafe_list = $("#cafe_list");
+            cafe_list.append(html);
+            cafe_list.metisMenu();
+        }
     }
 ]);
 

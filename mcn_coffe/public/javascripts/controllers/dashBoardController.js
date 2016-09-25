@@ -10,6 +10,7 @@ app.controller('DashBoardCtrl', [
 
         $(document).ready(function(){
             $('[data-toggle="tooltip"]').tooltip();
+            $("#cafe_list").empty();
             cafes.getUserCafe(auth.currentUser()._id, function(data){
                 $scope.cafes = data.data;
                 for(var i=0; i<$scope.cafes.length; i++)
@@ -32,9 +33,9 @@ app.controller('DashBoardCtrl', [
 
         function addCafeList(cafe){
             var html = getCafeHtml(cafe);
-            var sideMenu = $("#side-menu");
-            sideMenu.append(html);
-            sideMenu.metisMenu();
+            var cafe_list = $("#cafe_list");
+            cafe_list.append(html);
+            cafe_list.metisMenu();
         }
     }
 ]);

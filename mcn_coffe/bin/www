@@ -3,7 +3,6 @@
 /**
  * Module dependencies.
  */
-//socket_ip = '210.118.64.165';
 socket_ip = '192.168.0.58';
 
 var app = require('../app');
