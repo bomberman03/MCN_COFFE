@@ -117,14 +117,15 @@ app.controller('CafeCtrl', [
             $scope.addOrder($scope.newOrder);
         };
         $scope.addOrder = function(order){
-            for(var idx in $scope.orders){
-                var _order = $scope.orders[idx];
+            for(var idx in $scope.order.orders){
+                var _order = $scope.order.orders[idx];
                 if(order.menu.name != _order.menu.name) {continue;}
                 else if(order.options.length != _order.options.length){continue;}
                 else {
                     var isEqual = true;
                     for(var i=0; i< order.options.length; i++){
-                        if(isEqual &= (order.options[i] == _order.options[i])) break;
+                        if(isEqual &= (order.options[i].name === _order.options[i].name))
+                            break;
                     }
                     if(!isEqual) continue;
                     else {

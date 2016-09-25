@@ -231,7 +231,7 @@ app.controller('ListMenuCtrl', [
         $scope.requestPost = function(){
             if(isNetworking) return;
             isNetworking = true;
-            if(curState == "modifyMenu") {
+            if(curState == "modifyMenu" || curState == "createMenu") {
                 if($scope.selectedMenu._id == undefined)
                     createMenu(function(data){
                         $timeout(function() {
@@ -273,7 +273,7 @@ app.controller('ListMenuCtrl', [
                         $scope.changeState("serverResponse");
                     });
             }
-            if(curState == 'modifyOption') {
+            if(curState == 'modifyOption' || curState == 'appendOption') {
                 if($scope.selectedOption.order == undefined)
                     appendOption(function(data){
                         $timeout(function() {
@@ -313,7 +313,7 @@ app.controller('ListMenuCtrl', [
                         $scope.changeState("serverResponse");
                     });
             }
-            if(curState == 'modifySubOption') {
+            if(curState == 'modifySubOption' || curState == 'appendSubOption') {
                 if($scope.selectedSubOption.order == undefined)
                     appendSubOption(function(data){
                         $timeout(function() {

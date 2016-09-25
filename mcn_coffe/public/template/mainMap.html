@@ -1,8 +1,8 @@
 <div class="row no-margin no-padding">
-    <div class="col-sm-9 no-margin no-padding">
+    <div class="col-sm-8 no-margin no-padding">
         <div id="tMap"></div>
     </div>
-    <div class="col-sm-3 top-full-padding">
+    <div class="col-sm-4 top-full-padding">
         <div id="search_form">
             <fieldset style="background: transparent; margin:0; padding:0; width:100%">
                 <div style="width:100%" class="input-group">
@@ -17,9 +17,10 @@
             <fieldset style="background: transparent; margin:0; padding:0; width:100%">
                 <p ng-hide="cafe_list.length" class="bg-default full-padding">검색 결과가 없습니다.</p>
                 <div id="cafe_list" ng-show="cafe_list.length" style="overflow-y: auto">
-                    <div ng-repeat="cafe in cafe_list">
+                    <div ng-repeat="cafe in cafe_list track by $index">
                         <div class="panel panel-default bottom-half-margin">
                             <div ng-click="focusCafe(cafe)" class="panel-body pointer-cursor">
+                                <img src="https://developers.skplanetx.com/upload/tmap/marker/pin_b_m_{{icon_map[$index]}}.png">
                                 <span class="label label-primary">{{cafe.dist_str}}</span>
                                 {{ cafe.name }}
                                 <i ng-click="showPath($event, cafe, 'pedestrian')" class="pull-right material-icons pointer-cursor">directions_walk</i>

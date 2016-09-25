@@ -17,6 +17,16 @@ app.controller('MainMapCtrl', [
             address:""
         };
         $scope.cafe_list = [];
+        $scope.icon_map = [
+            'a','b','c','d','e',
+            'f','g','h','i','j',
+            'k','l','m','n','o',
+            'p','q','r','s','t',
+            'u','v','w','x','y',
+            'z','0','1','2','3',
+            '4','5','6','7','8',
+            '9'
+        ];
 
         $scope.selectFilter = function(category){
             $scope.category_filter = category;
@@ -48,19 +58,6 @@ app.controller('MainMapCtrl', [
                         dist_str = dist_str + "m";
                     }
                     tmp_cafe_list[tmp_cafe_list.length-1]["dist_str"] = dist_str;
-                    var location = new Tmap.LonLat($scope.cafes[i].location.longitude, $scope.cafes[i].location.latitude);
-                    var icon = new Tmap.Icon('https://developers.skplanetx.com/upload/tmap/marker/pin_b_m_a.png', size, offset);
-                    var html = "<span class='label label-primary'>" + $scope.cafes[i].name + "</span>";
-                    var label = new Tmap.Label(html);
-                    var markers = new Tmap.Markers(location, icon, label);
-                    marker_map[icon.imageDiv.id] = markers;
-                    $(icon.imageDiv).mouseenter(function(evt){
-                        marker_map[evt.currentTarget.id].popup.show();
-                    }).mouseleave(function(evt){
-                        marker_map[evt.currentTarget.id].popup.hide();
-                    });
-                    marker_list.push(markers);
-                    tMarkerLayer.addMarker(markers);
                 }
             }
             tmp_cafe_list.sort(function(a, b){
@@ -68,6 +65,19 @@ app.controller('MainMapCtrl', [
             });
             for(var i=0; i<tmp_cafe_list.length; i++){
                 $scope.cafe_list.push(tmp_cafe_list[i]);
+                var location = new Tmap.LonLat(tmp_cafe_list[i].location.longitude, tmp_cafe_list[i].location.latitude);
+                var icon = new Tmap.Icon('https://developers.skplanetx.com/upload/tmap/marker/pin_b_m_' + $scope.icon_map[i] + '.png', size, offset);
+                var html = "<span class='label label-primary'>" + tmp_cafe_list[i].name + "</span>";
+                var label = new Tmap.Label(html);
+                var markers = new Tmap.Markers(location, icon, label);
+                marker_map[icon.imageDiv.id] = markers;
+                $(icon.imageDiv).mouseenter(function(evt){
+                    marker_map[evt.currentTarget.id].popup.show();
+                }).mouseleave(function(evt){
+                    marker_map[evt.currentTarget.id].popup.hide();
+                });
+                marker_list.push(markers);
+                tMarkerLayer.addMarker(markers);
             }
             getCafesByDistance($scope.cafe.location.latitude, $scope.cafe.location.longitude, dist);
         };
@@ -92,6 +102,7 @@ app.controller('MainMapCtrl', [
         var kmlLayer;
         var marker_list = [];
         var marker_map = {};
+
 
         function initializeTMap() {
             var height = $(window).height() - 50;
@@ -192,7 +203,7 @@ app.controller('MainMapCtrl', [
         function moveMarker(location) {
             var size = new Tmap.Size(24,38);
             var offset = new Tmap.Pixel(-(size.w/2), -(size.h));
-            var icon = new Tmap.Icon('https://developers.skplanetx.com/upload/tmap/marker/pin_b_m_a.png', size, offset);
+            var icon = new Tmap.Icon('https://developers.skplanetx.com/upload/tmap/marker/pin_r_m_m.png', size, offset);
             if(tMarker != undefined )
                 tMarkerLayer.removeMarker(tMarker);
             tMarker = new Tmap.Marker(location, icon);
