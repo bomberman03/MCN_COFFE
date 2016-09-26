@@ -5,188 +5,182 @@ app.controller('PushOrderCtrl', [
     '$scope',
     '$timeout',
     'cafes',
-    'auth',
     'cafe',
     'users',
-    function($scope, $timeout, cafes, auth, cafe, users){
-        $scope.isLoggedIn = auth.isLoggedIn;
+    function($scope, $timeout, cafes, cafe, users){
         $scope.cafe = cafe;
-        $scope.networkStatus = "failure";
-        $scope.networkResponse = "";
-        $scope.category_filter = "전체";
-        $scope.categories = ["전체"];
-        $scope.menus = [];
-        $scope.user_filter = users[0];
-        $scope.users = users;
-        $scope.order = {
-            createAt:"",
-            updateAt:"",
-            cafe: $scope.cafe,
-            user: $scope.user_filter,
-            orders:[],
-            cost: 0,
-            status: 4
+        $scope.startTime = "";
+        $scope.endTime = "";
+        $scope.curTime = "";
+        $scope.orders = [];
+        $scope.getYear = function(time) {
+            var d = new Date(time);
+            return d.getFullYear();
         };
-        $scope.createAt = "";
-        $scope.updateAt = "";
-        $scope.status = "수령 완료";
-        $scope.selectStatus = function(status) {
-            if(status==4)
-                $scope.status = "수령 완료";
-            if(status==2)
-                $scope.status = "주문 취소";
-            $scope.order.status = status;
+        $scope.getMonth = function(time) {
+            var d = new Date(time);
+            return d.getMonth() + 1;
         };
-        $scope.clearOrder = function() {
-            $scope.order.orders.length = $scope.order.cost = 0;
-            $scope.selectStatus(4);
-            $scope.createAt = $scope.updateAt = "";
+        $scope.getDate = function(time) {
+            var d = new Date(time);
+            return d.getDate();
         };
-        $scope.makeQuery = function() {
-            var search_term  = $("#search_term").val();
-            $scope.menus.length = 0;
-            for(var idx in $scope.cafe.menus) {
-                var menu = $scope.cafe.menus[idx];
-                if($scope.category_filter == "전체" || $scope.category_filter == menu.category) {
-                    if(menu.name.match(search_term) == null)
-                        continue;
-                    $scope.menus.push(menu);
-                }
-            }
+        $scope.getHour = function(time) {
+            var d = new Date(time);
+            return d.getHours();
         };
-        $scope.selectUser = function(user) {
-            $scope.order.user = user;
+        $scope.getMinute = function(time) {
+            var d = new Date(time);
+            return d.getMinutes();
         };
-        $scope.selectFilter = function(category){
-            var update = ($scope.category_filter != category);
-            $scope.category_filter = category;
-            if(update) $scope.makeQuery();
+        $scope.getSecond = function(time) {
+            var d = new Date(time);
+            return d.getSeconds();
         };
-        $scope.newOrder = {};
         $scope.populateCafe = function(){
             var responseCnt = 0;
-            var length = cafe.menus.length;
             for(var i=0; i<cafe.menus.length; i++){
                 cafes.getMenu(cafe.menus[i]._id, function(data){
                     var data = data.data;
-                    if($scope.categories.indexOf(data.category) == -1) $scope.categories.push(data.category);
                     cafe.menus[i] = data;
                     responseCnt++;
-                    if(responseCnt==length) {
-                        console.log("menus load complete!");
-                        $scope.makeQuery();
-                    }
                 },function(data){
                     responseCnt++;
-                    if(responseCnt==length) {
-                        console.log("menus load complete!");
-                        $scope.makeQuery();
-                    }
                 });
             }
         };
         $scope.populateCafe();
-        $scope.selectMenu = function(menu){
-            $scope.newOrder = {
-                menu: menu,
-                options: {},
-                cost: menu.cost,
-                count: 1
-            };
-            $('#selectMenuModal').on('shown.bs.modal', function() {
-                var options = $(".modal-body > .form-group .option-block");
-                for (var i=0; i<options.size(); i++){
-                    var option = $(options[i]);
-                    var default_radio = $(option.find("input[type=radio]")[0]);
-                    default_radio.click();
-                    var default_check = $(option.find("input[type=checkbox]")[0]);
-                    default_check.prop("checked",false);
-                }
-            });
-            $('#confirmMenuModal').on('shown.bs.modal', function() {
-                $timeout(function(){
-                    $scope.networkResponse = "";
-                    $scope.networkStatus = "failure";
-                });
-            });
-        };
-        $scope.selectRadioOption = function(option, radio){
-            if($scope.newOrder.options[option.name]) {
-                $scope.newOrder.cost -= $scope.newOrder.options[option.name].cost;
-            }
-            $scope.newOrder.options[option.name] = radio;
-            $scope.newOrder.cost += radio.cost;
-        };
-        $scope.selectOption = function(option){
-            if($scope.newOrder.options[option.name]) {
-                $scope.newOrder.options[option.name] = undefined;
-                $scope.newOrder.cost -= option.cost;
-            }
-            else {
-                $scope.newOrder.options[option.name] = option;
-                $scope.newOrder.cost += option.cost;
-            }
-        };
-        $scope.requestOrder = function(){
-            var options = [];
-            for(var key in $scope.newOrder.options) {
-                var option = $scope.newOrder.options[key];
-                if(!option) continue;
-                options.push(option);
-            }
-            $scope.newOrder.options = options;
-            $scope.addOrder($scope.newOrder);
-        };
-        $scope.addOrder = function(order){
-            for(var idx in $scope.orders){
-                var _order = $scope.orders[idx];
-                if(order.menu.name != _order.menu.name) {continue;}
-                else if(order.options.length != _order.options.length){continue;}
-                else {
-                    var isEqual = true;
-                    for(var i=0; i< order.options.length; i++){
-                        if(isEqual &= (order.options[i] == _order.options[i])) break;
-                    }
-                    if(!isEqual) continue;
-                    else {
-                        $scope.increaseOrder(_order);
-                        return;
-                    }
-                }
-            }
-            $scope.createOrder(order);
-        };
-        $scope.createOrder = function(order){
-            $scope.order.orders.push(order);
-            $scope.order.cost += order.cost;
-        };
-        $scope.increaseOrder = function(order){
-            order.count++;
-            $scope.order.cost += order.cost;
-        };
-        $scope.decreaseOrder = function(order){
-            order.count--;
-            $scope.order.cost -= order.cost;
-            if(order.count <= 0)
-                $scope.removeOrder(order);
-        };
-        $scope.removeOrder = function(order){
-            var idx = $scope.order.orders.indexOf(order);
-            if(idx >= 0)
-                $scope.order.orders.splice(idx, 1);
-            if(order.count > 0) $scope.order.cost -= (order.cost * order.count);
-        };
-        $scope.postOrder = function(){
-            if($scope.order.orders.length > 0) {
-                $scope.order.createAt = new Date('2016-' + $scope.createAt).toISOString();
-                $scope.order.updateAt = new Date('2016-' + $scope.updateAt).toISOString();
-                cafes.postOrder($scope.cafe, $scope.order, function(data){
-                    $scope.clearOrder();
-                    console.log(data.data);
+        $scope.postOrder = function(order){
+            if(order.orders.length > 0) {
+                isNetworking = true;
+                cafes.postOrder($scope.cafe, order, function(data){
+                    isNetworking = false;
                 }, function(data){
-                    console.log(data.data);
+                    isNetworking = false;
                 });
             }
         };
+        $scope.nextSimulation = function(){
+            if($scope.order_list.length <= 0) {
+                simulate(curTime);
+                curTime += (Math.floor((Math.random() * 300)) + 600) * 1000;
+                if(curTime >= endTime) {
+                    console.log("clearInterval");
+                    clearInterval(intervalId);
+                }
+                var d = new Date(curTime);
+                $scope.curTime = d.getFullYear() + "년 " + (d.getMonth() + 1) + "월 " + d.getDate() + "일 " + d.getHours() + "시 " + d.getMinutes() + "분 " + d.getSeconds() + "초";
+            } else {
+                if(isNetworking) {
+                    console.log("networking!");
+                    return;
+                }
+                $scope.orders = $scope.order_list.splice(0, 1);
+                var order = $scope.orders[0];
+                $scope.postOrder(order);
+            }
+        };
+        $scope.initSimulation = function(){
+            var d = new Date('2016-' + $scope.startTime);
+            var ed = new Date('2016-' + $scope.endTime);
+            curTime = d.getTime();
+            endTime = ed.getTime();
+            $scope.curTime = d.getFullYear() + "년 " + (d.getMonth() + 1) + "월 " + d.getDate() + "일 " + d.getHours() + "시 " + d.getMinutes() + "분 " + d.getSeconds() + "초";
+            intervalId = setInterval(function(){
+                $timeout(function(){
+                    $scope.nextSimulation();
+                });
+            }, 10);
+        };
+        var intervalId;
+        var time_prob = {
+            9: 0.5,
+            10: 0.4,
+            11: 0.3,
+            12: 0.6,
+            13: 0.7,
+            14: 0.5,
+            15: 0.3,
+            16: 0.3,
+            17: 0.3,
+            18: 0.4,
+            19: 0.5,
+            20: 0.6,
+            21: 0.4,
+            22: 0.2
+        };
+        var client_offset = 11;
+        var client_prob = [0.7, 0.5, 0.5, 0.3, 0.5, 0.6, 0.8, 0.4, 0.2, 0.3, 0.2, 0.7, 0.1, 0.7, 0.5, 0.4, 0.6, 0.1];
+        var max_count = 4;
+        var max_total_count = 10;
+        var curTime;
+        var endTime;
+        var isNetworking = false;
+        $scope.order_list = [];
+
+        function simulate(time){
+            var d = new Date(time);
+            var t_prob = time_prob[d.getHours()];
+            if(t_prob != undefined && Math.random() <= t_prob) {
+                for(var i=0; i<users.length; i++) {
+                    var u_prob = client_prob[i];
+                    if(Math.random() <= u_prob) {
+                        var order = {
+                            createAt: d.toISOString(),
+                            updateAt: d.getTime(),
+                            user: users[i],
+                            orders: [],
+                            cost: 0,
+                            status: 4
+                        };
+                        var total_count = Math.floor(Math.random() * max_total_count) + max_count;
+                        for(var j=0; j<cafe.menus.length; j++) {
+                            var newOrder = {
+                                menu: {},
+                                options: [],
+                                cost: 0,
+                                count: 0
+                            };
+                            var m_prob = cafe.menus[j].prob;
+                            if(Math.random() <= m_prob) {
+                                newOrder.menu = cafe.menus[j];
+                                order.updateAt += (cafe.menus[j].time * 1000);
+                                newOrder.cost += cafe.menus[j].cost;
+                                for (var k = 0; k < cafe.menus[j].options.length; k++) {
+                                    if (cafe.menus[j].options[k].options.length <= 0) {
+                                        var o_prob = cafe.menus[j].options[k].prob;
+                                        if (Math.random() < o_prob) {
+                                            newOrder.options.push(cafe.menus[j].options[k]);
+                                            newOrder.cost += cafe.menus[j].options[k].cost;
+                                        }
+                                    } else {
+                                        for (var l = 0; l < cafe.menus[j].options[k].options.length; l++) {
+                                            var so_prob = cafe.menus[j].options[k].options[l].prob;
+                                            if (Math.random() < so_prob) {
+                                                newOrder.options.push(cafe.menus[j].options[k].options[l]);
+                                                newOrder.cost += cafe.menus[j].options[k].options[l].cost;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+                                newOrder.count = Math.floor(Math.random() * max_count) + 1;
+                                if (newOrder.count >= total_count)
+                                    newOrder.count = total_count;
+                                total_count -= newOrder.count;
+                                order.cost += (newOrder.cost * newOrder.count);
+                                order.orders.push(newOrder);
+                                if (total_count <= 0)
+                                    break;
+                            }
+                        }
+                        order.updateAt = new Date(order.updateAt).toISOString();
+                        if(Math.random() <= 0.1)
+                            order.status = 2;
+                        $scope.order_list.push(order);
+                    }
+                }
+            }
+        }
     }
 ]);

@@ -6,6 +6,7 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
+    "angular-chart.js": "^1.0.3",
     "body-parser": "~1.13.2",
     "bootstrap-material-design": "^0.5.9",
     "chart.js": "^2.2.2",

@@ -21,12 +21,17 @@ router.get('/', function(req, res, next){
 });
 
 router.get('/all', function(req, res, next){
-    Order.find({
+    Order
+        .find({
         "cafe._id": req.cafe._id
-    }, function(err, orders){
-        if(err) { return next(err); }
-        res.json(orders);
-    });
+    })
+        .sort({
+        "updateAt":-1
+    })
+        .limit(100)
+        .exec(function(err, orders){
+            res.json(orders);
+        });
 });
 
 router.post('/', function(req, res, next){

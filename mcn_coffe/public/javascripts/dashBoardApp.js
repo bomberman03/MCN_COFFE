@@ -1,7 +1,16 @@
 /**
  * Created by pathfinder on 16. 4. 6.
  */
-var app = angular.module('mcnCoffee', ['ui.router', 'ngSanitize']);
+var app = angular.module('mcnCoffee', ['ui.router', 'ngSanitize', 'chart.js']);
+
+app.config(['ChartJsProvider', function (ChartJsProvider) {
+    // Configure all charts
+    ChartJsProvider.setOptions({
+        legend: {
+            display: true
+        }
+    });
+}]);
 
 app.config([
     '$stateProvider',

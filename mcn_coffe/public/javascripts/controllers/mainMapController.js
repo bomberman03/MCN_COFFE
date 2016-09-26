@@ -105,6 +105,12 @@ app.controller('MainMapCtrl', [
 
 
         function initializeTMap() {
+            $( window ).resize(function() {
+                var height = $('body').prop('clientHeight') - 50;
+                $("#cafe_list").css("height",(height - 104 - 15)+"px");
+                $("#tMap").css("height", height + "px");
+                tMap.updateSize();
+            });
             var height = $(window).height() - 50;
             $("#cafe_list").css("height",(height - 104 - 15)+"px");
             tMap = new Tmap.Map({
