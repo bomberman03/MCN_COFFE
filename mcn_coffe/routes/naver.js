@@ -21,7 +21,7 @@ router.post('/getCoordinate', function(req, res){
             'X-Naver-Client-Secret': auth.secret
         }
     };
-    req = https.request(options, function(response){
+    req = https.request(options, function(response) {
         response.on('data', function(d) {
             var ret = d.toString('utf-8');
             return res.json(ret);
@@ -31,6 +31,7 @@ router.post('/getCoordinate', function(req, res){
 });
 
 router.post('/getAddress', function(req, res){
+    console.log(req.body);
     var options = {
         hostname: req.body.hostname,
         path: req.body.path,
@@ -40,10 +41,10 @@ router.post('/getAddress', function(req, res){
             'X-Naver-Client-Secret': auth.secret
         }
     };
-    console.log(options);
     req = https.request(options, function(response){
         response.on('data', function(d) {
             var ret = d.toString('utf-8');
+            ret = JSON.parse(ret);
             return res.json(ret);
         });
     });

@@ -42,8 +42,10 @@ router.get('/', function(req, res, next){
             $lt: lon + dist
         }
     }
-    Cafe.find(option, function(err, cafes){
-        if(err){ return next(err); }
+    Cafe.find(option, function (err, cafes) {
+        if (err) {
+            return next(err);
+        }
         res.json(cafes);
     });
 });
