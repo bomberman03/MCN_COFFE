@@ -33,7 +33,6 @@
     "passport-local": "^1.0.0",
     "regexp-clone": "0.0.1",
     "serve-favicon": "~2.3.0",
-    "sleep": "^3.0.1",
     "sliced": "~1.0.1",
     "socket.io": "^1.4.6"
   }
