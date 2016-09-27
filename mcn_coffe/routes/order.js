@@ -37,7 +37,11 @@ router.post('/status', function(req, res, next){
 });
 
 router.post('/users', function(req, res, next){
-    Order.find({ "user._id" : req.body.user }, function(err, orders){
+    Order.find({
+        "user._id" : req.body.user,
+        status: {$in: [0, 1, 4]},
+        comment: ""
+    }, function(err, orders){
         if(err) { return next(err); }
         res.json({
             orders: orders
@@ -87,8 +91,9 @@ router.put('/:order/complete', function(req, res, next){
     });
 });
 
-router.put('/:order/receive', function(req, res, next){
-    req.order.receive(function(err, order){
+router.put('/:order/receive', function(req, res, next) {
+    var rcv_point = req.body.rcv_point;
+    req.order.receive(rcv_point, function(err, order){
         if(err) { next(err); }
         io.emit(order.cafe._id, {
             method: 'put',
@@ -110,6 +115,15 @@ router.put('/:order/cancel', function(req, res, next){
             data: order
         });
         res.json(order);
+    });
+});
+
+router.put('/:order/comment', function(req, res, next){
+    var cmt_point = req.body.cmt_point;
+    var comment = req.body.comment;
+    req.order.message(cmt_point, comment, function(err, order){
+        if(err) { return next(err); }
+        return res.json(order);
     });
 });
 

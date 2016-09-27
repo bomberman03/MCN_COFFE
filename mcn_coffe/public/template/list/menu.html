@@ -54,11 +54,11 @@
     <div class="close-form" ng-click="prevState()"><i class="material-icons">keyboard_arrow_down</i></div>
     <div class="input-form">
         <fieldset>
-        <div ng-hide="true" class="form-group is-empty pull-center">
+        <div class="form-group is-empty pull-center">
             <img id="menu_img_preview" class="touch" src="/images/coffee_default.png" onerror="this.src='/images/coffee_default.png'"/>
             <div class="hover-message">클릭해서 이미지를 등록하세요</div>
         </div>
-        <div class="form-group is-empty">
+        <div ng-hide="true" class="form-group is-empty">
             <label for="option_name" class="col-md-2 control-label">확률</label>
             <div class="col-md-10">
                 <input ng-model="selectedMenu.prob" type="text" class="form-control" id="menu_prob" placeholder="확률을 입력하세요">
@@ -107,7 +107,7 @@
     <div class="close-form" ng-click="prevState()"><i class="material-icons">keyboard_arrow_down</i></div>
     <div class="input-form">
         <fieldset>
-            <div class="form-group is-empty">
+            <div ng-hide="true" class="form-group is-empty">
                 <label for="option_name" class="col-md-2 control-label">확률</label>
                 <div class="col-md-10">
                     <input ng-model="selectedOption.prob" type="text" class="form-control" id="option_prob" placeholder="확률을 입력하세요">
@@ -142,7 +142,7 @@
     <div class="close-form" ng-click="prevState()"><i class="material-icons">keyboard_arrow_down</i></div>
     <div class="input-form">
         <fieldset>
-            <div class="form-group is-empty">
+            <div ng-hide="true" class="form-group is-empty">
                 <label for="option_name" class="col-md-2 control-label">확률</label>
                 <div class="col-md-10">
                     <input ng-model="selectedSubOption.prob" type="text" class="form-control" id="sub_option_prob" placeholder="확률을 입력하세요">

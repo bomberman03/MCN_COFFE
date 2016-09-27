@@ -84,7 +84,6 @@ app.controller('OrderCtrl', [
             return ret;
         };
         $scope.getStatusClass = function(order_id){
-            console.log("getStatusClass");
             var order = $scope.mappedOrders[order_id];
             if(order == undefined) return -1;
             var ret = "label-default";
@@ -99,7 +98,6 @@ app.controller('OrderCtrl', [
                     ret = "label-success";
                     break;
             }
-            console.log(ret);
             return ret;
         };
         $scope.selectedIndex = function(order_id){
@@ -124,7 +122,7 @@ app.controller('OrderCtrl', [
             h += '<div class="top-half-margin left-half-margin right-half-margin" id=' + order_id + 'ng-class="getSelectionClass(' + order_id + ')" ng-click="selectOrder('
                 + order_id +')" class="panel">';
             h += '<div class="panel-heading">';
-            h += '주문번호 ' + i;
+            h += '주문번호 ' + (order.order_idx + 1);
             h += '<span ng-class="getStatusClass(' + order_id + ')" class="right label right-half-margin">{{getStatusLabel(' + order_id + ')}}</span>';
             h += '</div>';
             h += '<div class="panel-body">';

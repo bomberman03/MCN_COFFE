@@ -7,9 +7,7 @@ var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var passport = require('passport');
 
-var autoIncrement = require('mongoose-auto-increment');
-var connection = mongoose.connect('mongodb://localhost/coffee');
-autoIncrement.initialize(connection);
+mongoose.connect('mongodb://localhost/coffee');
 
 require('./models/Cafes');
 require('./models/Menus');

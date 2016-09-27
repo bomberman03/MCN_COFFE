@@ -76,6 +76,10 @@
                 <p class="pull-right">{{ order.cost }} 원</p>
                 <p>합계</p>
             </div>
+            <div class="panel-footer">
+                <p class="pull-right">약 {{ order.time }}</p>
+                <p>예상 대기시간</p>
+            </div>
         </div>
         <button ng-show="isLoggedIn()" data-toggle="modal" data-target="#confirmMenuModal" type="button" class="btn btn-raised btn-primary btn-block pull-center">주문하기</button>
         <button ng-hide="isLoggedIn()" type="button" class="btn btn-raised btn-default btn-block pull-center">로그인 하고 주문하기</button>

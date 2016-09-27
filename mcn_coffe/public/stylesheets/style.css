@@ -251,17 +251,6 @@ a{
     color:#aa0000;
 }
 
-#info_form fieldset,
-#search_form fieldset {
-    background: white;
-    border: 0 none;
-    padding: 20px 30px;
-    box-sizing: border-box;
-    width: 80%;
-    margin: 0 10%;
-    position: relative;
-}
-
 #info_form input, #info_form textarea,
 #search_form input, #search_form textarea {
     padding: 15px;
@@ -394,19 +383,41 @@ a{
 }
 
 @media (max-width: 992px) {
+    #info_form fieldset,
+    #search_form fieldset {
+        background: white;
+        border: 0 none;
+        box-sizing: border-box;
+        width: 100%;
+        position: relative;
+    }
     #space,
     .menu-form {
-        height: 650px;
+        height: 200px;
+        overflow-x: hidden;
+        overflow-y: auto;
     }
     .option-form,
     .sub-option-form{
-        height: 400px;
+        height: 200px;
+        overflow-x: hidden;
+        overflow-y: auto;
     }
 }
 @media (min-width: 992px) {
+    #info_form fieldset,
+    #search_form fieldset {
+        background: white;
+        border: 0 none;
+        padding: 20px 30px;
+        box-sizing: border-box;
+        width: 80%;
+        margin: 0 10%;
+        position: relative;
+    }
     #space,
     .menu-form {
-        height: 400px;
+        height: 450px;
     }
     .option-form,
     .sub-option-form{

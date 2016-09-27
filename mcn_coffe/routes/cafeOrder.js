@@ -20,6 +20,18 @@ router.get('/', function(req, res, next){
     });
 });
 
+router.get('/comments', function(req, res) {
+    Order.find({
+        "cafe._id": req.cafe._id,
+        comment: {$ne: ""}
+    }, function(err, orders){
+        if(err) { return next(err); }
+        return res.json({
+            orders: orders
+        });
+    });
+});
+
 router.get('/statistic', function(req, res) {
     Order.find({
         "cafe._id": req.cafe._id,
@@ -56,16 +68,24 @@ router.get('/all', function(req, res, next){
 
 router.post('/', function(req, res, next){
     req.body.cafe = req.cafe;
-    var order = new Order(req.body);
-    order.save(function(err, order){
-        if(err){ return next(err); }
-        io.emit(req.cafe._id, {
-            method: 'post',
-            name: 'order',
-            id: order._id,
-            data: order
+    Order.count({
+        "cafe._id": req.cafe._id
+    }, function(err, count){
+        req.body.order_idx = count + 1;
+        var order = new Order(req.body);
+        order.save(function(err, order) {
+            if(err){
+                console.log(err);
+                return next(err);
+            }
+            io.emit(req.cafe._id, {
+                method: 'post',
+                name: 'order',
+                id: order._id,
+                data: order
+            });
+            res.json(order);
         });
-        res.json(order);
     });
 });
 

@@ -14,7 +14,8 @@ app.controller('CafeCtrl', [
             cafe: $scope.cafe,
             user: auth.currentUser(),
             orders:[],
-            cost: 0
+            cost: 0,
+            time: 0
         };
         $scope.networkStatus = "failure";
         $scope.networkResponse = "";
@@ -139,22 +140,26 @@ app.controller('CafeCtrl', [
         $scope.createOrder = function(order){
             $scope.order.orders.push(order);
             $scope.order.cost += order.cost;
+            calculateTime();
         };
         $scope.increaseOrder = function(order){
             order.count++;
             $scope.order.cost += order.cost;
+            calculateTime();
         };
         $scope.decreaseOrder = function(order){
             order.count--;
             $scope.order.cost -= order.cost;
             if(order.count <= 0)
                 $scope.removeOrder(order);
+            calculateTime();
         };
         $scope.removeOrder = function(order){
             var idx = $scope.order.orders.indexOf(order);
             if(idx >= 0)
                 $scope.order.orders.splice(idx, 1);
             if(order.count > 0) $scope.order.cost -= (order.cost * order.count);
+            calculateTime();
         };
         $scope.postOrder = function(){
             if($scope.order.orders.length > 0) {
@@ -170,5 +175,33 @@ app.controller('CafeCtrl', [
                 });
             }
         };
+
+        function calculateTime() {
+            var interval = 15;
+            var time = 0;
+            for(var i=0; i<$scope.order.orders.length; i++){
+                var order = $scope.order.orders[i];
+                for(var j=0, mul=1; j<order.count; j++, mul *= 0.5) {
+                    time += order.menu.time * mul;
+                }
+                time += interval;
+            }
+            var time_str = "";
+            if(time > 3600) {
+                time_str += Math.floor(time / 3600);
+                time_str += "시간 ";
+                time %= 3600
+            }
+            if(time > 60) {
+                time_str += Math.floor(time / 60);
+                time_str += "분 ";
+                time %= 60;
+            }
+            if(time > 0) {
+                time_str += Math.floor(time);
+                time_str += "초 ";
+            }
+            $scope.order.time = time_str;
+        }
     }
 ]);
