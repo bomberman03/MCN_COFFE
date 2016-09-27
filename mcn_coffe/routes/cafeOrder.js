@@ -70,7 +70,6 @@ router.get('/all', function(req, res, next){
         .sort({
         "updateAt":-1
     })
-        .limit(100)
         .exec(function(err, orders){
             res.json(orders);
         });
@@ -91,7 +90,10 @@ router.post('/', function(req, res, next){
                 id: order._id,
                 data: order
             });
-            res.json(order);
+            order.receive(Math.random() * 4 + 1, function(err, order, next){
+                if(err) { return next(err); }
+                return res.json(order);
+            });
         });
     });
 });

@@ -8,8 +8,8 @@ var DayStatistic = new mongoose.Schema({
     menu: {type: mongoose.Schema.Types.ObjectId, ref: 'Menu'},
     year: Number,
     month: Number,
-    day: Number,
-    time: Number,
+    date: Number,
+    hour: Number,
     total_count: Number,
     total_cost: Number
 },{

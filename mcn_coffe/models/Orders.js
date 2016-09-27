@@ -67,8 +67,7 @@ OrderSchema.methods.receive = function(rcv_point, cb){
     var year = updateTime.getFullYear();
     var month = updateTime.getMonth() + 1;
     var date = updateTime.getDate();
-    var getHour = updateTime.getHours();
-    /*
+    var hour = updateTime.getHours();
     for(var i=0; i<this.orders.length; i++) {
         var order = this.orders[i];
         var menu = this.orders[i].menu;
@@ -92,15 +91,41 @@ OrderSchema.methods.receive = function(rcv_point, cb){
             statistic.save();
         });
         MonthStatistic.findOne({
-
+            menu: menu,
+            year: year,
+            month: month,
+            date: date
         }, function(err, statistic){
             if(err) { console.log(err); }
             if(!statistic) {
-                statistic = new YearStatistic({
+                statistic = new MonthStatistic({
                     menu: menu,
                     year: year,
                     month: month,
-                    day: date,
+                    date: date,
+                    total_count: 0,
+                    total_cost: 0
+                });
+            }
+            statistic.total_count += order.count;
+            statistic.total_cost += (order.cost * order.count);
+            statistic.save();
+        });
+        DayStatistic.findOne({
+            menu: menu,
+            year: year,
+            month: month,
+            date: date,
+            hour: hour
+        }, function(err, statistic){
+            if(err) { console.log(err); }
+            if(!statistic) {
+                statistic = new DayStatistic({
+                    menu: menu,
+                    year: year,
+                    month: month,
+                    date: date,
+                    hour: hour,
                     total_count: 0,
                     total_cost: 0
                 });
@@ -110,7 +135,6 @@ OrderSchema.methods.receive = function(rcv_point, cb){
             statistic.save();
         })
     }
-    */
 };
 
 OrderSchema.methods.message = function(cmt_point, comment, cb) {

@@ -97,6 +97,21 @@ app.config([
                     }]
                 }
             })
+            .state('table', {
+                url: '/list/cafes/{id}/table',
+                templateUrl: '/template/list/table.html',
+                controller: 'ListTableCtrl',
+                onEnter: ['$state', 'auth', function($state, auth) {
+                    if( !auth.isLoggedIn()) {
+                        $state.go('login');
+                    }
+                }],
+                resolve: {
+                    cafe: ['$stateParams', 'cafes', function($stateParams, cafes){
+                        return cafes.getCafe($stateParams.id);
+                    }]
+                }
+            })
             .state('login', {
                 url: '/login',
                 templateUrl: '/template/auth/login.html',
@@ -127,18 +142,6 @@ app.controller('NavCtrl', [
         $scope.isLoggedIn = auth.isLoggedIn;
         $scope.currentUser = auth.currentUser;
         $scope.logOut = auth.logOut;
-    }
-]);
-
-app.controller('SideCtrl', [
-    '$scope',
-    'cafes',
-    'auth',
-    function($scope, cafes, auth){
-
-        $(document).ready(function(){
-            
-        });
     }
 ]);
 

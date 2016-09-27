@@ -9,9 +9,11 @@ var mongoose = require('mongoose');
 var Cafe = mongoose.model('Cafe');
 var cafeMenu = require('./cafeMenu');
 var cafeOrder = require('./cafeOrder');
+var statistic = require('./statistic');
 
 router.use('/:cafe/menus', cafeMenu);
 router.use('/:cafe/orders', cafeOrder);
+router.use('/:cafe/statistic', statistic);
 
 router.param('cafe', function(req, res, next, id) {
     var query = Cafe.findById(id);

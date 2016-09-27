@@ -121,7 +121,7 @@ app.factory('cafes', ['$http', function($http){
         });
     };
     o.getAllOrders = function(cafe_id, cb, err) {
-        return $http.get('/cafes/' + cafe_id + "/orders/statistic").then(function(data){
+        return $http.get('/cafes/' + cafe_id + "/orders/all").then(function(data){
             if(cb != undefined) cb(data);
             return data.data;
         }, function(data){
@@ -176,5 +176,27 @@ app.factory('cafes', ['$http', function($http){
             next(data._id);
         });
     };
+    o.getYearStatistic = function(cafe_id, year, cb, err) {
+        return $http.get('/cafes/' + cafe_id + "/statistic/year?year=" + year).then(function(data) {
+            cb(data);
+        }, function(data){
+            err(data);
+        });
+    };
+    o.getMonthStatistic = function(cafe_id, year, month, cb, err) {
+        return $http.get('/cafes/' + cafe_id + "/statistic/month?year=" + year + "&month=" + month).then(function(data) {
+            cb(data);
+        }, function(data){
+            err(data);
+        });
+    };
+    o.getDateStatistic = function(cafe_id, year, month, date, cb, err) {
+        return $http.get('/cafes/' + cafe_id + "/statistic/date?year=" + year + "&month=" + month + "&date=" + date).then(function(data) {
+            cb(data);
+        }, function(data){
+            err(data);
+        });
+    };
+
     return o;
 }]);

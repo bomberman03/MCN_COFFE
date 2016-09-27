@@ -8,7 +8,7 @@ var MonthStatistic = new mongoose.Schema({
     menu: {type: mongoose.Schema.Types.ObjectId, ref: 'Menu'},
     year: Number,
     month: Number,
-    day:Number,
+    date: Number,
     total_count: Number,
     total_cost: Number
 },{

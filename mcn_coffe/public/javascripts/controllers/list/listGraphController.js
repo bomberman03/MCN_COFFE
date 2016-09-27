@@ -191,7 +191,7 @@ app.controller('ListGraphCtrl', [
             for(var i=0; i<orders.length; i++) {
                 var order = orders[i];
                 var d = new Date(order.updateAt);
-                var date = d.getDate();
+                var date = d.getMonth();
                 for(var j=0; j<order.orders.length; j++) {
                     var menu = order.orders[j].menu;
                     var idx = menu_map[menu.name];
