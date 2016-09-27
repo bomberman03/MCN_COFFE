@@ -8,6 +8,10 @@ const RECEIVE  = 4;
 
 var mongoose = require('mongoose');
 
+var YearStatistic = mongoose.model('YearStatistic');
+var MonthStatistic = mongoose.model('MonthStatistic');
+var DayStatistic = mongoose.model('DayStatistic');
+
 var OrderSchema = new mongoose.Schema({
     order_idx: String,
     createAt: { type: Date, default: Date.now },
@@ -59,6 +63,54 @@ OrderSchema.methods.receive = function(rcv_point, cb){
     this.rcv_point = rcv_point;
     this.status = RECEIVE;
     this.save(cb);
+    var updateTime = new Date(this.updateAt);
+    var year = updateTime.getFullYear();
+    var month = updateTime.getMonth() + 1;
+    var date = updateTime.getDate();
+    var getHour = updateTime.getHours();
+    /*
+    for(var i=0; i<this.orders.length; i++) {
+        var order = this.orders[i];
+        var menu = this.orders[i].menu;
+        YearStatistic.findOne({
+            menu: menu,
+            year: year,
+            month: month
+        }, function(err, statistic){
+            if(err) { console.log(err); }
+            if(!statistic) {
+                statistic = new YearStatistic({
+                    menu: menu,
+                    year: year,
+                    month: month,
+                    total_count: 0,
+                    total_cost: 0
+                });
+            }
+            statistic.total_count += order.count;
+            statistic.total_cost += (order.cost * order.count);
+            statistic.save();
+        });
+        MonthStatistic.findOne({
+
+        }, function(err, statistic){
+            if(err) { console.log(err); }
+            if(!statistic) {
+                statistic = new YearStatistic({
+                    menu: menu,
+                    year: year,
+                    month: month,
+                    day: date,
+                    total_count: 0,
+                    total_cost: 0
+                });
+            }
+            statistic.total_count += order.count;
+            statistic.total_cost += (order.cost * order.count);
+            statistic.save();
+        })
+    }
+    */
 };
 
 OrderSchema.methods.message = function(cmt_point, comment, cb) {

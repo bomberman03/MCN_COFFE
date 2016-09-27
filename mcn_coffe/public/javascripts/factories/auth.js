@@ -16,6 +16,7 @@ app.factory('auth', ['$http', '$window', 'sidebar', function($http, $window, sid
     };
 
     auth.isLoggedIn = function() {
+        console.log("isLoggedIn");
         var token = auth.getToken();
 
         if(token) {
@@ -27,8 +28,8 @@ app.factory('auth', ['$http', '$window', 'sidebar', function($http, $window, sid
     };
 
     auth.currentUser = function() {
-        if(auth.isLoggedIn()) {
             var token = auth.getToken();
+        if(token) {
             var payload = JSON.parse($window.atob(token.split('.')[1]));
             return payload;
         }

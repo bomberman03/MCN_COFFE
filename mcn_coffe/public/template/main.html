@@ -1,9 +1,13 @@
 <div class="text-center search_background">
     <div class="head-message"><span style="color:white">엠씨엔</span> <span style="color:saddlebrown">커피</span></div>
     <div class="head-under-message">잃어버린 카페를 찾아서</div>
-
 </div>
 <div class="row cafe_list">
+    <ul class="breadcrumb" style="margin-bottom: 5px;">
+        <li><a href="javascript:void(0)">이름순</a></li>
+        <li><a href="javascript:void(0)">별점순</a></li>
+        <li><a href="#/main/map">위치순</li>
+    </ul>
     <div ng-repeat="cafe in cafes">
         <div class="cafe_item ">
             <a href="#/cafes/{{cafe._id}}">

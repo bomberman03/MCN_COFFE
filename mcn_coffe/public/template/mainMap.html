@@ -23,6 +23,7 @@
                                 <img src="https://developers.skplanetx.com/upload/tmap/marker/pin_b_m_{{icon_map[$index]}}.png">
                                 <span class="label label-primary">{{cafe.dist_str}}</span>
                                 {{ cafe.name }}
+                                <i class="pull-right material-icons pointer-cursor"><a href="#/cafes/{{cafe._id}}">home</a></i>
                                 <i ng-click="showPath($event, cafe, 'pedestrian')" class="pull-right material-icons pointer-cursor">directions_walk</i>
                                 <i ng-click="showPath($event, cafe, 'bicycle')" class="pull-right material-icons pointer-cursor">directions_bike</i>
                                 <i ng-click="showPath($event, cafe, '')" class="pull-right material-icons pointer-cursor">directions_car</i>

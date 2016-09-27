@@ -20,6 +20,26 @@ router.get('/', function(req, res, next){
     });
 });
 
+router.get('/between', function(req, res){
+    var start = req.query.start_time;
+    var finish = req.query.finish_time;
+    Order
+        .find({
+            "cafe._id": req.cafe._id,
+            updateAt: {
+                $gt: start,
+                $lt: finish
+            }
+        })
+        .sort({
+            "updateAt":-1
+        })
+        .limit(10)
+        .exec(function(err, orders){
+            res.json(orders);
+        });
+});
+
 router.get('/comments', function(req, res) {
     Order.find({
         "cafe._id": req.cafe._id,
@@ -29,16 +49,6 @@ router.get('/comments', function(req, res) {
         return res.json({
             orders: orders
         });
-    });
-});
-
-router.get('/statistic', function(req, res) {
-    Order.find({
-        "cafe._id": req.cafe._id,
-        status: { $in: [2,4] }
-    }, function(err, orders){
-        if(err) { return next(err); }
-        return res.json(orders);
     });
 });
 
@@ -74,10 +84,7 @@ router.post('/', function(req, res, next){
         req.body.order_idx = count + 1;
         var order = new Order(req.body);
         order.save(function(err, order) {
-            if(err){
-                console.log(err);
-                return next(err);
-            }
+            if(err){ return next(err);}
             io.emit(req.cafe._id, {
                 method: 'post',
                 name: 'order',

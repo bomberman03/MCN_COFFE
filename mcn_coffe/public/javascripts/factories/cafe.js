@@ -138,6 +138,15 @@ app.factory('cafes', ['$http', function($http){
             return data.data;
         })
     };
+    o.getOrdersBetween = function(cafe_id, start, finish, cb, err) {
+        return $http.get('/cafes/' + cafe_id + "/orders/between?start_time=" + start + "&finish_time=" + finish).then(function(data){
+            if(cb != undefined) cb(data);
+            return data.data;
+        }, function(data){
+            if(err != undefined) err(data);
+            return data.data;
+        })
+    };
     o.getMenu = function(menu_id, cb, err){
         return $http.get('/menus/' + menu_id).then(function(data){
             cb(data);

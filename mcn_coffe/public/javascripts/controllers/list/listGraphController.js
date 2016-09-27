@@ -4,14 +4,16 @@
 app.controller('ListGraphCtrl', [
     'cafes',
     'cafe',
-    'orders',
     '$scope',
     '$timeout',
     'auth',
     'sidebar',
-    function(cafes, cafe, orders, $scope, $timeout, auth, sidebar) {
+    function(cafes, cafe, $scope, $timeout, auth, sidebar) {
         $scope.cafe = cafe;
         $scope.orders = [];
+        $scope.start = "";
+        $scope.finish = "";
+        $scope.isNetworking = false;
 
         $scope.getYear = function(time) {
             var d = new Date(time);
@@ -46,11 +48,41 @@ app.controller('ListGraphCtrl', [
             console.log(points, evt);
         };
 
+        $scope.getOrders = function() {
+            if($scope.isNetworking) return;
+            $scope.isNetworking = true;
+            var start_d = new Date($("#start_picker").val());
+            var finish_d = new Date($("#finish_picker").val());
+            if($scope.orders.length > 0)
+                finish_d = new Date($scope.orders[$scope.orders.length-1].updateAt);
+            if(finish_d.getTime() < start_d.getTime()) {
+                return;
+            }
+            cafes.getOrdersBetween(cafe._id, start_d.toISOString(), finish_d.toISOString(), function(data){
+                $timeout(function(){
+                    $scope.orders = $scope.orders.concat(data.data);
+                    $scope.isNetworking = false;
+                });
+            }, function(data){
+                console.log('error');
+            });
+        };
+
         $(document).ready(function(e){
             $.material.init();
             $('[data-toggle="tooltip"]').tooltip();
+            $( "#start_picker" ).datepicker();
+            $( "#finish_picker" ).datepicker();
             sidebar.getCafeList(auth.currentUser()._id);
-            convertToMonthData();
+
+            $(window).scroll(function(event){
+                var scrollTop = $('body').prop('scrollTop');
+                var scrollHeight = $('body').prop('scrollHeight');
+                var clientHeight = $('body').prop('clientHeight');
+                if((scrollTop + 300) > (scrollHeight - clientHeight)) {
+                    $scope.getOrders();
+                }
+            });
         });
 
         function convertToHourSumData() {

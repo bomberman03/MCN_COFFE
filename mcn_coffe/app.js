@@ -12,6 +12,9 @@ mongoose.connect('mongodb://localhost/coffee');
 require('./models/Cafes');
 require('./models/Menus');
 require('./models/Users');
+require('./models/YearStatistic');
+require('./models/MonthStatistic');
+require('./models/DayStatistic');
 require('./models/Orders');
 require('./config/passport');
 

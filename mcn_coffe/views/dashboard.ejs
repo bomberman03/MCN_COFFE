@@ -20,42 +20,11 @@
     <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Roboto:300,400,500,700">
     <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/icon?family=Material+Icons">
 
-    <style>
-        .chart-legend {
-            list-style-type: none;
-            margin-top: 5px;
-            text-align: center;
-            /* NOTE: Browsers automatically add 40px of padding-left to all lists, so we should offset that, otherwise the legend is off-center */
-            -webkit-padding-start: 0;
-            /* Webkit */
-            -moz-padding-start: 0;
-            /* Mozilla */
-            padding-left: 0;
-            /* IE (handles all cases, really, but we should also include the vendor-specific properties just to be safe) */
-        }
-        .chart-legend li {
-            display: inline-block;
-            white-space: nowrap;
-            position: relative;
-            margin-bottom: 4px;
-            border-radius: 5px;
-            padding: 2px 8px 2px 28px;
-            font-size: smaller;
-            cursor: default;
-        }
-        .chart-legend li span {
-            display: block;
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 20px;
-            height: 20px;
-            border-radius: 5px;
-        }
-    </style>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 
     <script src="/javascripts/libraries/jquery.min.js"></script>
     <script src="/javascripts/libraries/jquery.easing.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script src="/javascripts/libraries/bootstrap.min.js"></script>
 
     <script src="/javascripts/libraries/angular.min.js"></script>
@@ -96,8 +65,8 @@
     <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?clientId=b4Ipp9TAh1DjURhv8KkP"></script>
     <script src="https://apis.skplanetx.com/tmap/js?version=1&format=javascript&appKey=b7224677-d5a3-3c7e-9a1c-33db6ad8e19e"></script>
 </head>
-<body ng-app="mcnCoffee" ng-controller="NavCtrl">
-    <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
+<body ng-app="mcnCoffee">
+    <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0" ng-controller="NavCtrl">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
                 <span class="sr-only">Toggle navigation</span>
