@@ -33,10 +33,10 @@
                             </div>
                         </label>
                         <ul ng-repeat="option in menu.options track by $index">
-                            <li ng-click="selectOption($index)" ng-hide="option.options.length"><a><div class="option-item">{{option.name}}</div></a></li>
+                            <li ng-click="selectOption($index)" ng-hide="option.options.length"><a><div class="option-item">{{option.name}} <span style="position:absolute; right:20px">{{option.cost}}원</span></div></a></li>
                             <li ng-show="option.options.length"  class="has-children">
                                 <input type="checkbox" name ="{{menu._id}}-{{$index}}" id="{{menu._id}}-{{$index}}">
-                                <label ng-click="selectOption($index)" class="option-group" for="{{menu._id}}-{{$index}}">{{option.name}}</label>
+                                <label ng-click="selectOption($index)" class="option-group" for="{{menu._id}}-{{$index}}">{{option.name}} <span style="position:absolute; right:20px">{{option.cost}}원</span></label>
                                 <ul>
                                     <li ng-repeat="option in option.options track by $index"><a ng-click="selectSubOption($index)"><div class="option-item">{{option.name}}</div></a></li>
                                 </ul>

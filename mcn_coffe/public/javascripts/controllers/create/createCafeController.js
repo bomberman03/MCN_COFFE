@@ -9,7 +9,7 @@ app.controller('CreateCafeCtrl', [
     'terms',
     'openApi',
     'sidebar',
-    function($scope, auth, cafes, terms, openApi){
+    function($scope, auth, cafes, terms, openApi, sidebar){
         $scope.terms = terms.terms;
         $scope.cafe  = {
             agree: [],
