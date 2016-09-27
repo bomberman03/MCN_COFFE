@@ -40,7 +40,10 @@ app.controller('RegisterCtrl', [
         };
         $(document).ready(function() {
             $.material.init();
-            sidebar.getCafeList(auth.currentUser()._id);
+            if(auth.currentUser() == undefined)
+                sidebar.removeCafeList();
+            else
+                sidebar.getCafeList(auth.currentUser()._id);
             initialize();
             initializeWizard();
         });
