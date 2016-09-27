@@ -26,8 +26,9 @@ router.param('cafe', function(req, res, next, id) {
 /* cafe related API */
 router.get('/', function(req, res, next){
     var option = {};
-    if(req.query.user != undefined)
-        option['owner'] = req.query.user;
+    if(req.query.user != undefined) {
+        option["owner"] = req.query.user;
+    }
     if(req.query.latitude != undefined && req.query.longitude != undefined && req.query.dist != undefined)
     {
         var lat = parseFloat(req.query.latitude);
@@ -46,7 +47,7 @@ router.get('/', function(req, res, next){
         if (err) {
             return next(err);
         }
-        res.json(cafes);
+        return res.json(cafes);
     });
 });
 

@@ -8,6 +8,7 @@ app.controller('CreateCafeCtrl', [
     'cafes',
     'terms',
     'openApi',
+    'sidebar',
     function($scope, auth, cafes, terms, openApi){
         $scope.terms = terms.terms;
         $scope.cafe  = {
@@ -127,6 +128,7 @@ app.controller('CreateCafeCtrl', [
 
         $(document).ready(function() {
             $.material.init();
+            sidebar.getCafeList(auth.currentUser());
             initialize();
             initializeWizard();
             initializeTMap();

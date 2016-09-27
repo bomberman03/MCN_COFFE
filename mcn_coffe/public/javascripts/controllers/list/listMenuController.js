@@ -10,7 +10,8 @@ app.controller('ListMenuCtrl', [
     'cafe',
     '$scope',
     '$timeout',
-    function(cafes, cafe, $scope, $timeout){
+    'sidebar',
+    function(cafes, cafe, $scope, $timeout, sidebar){
         $scope.cafe = cafe;
         $scope.menus = [];
         $scope.categories = ['전체'];
@@ -374,6 +375,7 @@ app.controller('ListMenuCtrl', [
         $(document).ready(function(e) {
             $.material.init();
             $('[data-toggle="tooltip"]').tooltip();
+            sidebar.getCafeList(auth.currentUser());
             initialize();
             initializeInputForm();
             setTimeout(initializeAccordion, 100);

@@ -7,6 +7,7 @@ const CANCEL   = 2;
 const RECEIVE  = 4;
 
 var mongoose = require('mongoose');
+var autoIncrement = require('mongoose-auto-increment');
 
 var OrderSchema = new mongoose.Schema({
     createAt: { type: Date, default: Date.now },
@@ -54,4 +55,5 @@ OrderSchema.methods.receive = function(cb){
     this.save(cb);
 };
 
+OrderSchema.plugin(autoIncrement.plugin, { model: 'Order', field: 'idx' });
 mongoose.model('Order', OrderSchema);

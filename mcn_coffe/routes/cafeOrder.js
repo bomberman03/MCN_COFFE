@@ -20,6 +20,26 @@ router.get('/', function(req, res, next){
     });
 });
 
+router.get('/statistic', function(req, res) {
+    Order.find({
+        "cafe._id": req.cafe._id,
+        status: { $in: [2,4] }
+    }, function(err, orders){
+        if(err) { return next(err); }
+        return res.json(orders);
+    });
+});
+
+router.get('/wait', function(req, res) {
+    Order.find({
+        "cafe._id": req.cafe._id,
+        status: 0
+    }, function(err, orders){
+        if(err) { return next(err); }
+        return res.json(orders);
+    });
+});
+
 router.get('/all', function(req, res, next){
     Order
         .find({

@@ -8,6 +8,7 @@ app.factory('cafes', ['$http', function($http){
     };
     o.getAll = function(){
         return $http.get('/cafes').success(function(data){
+            console.log(data);
             angular.copy(data, o.cafes);
         });
     };
@@ -120,7 +121,16 @@ app.factory('cafes', ['$http', function($http){
         });
     };
     o.getAllOrders = function(cafe_id, cb, err) {
-        return $http.get('/cafes/' + cafe_id + "/orders/all").then(function(data){
+        return $http.get('/cafes/' + cafe_id + "/orders/statistic").then(function(data){
+            if(cb != undefined) cb(data);
+            return data.data;
+        }, function(data){
+            if(err != undefined) err(data);
+            return data.data;
+        })
+    };
+    o.getWaitOrders = function(cafe_id, cb, err) {
+        return $http.get('/cafes/' + cafe_id + "/orders/wait").then(function(data){
             if(cb != undefined) cb(data);
             return data.data;
         }, function(data){

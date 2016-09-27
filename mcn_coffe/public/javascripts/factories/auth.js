@@ -1,7 +1,7 @@
 /**
  * Created by pathFinder on 2016-07-12.
  */
-app.factory('auth', ['$http', '$window', function($http, $window){
+app.factory('auth', ['$http', '$window', 'sidebar', function($http, $window, sidebar){
 
     var auth = {};
 
@@ -48,6 +48,7 @@ app.factory('auth', ['$http', '$window', function($http, $window){
 
     auth.logOut = function() {
         $window.localStorage.removeItem('mcn-coffee-token');
+        sidebar.removeCafeList();
     };
 
     auth.getUsers = function(){

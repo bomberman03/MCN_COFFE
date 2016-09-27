@@ -6,8 +6,8 @@ app.controller('UserInfoCtrl', [
     'auth',
     'user',
     '$timeout',
-    '$state',
-    function($scope, auth, user, $timeout, $state){
+    'sidebar',
+    function($scope, auth, user, $timeout, sidebar){
         $scope.user = user;
         $scope.isNetworking = false;
         $scope.baseResponse = "";
@@ -61,6 +61,7 @@ app.controller('UserInfoCtrl', [
 
         $(document).ready(function(){
             $.material.init();
+            sidebar.getCafeList(auth.currentUser()._id);
         });
     }
 ]);

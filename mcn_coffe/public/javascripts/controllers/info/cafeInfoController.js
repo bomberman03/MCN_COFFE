@@ -7,7 +7,9 @@ app.controller('CafeInfoCtrl', [
     'cafe',
     'openApi',
     '$timeout',
-    function($scope, cafes, cafe, openApi, $timeout){
+    'sidebar',
+    'auth',
+    function($scope, cafes, cafe, openApi, $timeout, sidebar, auth){
         $scope.cafe = cafe;
         $scope.isNetworking = false;
         $scope.baseResponse = "";
@@ -120,6 +122,7 @@ app.controller('CafeInfoCtrl', [
 
         $(document).ready(function(){
             $.material.init();
+            sidebar.getCafeList(auth.currentUser);
             initializeDropzone();
             initializeSlider();
             initializeTMap();

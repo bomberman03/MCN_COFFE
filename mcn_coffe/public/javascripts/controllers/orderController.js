@@ -13,7 +13,7 @@ app.controller('OrderCtrl', [
         $scope.mappedOrders = [];
         $scope.selectedOrders = [];
         var $grid, socket;
-        var socket_ip = '192.168.123.197';
+        var socket_ip = '192.168.0.58';
         var socket_port = 8080;
 
         var WAIT = 0;
@@ -84,6 +84,7 @@ app.controller('OrderCtrl', [
             return ret;
         };
         $scope.getStatusClass = function(order_id){
+            console.log("getStatusClass");
             var order = $scope.mappedOrders[order_id];
             if(order == undefined) return -1;
             var ret = "label-default";
@@ -98,13 +99,17 @@ app.controller('OrderCtrl', [
                     ret = "label-success";
                     break;
             }
+            console.log(ret);
             return ret;
         };
         $scope.selectedIndex = function(order_id){
-            function findById(order) {
-                return order._id == order_id;
+            var ret = -1;
+            for(var i=0; i<$scope.selectedOrders.length; i++) {
+                if($scope.selectedOrders[i]._id == order_id) {
+                    return ret = i;
+                }
             }
-            return $scope.selectedOrders.findIndex(findById);
+            return ret;
         };
         $scope.selectOrder = function(order_id) {
             var selected_idx = $scope.selectedIndex(order_id);

@@ -7,9 +7,10 @@ app.controller('ListGraphCtrl', [
     'orders',
     '$scope',
     '$timeout',
-    function(cafes, cafe, orders, $scope, $timeout) {
+    'sidebar',
+    function(cafes, cafe, orders, $scope, $timeout, sidebar) {
         $scope.cafe = cafe;
-        $scope.orders = orders;
+        $scope.orders = [];
 
         $scope.getYear = function(time) {
             var d = new Date(time);
@@ -36,38 +37,146 @@ app.controller('ListGraphCtrl', [
             return d.getSeconds();
         };
 
-        $scope.labels = ["January", "February", "March", "April", "May", "June", "July"];
-        $scope.series = ['Series A', 'Series B'];
-        $scope.data = [
-            [65, 59, 80, 81, 56, 55, 40],
-            [28, 48, 40, 19, 86, 27, 90]
-        ];
+        $scope.labels = [];
+        $scope.series = [];
+        $scope.data = [];
+        $scope.doughnut_data = [];
         $scope.onClick = function (points, evt) {
             console.log(points, evt);
-        };
-        $scope.datasetOverride = [{ yAxisID: 'y-axis-1' }, { yAxisID: 'y-axis-2' }];
-        $scope.options = {
-            scales: {
-                yAxes: [
-                    {
-                        id: 'y-axis-1',
-                        type: 'linear',
-                        display: true,
-                        position: 'left'
-                    },
-                    {
-                        id: 'y-axis-2',
-                        type: 'linear',
-                        display: true,
-                        position: 'right'
-                    }
-                ]
-            }
         };
 
         $(document).ready(function(e){
             $.material.init();
             $('[data-toggle="tooltip"]').tooltip();
+            sidebar.getCafeList(auth.currentUser());
+            convertToMonthData();
         });
+
+        function convertToHourSumData() {
+            var menu_map = {};
+            var labels = [];
+            var series = [];
+            var data = [];
+            for(var i=0; i<=23; i++) labels.push(i);
+            for(var i=0; i<cafe.menus.length; i++) {
+                series.push(cafe.menus[i].name);
+                menu_map[cafe.menus[i].name] = i;
+                var tmp_arr = [];
+                for(var j=0; j<labels.length; j++) tmp_arr.push(0);
+                data.push(tmp_arr);
+            }
+            for(var i=0; i<orders.length; i++) {
+                var order = orders[i];
+                var d = new Date(order.updateAt);
+                var date = d.getHours();
+                for(var j=0; j<order.orders.length; j++) {
+                    var menu = order.orders[j].menu;
+                    var idx = menu_map[menu.name];
+                    data[idx][date] += order.orders[j].count;
+                }
+            }
+            var new_data = [];
+            labels.splice(0,9);
+            for(var i=0; i<data.length; i++) {
+                data[i].splice(0,9);
+            }
+            for(var j=0; j<labels.length; j++){
+                var sum = 0;
+                for(var i=0; i<series.length; i++){
+                    sum += data[i][j];
+                }
+                new_data.push(sum);
+            }
+            $scope.labels = labels;
+            $scope.series = series;
+            $scope.data = new_data;
+            var doughnut_data = [];
+            for(var i=0; i<data.length; i++) {
+                var sum = 0;
+                for(var j=0; j<data[i].length; j++) {
+                    sum += data[i][j];
+                }
+                doughnut_data.push(sum);
+            }
+            $scope.doughnut_data = doughnut_data;
+        }
+
+        function covertToHourData() {
+            var menu_map = {};
+            var labels = [];
+            var series = [];
+            var data = [];
+            for(var i=0; i<=23; i++) labels.push(i);
+            for(var i=0; i<cafe.menus.length; i++) {
+                series.push(cafe.menus[i].name);
+                menu_map[cafe.menus[i].name] = i;
+                var tmp_arr = [];
+                for(var j=0; j<labels.length; j++) tmp_arr.push(0);
+                data.push(tmp_arr);
+            }
+            for(var i=0; i<orders.length; i++) {
+                var order = orders[i];
+                var d = new Date(order.updateAt);
+                var date = d.getHours();
+                for(var j=0; j<order.orders.length; j++) {
+                    var menu = order.orders[j].menu;
+                    var idx = menu_map[menu.name];
+                    data[idx][date] += order.orders[j].count;
+                }
+            }
+            labels.splice(0,9);
+            for(var i=0; i<data.length; i++) {
+                data[i].splice(0,9);
+            }
+            $scope.labels = labels;
+            $scope.series = series;
+            $scope.data = data;
+            var doughnut_data = [];
+            for(var i=0; i<data.length; i++) {
+                var sum = 0;
+                for(var j=0; j<data[i].length; j++) {
+                    sum += data[i][j];
+                }
+                doughnut_data.push(sum);
+            }
+            $scope.doughnut_data = doughnut_data;
+        }
+
+        function convertToMonthData() {
+            var menu_map = {};
+            var labels = [];
+            var series = [];
+            var data = [];
+            for(var i=1; i<=11; i++) labels.push(i);
+            for(var i=0; i<cafe.menus.length; i++) {
+                series.push(cafe.menus[i].name);
+                menu_map[cafe.menus[i].name] = i;
+                var tmp_arr = [];
+                for(var j=0; j<labels.length; j++) tmp_arr.push(0);
+                data.push(tmp_arr);
+            }
+            for(var i=0; i<orders.length; i++) {
+                var order = orders[i];
+                var d = new Date(order.updateAt);
+                var date = d.getDate();
+                for(var j=0; j<order.orders.length; j++) {
+                    var menu = order.orders[j].menu;
+                    var idx = menu_map[menu.name];
+                    data[idx][date] += order.orders[j].count;
+                }
+            }
+            $scope.labels = labels;
+            $scope.series = series;
+            $scope.data = data;
+            var doughnut_data = [];
+            for(var i=0; i<data.length; i++) {
+                var sum = 0;
+                for(var j=0; j<data[i].length; j++) {
+                    sum += data[i][j];
+                }
+                doughnut_data.push(sum);
+            }
+            $scope.doughnut_data = doughnut_data;
+        }
     }
 ]);

@@ -8,7 +8,8 @@ app.controller('LoginCtrl', [
     '$scope',
     '$state',
     'auth',
-    function($scope, $state, auth){
+    'sidebar',
+    function($scope, $state, auth, sidebar){
         $scope.user = {
             username: '',
             password: ''
@@ -40,6 +41,7 @@ app.controller('LoginCtrl', [
         };
         $(document).ready(function() {
             $.material.init();
+            sidebar.getCafeList(auth.currentUser());
         });
         function validationCheck() {
             var ret = true;

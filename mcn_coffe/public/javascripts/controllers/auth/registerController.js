@@ -6,7 +6,8 @@ app.controller('RegisterCtrl', [
     '$state',
     'terms',
     'auth',
-    function($scope, $state, terms, auth){
+    'sidebar',
+    function($scope, $state, terms, auth, sidebar){
         $scope.terms = terms.terms;
         $scope.user = {
             agree: [],
@@ -39,6 +40,7 @@ app.controller('RegisterCtrl', [
         };
         $(document).ready(function() {
             $.material.init();
+            sidebar.getCafeList(auth.currentUser());
             initialize();
             initializeWizard();
         });

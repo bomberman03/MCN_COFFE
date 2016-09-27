@@ -1,3 +1,4 @@
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <!DOCTYPE html>
 <html>
 <head>
@@ -76,9 +77,10 @@
 
     <script src="/javascripts/dashBoardApp.js"></script>
 
+    <script src="/javascripts/factories/cafe.js"></script>
+    <script src="/javascripts/factories/sidebar.js"></script>
     <script src="/javascripts/factories/auth.js"></script>
     <script src="/javascripts/factories/term.js"></script>
-    <script src="/javascripts/factories/cafe.js"></script>
     <script src="/javascripts/factories/openApi.js"></script>
 
     <script src="/javascripts/controllers/authController.js"></script>
@@ -103,11 +105,11 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="#"><%= title %></a>
+            <a class="navbar-brand" href="/dashboard"><%= title %></a>
         </div>
         <ul class="nav navbar-top-links navbar-right">
             <li class="dropdown">
-                <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                <a class="dropdown-toggle" data-toggle="dropdown">
                     <i style="color:white" class="white fa fa-user fa-fw white"></i>
                     <i style="color:white" class="fa fa-caret-down white"></i>
                 </a>
@@ -116,16 +118,15 @@
                     <li><a href="#/register"> 회원가입</a></li>
                 </ul>
                 <ul ng-show="isLoggedIn()" class="dropdown-menu dropdown-messages">
-                    <li><a href="#"> 내 정보</a></li>
-                    <li><a href="#"> 설정</a></li>
+                    <li><a href="/dashboard"> 내 정보</a></li>
                     <li class="divider"></li>
-                    <li><a href="#/main" ng-click="logOut()"> 로그아웃</a></li>
+                    <li><a href="/dashboard" ng-click="logOut()"> 로그아웃</a></li>
                 </ul>
             </li>
         </ul>
     </nav>
     <div class="navbar-default sidebar" role="navigation">
-        <div class="sidebar-nav navbar-collapse" ng-controller="SideCtrl">
+        <div class="sidebar-nav navbar-collapse">
             <ul class="nav in" id="side-menu">
                 <li>
                     <a href="#/main"> 대시 보드 홈</a>
