@@ -41,7 +41,7 @@ app.controller('LoginCtrl', [
         };
         $(document).ready(function() {
             $.material.init();
-            sidebar.getCafeList(auth.currentUser());
+            sidebar.getCafeList(auth.currentUser()._id);
         });
         function validationCheck() {
             var ret = true;

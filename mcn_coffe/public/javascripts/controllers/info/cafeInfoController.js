@@ -122,7 +122,7 @@ app.controller('CafeInfoCtrl', [
 
         $(document).ready(function(){
             $.material.init();
-            sidebar.getCafeList(auth.currentUser);
+            sidebar.getCafeList(auth.currentUser()._id);
             initializeDropzone();
             initializeSlider();
             initializeTMap();

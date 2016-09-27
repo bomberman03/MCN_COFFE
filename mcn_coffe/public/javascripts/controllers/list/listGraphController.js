@@ -7,8 +7,9 @@ app.controller('ListGraphCtrl', [
     'orders',
     '$scope',
     '$timeout',
+    'auth',
     'sidebar',
-    function(cafes, cafe, orders, $scope, $timeout, sidebar) {
+    function(cafes, cafe, orders, $scope, $timeout, auth, sidebar) {
         $scope.cafe = cafe;
         $scope.orders = [];
 
@@ -48,7 +49,7 @@ app.controller('ListGraphCtrl', [
         $(document).ready(function(e){
             $.material.init();
             $('[data-toggle="tooltip"]').tooltip();
-            sidebar.getCafeList(auth.currentUser());
+            sidebar.getCafeList(auth.currentUser()._id);
             convertToMonthData();
         });
 

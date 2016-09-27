@@ -40,7 +40,7 @@ app.controller('RegisterCtrl', [
         };
         $(document).ready(function() {
             $.material.init();
-            sidebar.getCafeList(auth.currentUser());
+            sidebar.getCafeList(auth.currentUser()._id);
             initialize();
             initializeWizard();
         });
