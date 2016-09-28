@@ -14,7 +14,7 @@ app.controller('ListTableCtrl', [
         var data = {};
 
         $scope.year = 2016;
-        $scope.month = 2;
+        $scope.month = 9;
         $scope.date = 1;
 
         var menu_map = {};
@@ -162,7 +162,7 @@ app.controller('ListTableCtrl', [
             }
             $scope.date_labels = date_labels;
             $scope.date_data = date_data;
-            for(var j=23; j>=0; j--) {
+            for(var j=23; j>=1; j--) {
                 var sum = 0;
                 for (var i = 0; i < cafe.menus.length; i++) {
                     sum += date_data[i][j];
