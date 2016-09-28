@@ -8,11 +8,14 @@ app.controller('ListTableCtrl', [
     '$timeout',
     'auth',
     'sidebar',
-    function(cafes, cafe, $scope, $timeout, auth, sidebar) {
+    'orders',
+    function(cafes, cafe, $scope, $timeout, auth, sidebar, orders) {
+
+        var data = {};
 
         $scope.year = 2016;
-        $scope.month = 6;
-        $scope.date = 20;
+        $scope.month = 2;
+        $scope.date = 1;
 
         var menu_map = {};
 
@@ -26,51 +29,115 @@ app.controller('ListTableCtrl', [
             $scope.series = series;
         }
 
+        function initializeData() {
+            data = {};
+            for(var i=0; i<orders.length; i++) {
+                var order = orders[i];
+                var d = new Date(order.updateAt);
+                console.log(d);
+                var year = d.getFullYear();
+                var month = d.getMonth() + 1;
+                var date = d.getDate();
+                var hour = d.getHours();
+                for(var j=0; j<order.orders.length; j++) {
+                    var item = order.orders[j];
+                    var menu_id = item.menu._id;
+                    if(data[menu_id] == undefined)
+                        data[menu_id] = {};
+                    if(data[menu_id][year] == undefined)
+                        data[menu_id][year] = {
+                            total_count: 0,
+                            total_cost: 0
+                        };
+                    data[menu_id][year].total_count += item.count;
+                    data[menu_id][year].total_cost += (item.cost * item.count);
+                    if(data[menu_id][year][month] == undefined)
+                        data[menu_id][year][month] = {
+                            total_count: 0,
+                            total_cost: 0
+                        };
+                    data[menu_id][year][month].total_count += item.count;
+                    data[menu_id][year][month].total_cost += (item.cost * item.count);
+                    if(data[menu_id][year][month][date] == undefined)
+                        data[menu_id][year][month][date] = {
+                            total_count: 0,
+                            total_cost: 0
+                        };
+                    data[menu_id][year][month][date].total_count += item.count;
+                    data[menu_id][year][month][date].total_cost += (item.cost * item.count);
+                    if(data[menu_id][year][month][date][hour] == undefined)
+                        data[menu_id][year][month][date][hour] = {
+                            total_count:0,
+                            total_cost: 0
+                        };
+                    data[menu_id][year][month][date][hour].total_count += item.count;
+                    data[menu_id][year][month][date][hour].total_cost += (item.cost * item.count);
+                }
+            }
+            console.log(data);
+        }
+
         function initializeYearData() {
             var year_labels = [];
             var year_data = [];
             for (var i = 0; i < cafe.menus.length; i++) {
+                var menu = cafe.menus[i];
                 year_data.push([]);
                 for (var j = 1; j <= 12; j++) {
                     if(i==0) year_labels.push(j + "월");
-                    year_data[year_data.length - 1].push(0);
+                    if(data[menu._id] == undefined ||
+                        data[menu._id][$scope.year] == undefined ||
+                        data[menu._id][$scope.year][j] == undefined)
+                        year_data[year_data.length - 1].push(0);
+                    else
+                        year_data[year_data.length-1].push(data[menu._id][$scope.year][j].total_count);
                 }
             }
-            cafes.getYearStatistic(cafe._id, $scope.year, function(data){
-                var statistics = data.data;
-                for(var i=0; i<statistics.length; i++) {
-                    var statistic = statistics[i];
-                    var menu_idx = menu_map[statistic.menu];
-                    year_data[menu_idx][statistic.month-1] = statistic.total_count;
+            for(var j=11; j>=0; j--) {
+                var sum = 0;
+                for (var i = 0; i < cafe.menus.length; i++) {
+                    sum += year_data[i][j];
                 }
-                $scope.year_labels = year_labels;
-                $scope.year_data = year_data;
-            }, function(data){
-                console.log("error!");
-            });
+                if(sum == 0) {
+                    for (var i = 0; i < cafe.menus.length; i++) {
+                        year_data[i].splice(j, 1);
+                    }
+                    year_labels.splice(j, 1);
+                }
+            }
+            $scope.year_labels = year_labels;
+            $scope.year_data = year_data;
         }
+
         function initializeMonthData() {
             var month_labels = [];
             var month_data = [];
             for (var i = 0; i < cafe.menus.length; i++) {
+                var menu = cafe.menus[i];
                 month_data.push([]);
                 for (var j = 1; j <= 31; j++) {
                     if(i==0) month_labels.push(j + "일");
-                    month_data[month_data.length - 1].push(0);
+                    if(data[menu._id] == undefined ||
+                        data[menu._id][$scope.year] == undefined ||
+                        data[menu._id][$scope.year][$scope.month] == undefined ||
+                        data[menu._id][$scope.year][$scope.month][j] == undefined)
+                        month_data[month_data.length - 1].push(0);
+                    else
+                        month_data[month_data.length -1].push(data[menu._id][$scope.year][$scope.month][j].total_count);
                 }
             }
-            cafes.getMonthStatistic(cafe._id, $scope.year, $scope.month, function(data){
-                var statistics = data.data;
-                for(var i=0; i<statistics.length; i++) {
-                    var statistic = statistics[i];
-                    var menu_idx = menu_map[statistic.menu];
-                    month_data[menu_idx][statistic.date-1] = statistic.total_count;
+            for(var j=31; j>=1; j--) {
+                var sum = 0;
+                for (var i = 0; i < cafe.menus.length; i++) {
+                    sum += month_data[i][j];
                 }
-                $scope.month_labels = month_labels;
-                $scope.month_data = month_data;
-            }, function(data){
-                console.log("error!");
-            });
+                if(sum == 0) {
+                    for (var i = 0; i < cafe.menus.length; i++) {
+                        month_data[i].splice(j, 1);
+                    }
+                    month_labels.splice(j, 1);
+                }
+            }
             $scope.month_labels = month_labels;
             $scope.month_data = month_data;
         }
@@ -79,27 +146,38 @@ app.controller('ListTableCtrl', [
             var date_labels = [];
             var date_data = [];
             for (var i = 0; i < cafe.menus.length; i++) {
+                var menu = cafe.menus[i];
                 date_data.push([]);
                 for (var j = 0; j <= 23; j++) {
                     if(i==0) date_labels.push(j + "시");
-                    date_data[date_data.length - 1].push(0);
+                    if(data[menu._id] == undefined ||
+                        data[menu._id][$scope.year] == undefined ||
+                        data[menu._id][$scope.year][$scope.month] == undefined ||
+                        data[menu._id][$scope.year][$scope.month][$scope.date] == undefined ||
+                        data[menu._id][$scope.year][$scope.month][$scope.date][j] == undefined)
+                        date_data[date_data.length - 1].push(0);
+                    else
+                        date_data[date_data.length - 1].push(data[menu._id][$scope.year][$scope.month][$scope.date][j].total_count);
                 }
             }
-            cafes.getDateStatistic(cafe._id, $scope.year, $scope.month, $scope.date, function(data){
-                var statistics = data.data;
-                for(var i=0; i<statistics.length; i++) {
-                    var statistic = statistics[i];
-                    var menu_idx = menu_map[statistic.menu];
-                    date_data[menu_idx][statistic.hour] = statistic.total_count;
+            $scope.date_labels = date_labels;
+            $scope.date_data = date_data;
+            for(var j=23; j>=0; j--) {
+                var sum = 0;
+                for (var i = 0; i < cafe.menus.length; i++) {
+                    sum += date_data[i][j];
                 }
-                $scope.date_labels = date_labels;
-                $scope.date_data = date_data;
-            }, function(data){
-                console.log("error!");
-            });
+                if(sum == 0) {
+                    for (var i = 0; i < cafe.menus.length; i++) {
+                        date_data[i].splice(j, 1);
+                    }
+                    date_labels.splice(j, 1);
+                }
+            }
         }
 
         initializeSeries();
+        initializeData();
         initializeYearData();
         initializeMonthData();
         initializeDateData();

@@ -109,6 +109,9 @@ app.config([
                 resolve: {
                     cafe: ['$stateParams', 'cafes', function($stateParams, cafes){
                         return cafes.getCafe($stateParams.id);
+                    }],
+                    orders: ['$stateParams', 'cafes', function($stateParams, cafes){
+                        return cafes.getAllOrders($stateParams.id);
                     }]
                 }
             })
@@ -144,6 +147,8 @@ app.controller('NavCtrl', [
         $scope.logOut = auth.logOut;
     }
 ]);
+
+
 
 app.directive('fileModel', ['$parse', function ($parse) {
     return {
