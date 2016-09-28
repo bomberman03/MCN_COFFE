@@ -122,7 +122,7 @@ app.controller('OrderCtrl', [
             h += '<div class="top-half-margin left-half-margin right-half-margin" id=' + order_id + 'ng-class="getSelectionClass(' + order_id + ')" ng-click="selectOrder('
                 + order_id +')" class="panel">';
             h += '<div class="panel-heading">';
-            h += '주문번호 ' + (order.order_idx + 1);
+            h += '주문번호 ' + (order.order_idx);
             h += '<span ng-class="getStatusClass(' + order_id + ')" class="right label right-half-margin">{{getStatusLabel(' + order_id + ')}}</span>';
             h += '</div>';
             h += '<div class="panel-body">';

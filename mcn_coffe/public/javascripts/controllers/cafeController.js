@@ -9,6 +9,12 @@ app.controller('CafeCtrl', [
     'cafe',
     function($scope, $timeout, cafes, auth, cafe){
         $scope.isLoggedIn = auth.isLoggedIn;
+        $scope.isOwner = function() {
+            if(auth.isLoggedIn())
+                return (cafe.owner == auth.currentUser()._id);
+            else
+                return false;
+        };
         $scope.cafe = cafe;
         $scope.order = {
             cafe: $scope.cafe,

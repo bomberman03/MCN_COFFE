@@ -6,7 +6,6 @@
     <ul class="breadcrumb bottom-full-margin">
         <li><a href="#/cafes/{{cafe._id}}">주문하기</a></li>
         <li><a href="javascript:void(0)">주문리스트</a></li>
-        <li><a href="#/cafes/{{cafe._id}}/pushOrder">주문 조작</a></li>
     </ul>
     <p ng-hide="getOrderLength()" class="bg-default full-padding">대기중인 주문이 없습니다.</p>
     <div ng-show="getOrderLength()" id="order_list">

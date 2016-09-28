@@ -5,8 +5,7 @@
     </div>
     <ul class="breadcrumb bottom-full-margin">
         <li><a href="javascript:void(0)">주문하기</a></li>
-        <li><a href="#/cafes/{{cafe._id}}/orders">주문리스트</a></li>
-        <li><a href="#/cafes/{{cafe._id}}/pushOrder">주문 조작</a></li>
+        <li ng-show="isOwner()"><a href="#/cafes/{{cafe._id}}/orders">주문리스트</a></li>
     </ul>
     <div class="col-sm-8">
         <div id="search_form">

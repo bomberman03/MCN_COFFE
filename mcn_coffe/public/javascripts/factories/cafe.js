@@ -8,7 +8,6 @@ app.factory('cafes', ['$http', function($http){
     };
     o.getAll = function(){
         return $http.get('/cafes').success(function(data){
-            console.log(data);
             angular.copy(data, o.cafes);
         });
     };
