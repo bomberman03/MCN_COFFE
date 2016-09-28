@@ -90,10 +90,7 @@ router.post('/', function(req, res, next){
                 id: order._id,
                 data: order
             });
-            order.receive(Math.random() * 4 + 1, function(err, order, next){
-                if(err) { return next(err); }
-                return res.json(order);
-            });
+            return res.json(order);
         });
     });
 });

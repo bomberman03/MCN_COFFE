@@ -41,12 +41,16 @@ router.post('/users', function(req, res, next){
         "user._id" : req.body.user,
         status: {$in: [0, 1, 4]},
         comment: ""
-    }, function(err, orders){
-        if(err) { return next(err); }
-        res.json({
-            orders: orders
+    }, null, {
+        sort: {
+            updateAt: -1
+        }
+    },function(err, orders){
+            if(err) { return next(err); }
+            res.json({
+                orders: orders
+            });
         });
-    });
 });
 
 router.get('/:order', function(req, res){
