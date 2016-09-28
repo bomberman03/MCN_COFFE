@@ -1,12 +1,31 @@
-<div class="text-center">{{year}} 년</div>
-<div class="chart-container">
-    <canvas id="bar" class="chart chart-bar" chart-data="year_data" chart-labels="year_labels" chart-series="series" ></canvas>
-</div>
-<div class="text-center">{{month}} 월</div>
-<div class="chart-container">
-    <canvas id="bar" class="chart chart-bar" chart-data="month_data" chart-labels="month_labels" chart-series="series" ></canvas>
-</div>
-<div class="text-center">{{date}} 일</div>
-<div class="chart-container">
-    <canvas id="bar" class="chart chart-bar" chart-data="date_data" chart-labels="date_labels" chart-series="series" ></canvas>
+<div id="search_form">
+    <fieldset>
+        <ul class="pager">
+            <li ng-click="prevYear()" class="previous"><a href="javascript:void(0)">← Older</a></li>
+            {{year}} 년
+            <li ng-click="nextYear()" class="next"><a class="withripple" href="javascript:void(0)">Newer →</a></li>
+        </ul>
+        <div ng-hide="year_labels.length" class="text-center">해당 기간의 데이터가 존재하지 않습니다.</div>
+        <div ng-show="year_labels.length" class="chart-container">
+            <canvas id="bar" class="chart chart-bar" chart-data="year_data" chart-labels="year_labels" chart-series="series" ></canvas>
+        </div>
+        <ul class="pager">
+            <li ng-click="prevMonth()" class="previous"><a href="javascript:void(0)">← Older</a></li>
+            {{month}} 월
+            <li ng-click="nextMonth()" class="next"><a class="withripple" href="javascript:void(0)">Newer →</a></li>
+        </ul>
+        <div ng-hide="month_labels.length" class="text-center">해당 기간의 데이터가 존재하지 않습니다.</div>
+        <div ng-show="month_labels.length" class="chart-container">
+            <canvas id="bar" class="chart chart-bar" chart-data="month_data" chart-labels="month_labels" chart-series="series" ></canvas>
+        </div>
+        <ul class="pager">
+            <li ng-click="prevDate()" class="previous"><a href="javascript:void(0)">← Older</a></li>
+            {{date}} 일
+            <li ng-click="nextDate()" class="next"><a class="withripple" href="javascript:void(0)">Newer →</a></li>
+        </ul>
+        <div ng-hide="date_labels.length" class="text-center">해당 기간의 데이터가 존재하지 않습니다.</div>
+        <div ng-show="date_labels.length" class="chart-container">
+            <canvas id="bar" class="chart chart-bar" chart-data="date_data" chart-labels="date_labels" chart-series="series" ></canvas>
+        </div>
+    </fieldset>
 </div>

@@ -17,6 +17,42 @@ app.controller('ListTableCtrl', [
         $scope.month = 9;
         $scope.date = 1;
 
+        $scope.prevYear = function() {
+            if($scope.year == 0) return;
+            $scope.year--;
+            initializeYearData();
+            initializeMonthData();
+            initializeDateData();
+        };
+        $scope.nextYear = function() {
+            $scope.year++;
+            initializeYearData();
+            initializeMonthData();
+            initializeDateData();
+        };
+        $scope.prevMonth = function() {
+            if($scope.month == 0) return;
+            $scope.month--;
+            initializeMonthData();
+            initializeDateData();
+        };
+        $scope.nextMonth = function() {
+            if($scope.month == 12) return;
+            $scope.month++;
+            initializeMonthData();
+            initializeDateData();
+        };
+        $scope.prevDate = function(){
+            if($scope.date == 0) return;
+            $scope.date--;
+            initializeDateData();
+        };
+        $scope.nextDate = function(){
+            if($scope.date == 31) return;
+            $scope.date++;
+            initializeDateData();
+        };
+
         var menu_map = {};
 
         function initializeSeries() {
@@ -34,7 +70,6 @@ app.controller('ListTableCtrl', [
             for(var i=0; i<orders.length; i++) {
                 var order = orders[i];
                 var d = new Date(order.updateAt);
-                console.log(d);
                 var year = d.getFullYear();
                 var month = d.getMonth() + 1;
                 var date = d.getDate();
@@ -74,7 +109,6 @@ app.controller('ListTableCtrl', [
                     data[menu_id][year][month][date][hour].total_cost += (item.cost * item.count);
                 }
             }
-            console.log(data);
         }
 
         function initializeYearData() {
@@ -126,7 +160,7 @@ app.controller('ListTableCtrl', [
                         month_data[month_data.length -1].push(data[menu._id][$scope.year][$scope.month][j].total_count);
                 }
             }
-            for(var j=31; j>=1; j--) {
+            for(var j=31; j>=0; j--) {
                 var sum = 0;
                 for (var i = 0; i < cafe.menus.length; i++) {
                     sum += month_data[i][j];
@@ -160,9 +194,7 @@ app.controller('ListTableCtrl', [
                         date_data[date_data.length - 1].push(data[menu._id][$scope.year][$scope.month][$scope.date][j].total_count);
                 }
             }
-            $scope.date_labels = date_labels;
-            $scope.date_data = date_data;
-            for(var j=23; j>=1; j--) {
+            for(var j=23; j>=0; j--) {
                 var sum = 0;
                 for (var i = 0; i < cafe.menus.length; i++) {
                     sum += date_data[i][j];
@@ -174,6 +206,8 @@ app.controller('ListTableCtrl', [
                     date_labels.splice(j, 1);
                 }
             }
+            $scope.date_labels = date_labels;
+            $scope.date_data = date_data;
         }
 
         initializeSeries();
