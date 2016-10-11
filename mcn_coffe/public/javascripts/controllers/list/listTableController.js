@@ -14,8 +14,8 @@ app.controller('ListTableCtrl', [
         var data = {};
 
         $scope.year = 2016;
-        $scope.month = 9;
-        $scope.date = 1;
+        $scope.month = 8;
+        $scope.date = 15;
 
         $scope.prevYear = function() {
             if($scope.year == 0) return;

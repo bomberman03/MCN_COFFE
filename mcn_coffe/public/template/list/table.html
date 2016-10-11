@@ -6,7 +6,7 @@
             <li ng-click="nextYear()" class="next"><a class="withripple" href="javascript:void(0)">Newer →</a></li>
         </ul>
         <div ng-hide="year_labels.length" class="text-center">해당 기간의 데이터가 존재하지 않습니다.</div>
-        <div ng-show="year_labels.length" class="chart-container">
+        <div ng-show="year_labels.length" class="chart-container" style="margin-bottom: 50px">
             <canvas id="bar" class="chart chart-bar" chart-data="year_data" chart-labels="year_labels" chart-series="series" ></canvas>
         </div>
         <ul class="pager">
@@ -15,7 +15,7 @@
             <li ng-click="nextMonth()" class="next"><a class="withripple" href="javascript:void(0)">Newer →</a></li>
         </ul>
         <div ng-hide="month_labels.length" class="text-center">해당 기간의 데이터가 존재하지 않습니다.</div>
-        <div ng-show="month_labels.length" class="chart-container">
+        <div ng-show="month_labels.length" class="chart-container" style="margin-bottom: 50px">
             <canvas id="bar" class="chart chart-bar" chart-data="month_data" chart-labels="month_labels" chart-series="series" ></canvas>
         </div>
         <ul class="pager">
