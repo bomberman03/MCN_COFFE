@@ -13,12 +13,14 @@ app.controller('ListTableCtrl', [
 
         var data = {};
 
-        $scope.year = 2016;
-        $scope.month = 8;
-        $scope.date = 15;
+        var d = new Date();
+
+        $scope.year = d.getFullYear();
+        $scope.month = d.getMonth() + 1;
+        $scope.date = d.getDate();
 
         $scope.prevYear = function() {
-            if($scope.year == 0) return;
+            if($scope.year == 1) return;
             $scope.year--;
             initializeYearData();
             initializeMonthData();
@@ -31,7 +33,7 @@ app.controller('ListTableCtrl', [
             initializeDateData();
         };
         $scope.prevMonth = function() {
-            if($scope.month == 0) return;
+            if($scope.month == 1) return;
             $scope.month--;
             initializeMonthData();
             initializeDateData();
@@ -43,7 +45,7 @@ app.controller('ListTableCtrl', [
             initializeDateData();
         };
         $scope.prevDate = function(){
-            if($scope.date == 0) return;
+            if($scope.date == 1) return;
             $scope.date--;
             initializeDateData();
         };
