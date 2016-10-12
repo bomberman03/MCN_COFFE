@@ -41,6 +41,7 @@ router.get('/between', function(req, res){
 });
 
 router.get('/comments', function(req, res) {
+    /*
     Order.find({
         "cafe._id": req.cafe._id,
         comment: {$ne: ""}
@@ -50,6 +51,21 @@ router.get('/comments', function(req, res) {
             orders: orders
         });
     });
+    */
+    Order
+        .find({
+            "cafe._id": req.cafe._id,
+            comment: {$ne: ""}
+        })
+        .sort({
+            "updateAt":-1
+        })
+        .exec(function(err, orders){
+            if(err) { return next(err); }
+            return res.json({
+                orders: orders
+            });
+        });
 });
 
 router.get('/wait', function(req, res) {
